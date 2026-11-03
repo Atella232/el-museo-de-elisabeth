@@ -2,7 +2,7 @@
 
 Un pasillo de museo neoclásico, de noche y después del cierre, para recorrer en el navegador.
 Las obras son cuadros reales de dominio público y dos esculturas escaneadas en 3D; cada una tiene
-su ficha y, más adelante, se podrá «entrar» en los cuadros. De fondo suena, muy baja, música
+su ficha, y en *El nacimiento de Venus* y *El juicio de Paris* se puede «entrar» en el cuadro. De fondo suena, muy baja, música
 clásica de grabaciones libres.
 
 ## Cómo se usa
@@ -34,6 +34,10 @@ data/layout.json + data/obras.json     ← planta del museo y fichas de las obra
 - **Las esculturas** son escaneos 3D (STL) de vaciados en yeso del Statens Museum for Kunst.
   Blender las reduce, las coloca en las hornacinas y hornea su luz en los vértices (no en una
   lightmap: el mapa UV de un escaneo sale en miles de trozos con costuras).
+- **Entrar en el cuadro** (`web/src/cuadro/diorama.js`): la pintura se convierte en un diorama de
+  planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
+  animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que
+  recorta las figuras con sus máscaras y rellena lo que tapaban en el fondo.
 - **La web** carga el modelo, aplica las lightmaps (canal UV 1) y añade lo que no se hornea:
   el reflejo del suelo pulido, los haces de luz, el polvo, el reflejo de los marcos dorados,
   las cartelas y las fichas.
@@ -43,6 +47,7 @@ data/layout.json + data/obras.json     ← planta del museo y fichas de las obra
 ```bash
 npm run obras                  # descarga las obras y esculturas de Wikimedia Commons (solo la primera vez)
 npm run musica                 # descarga la música y la convierte a AAC (usa afconvert, de macOS)
+npm run dioramas               # capas para entrar en los cuadros (ANIMACIONES=/ruta si no están en ~/Documents/Proyectos/Animaciones)
 npm run blender -- --rapido    # construir + hornear rápido + exportar (unos 4 minutos)
 npm run blender                # calidad final (unos 5 minutos en un M5, con los kernels ya compilados)
 ```

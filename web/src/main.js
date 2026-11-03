@@ -23,6 +23,8 @@ import { Hud } from './ui/hud.js';
 import { Ficha } from './ui/ficha.js';
 import { Video } from './ui/video.js';
 import { Ambiente } from './audio/ambiente.js';
+import { Diorama } from './cuadro/diorama.js';
+import { UiCuadro } from './ui/cuadro.js';
 
 const ALTURA_OJOS = 1.65;
 const RADIO_VISITANTE = 0.32;
@@ -49,7 +51,7 @@ escena3d.background = new THREE.Color(0x000000);
 const camara = new THREE.PerspectiveCamera(movil ? 70 : 62, 1, 0.05, 80);
 camara.layers.enable(CAPA_AIRE);
 
-const { modelo, escena, mallasPorGrupo } = await cargarMuseo({
+const { modelo, escena, mallasPorGrupo, texturasObras } = await cargarMuseo({
   renderer,
   calidad,
   alProgreso: (f) => portada?.progreso(f * 0.92),
@@ -86,13 +88,27 @@ const hud = new Hud(ui, { movil, debug });
 const ficha = new Ficha(ui);
 const video = new Video(ui);
 const ambiente = new Ambiente();
+const diorama = new Diorama(renderer, { calidad });
+const uiCuadro = new UiCuadro(ui, { movil });
+
+// Fundido entre el museo y el diorama: se congela el último fotograma de uno en un lienzo 2D
+// encima y se desvanece sobre el otro. Así la luz de los focos, el bloom y la viñeta del museo
+// no cambian de golpe al pasar a la pintura (que dentro se ve sin la luz de la sala).
+const fundido = document.createElement('canvas');
+fundido.className = 'fundido';
+lienzo.after(fundido);
+let capturaPendiente = null;
+const congelar = () => new Promise((resolver) => { capturaPendiente = resolver; });
+function desvanecer() {
+  requestAnimationFrame(() => requestAnimationFrame(() => fundido.classList.remove('visible')));
+}
 const contemplar = new Contemplar(camara, escena.obras);
 const escritorio = movil ? null : new ControlesEscritorio(camara, document.body, lienzo);
 const tactil = movil ? new ControlesTactiles(camara, lienzo, ui) : null;
 tactil?.mostrar(false);
 if (camFija) hud.el.hidden = true;
 
-let estado = 'portada'; // portada · paseo · pausa · transicion · contemplar
+let estado = 'portada'; // portada · paseo · pausa · transicion · contemplar · cuadro
 let obraActual = null;
 let apuntada = null;
 
@@ -102,7 +118,10 @@ function entrarEnPaseo() {
   hud.paseo(true);
   tactil?.mostrar(true);
   if (tactil) tactil.activo = true;
-  if (escritorio) escritorio.puntero.enabled = true;
+  if (escritorio) {
+    escritorio.puntero.enabled = true;
+    escritorio.activo = true;
+  }
 }
 
 async function abrirObra(obra) {
@@ -114,11 +133,62 @@ async function abrirObra(obra) {
   if (tactil) tactil.activo = false;
   if (escritorio) {
     escritorio.puntero.enabled = false;
+    escritorio.activo = false; // arrastrar ya no gira la cámara
     escritorio.desbloquear();
   }
-  const lado = innerWidth > 800 ? 'derecha' : 'abajo';
   ficha.mostrar(obras[obra.id]);
-  await contemplar.acercarse(obra, { lado, hueco: lado === 'derecha' ? Math.min(440, innerWidth * 0.36) / innerWidth : 0.56 });
+  await contemplar.acercarse(obra, opcionesFicha());
+  estado = 'contemplar';
+}
+
+function opcionesFicha() {
+  const lado = innerWidth > 800 ? 'derecha' : 'abajo';
+  return { lado, hueco: lado === 'derecha' ? Math.min(440, innerWidth * 0.36) / innerWidth : 0.56 };
+}
+
+// Entrar en el cuadro: la cámara del museo se acerca hasta que el lienzo llena la pantalla y,
+// desde ese mismo punto, se pasa al diorama.
+async function entrarEnCuadro() {
+  const o = obras[obraActual?.id];
+  if (estado !== 'contemplar' || !o?.diorama) return;
+  estado = 'transicion';
+  ficha.cargando(true);
+  const textura = texturasObras[o.id];
+  const alto = o.medidas.alto / 100;
+  const ancho = alto * (textura.image.width / textura.image.height);
+  const pose = contemplar.poseLienzo(obraActual, ancho, alto);
+  try {
+    await diorama.cargar(o.id);
+  } catch (e) {
+    console.error(e);
+    ficha.cargando(false);
+    estado = 'contemplar';
+    return;
+  }
+  ficha.ocultar();
+  await contemplar.ir(pose, 1.4);
+  await congelar();
+  await diorama.preparar(o.id, { ancho, alto, distancia: pose.dist, fov: camara.fov, aspecto: camara.aspect, cuadroPlano: textura });
+  desvanecer();
+  estado = 'cuadro';
+  uiCuadro.mostrar(o);
+  ambiente.paisaje(o.id === 'venus' ? 'mar' : 'viento');
+  ambiente.atenuarMusica(0.6);
+  await diorama.entrar();
+}
+
+async function salirDelCuadro() {
+  if (estado !== 'cuadro') return;
+  estado = 'transicion';
+  uiCuadro.ocultar();
+  ambiente.paisaje(null);
+  ambiente.atenuarMusica(1);
+  await diorama.salir();
+  await congelar();
+  diorama.cerrar();
+  desvanecer();
+  ficha.mostrar(obras[obraActual.id]);
+  await contemplar.ir(contemplar.poseFrente(obraActual, opcionesFicha()), 1.2);
   estado = 'contemplar';
 }
 
@@ -134,13 +204,15 @@ async function volverAlPaseo({ gesto = false } = {}) {
 }
 
 ficha.addEventListener('volver', () => volverAlPaseo({ gesto: true }));
+ficha.addEventListener('entrar', () => entrarEnCuadro());
+uiCuadro.addEventListener('salir', () => salirDelCuadro());
 ficha.addEventListener('video', () => {
   const o = obras[obraActual?.id];
   if (!o?.youtubeId) return;
-  ambiente.atenuarMusica(true);
+  ambiente.atenuarMusica(0);
   video.abrir(o.youtubeId, o.titulo);
 });
-video.addEventListener('cerrado', () => ambiente.atenuarMusica(false));
+video.addEventListener('cerrado', () => ambiente.atenuarMusica(1));
 hud.addEventListener('sonido', () => hud.sonido(ambiente.alternarSilencio()));
 hud.addEventListener('continuar', () => {
   escritorio?.bloquear();
@@ -167,6 +239,7 @@ addEventListener('keydown', (e) => {
   if (e.code === 'KeyE' && estado === 'paseo') abrirObra(contemplar.apuntada());
   if (e.code === 'Escape') {
     if (video.abierto) video.cerrar();
+    else if (estado === 'cuadro') salirDelCuadro();
     else if (estado === 'contemplar') volverAlPaseo();
   }
 });
@@ -181,6 +254,7 @@ function ajustar() {
   lienzo.style.width = `${w}px`;
   lienzo.style.height = `${h}px`;
   contemplar.aplicarVista(w, h);
+  diorama.ajustarTamano(w, h);
   reflejo?.ajustarTamano(w, h);
   post?.ajustarTamano(w, h);
 }
@@ -226,10 +300,24 @@ renderer.setAnimationLoop((ahora) => {
     }
   }
 
-  polvo?.actualizar(t);
-  reflejo?.actualizar(escena3d, camara);
-  if (post) post.render(t);
-  else renderer.render(escena3d, camara);
+  if (diorama.activo) {
+    diorama.actualizar(dt);
+    diorama.render();
+  } else {
+    polvo?.actualizar(t);
+    reflejo?.actualizar(escena3d, camara);
+    if (post) post.render(t);
+    else renderer.render(escena3d, camara);
+  }
+  if (capturaPendiente) {
+    // En el mismo fotograma en que se ha dibujado: después el navegador vacía el lienzo WebGL.
+    fundido.width = renderer.domElement.width;
+    fundido.height = renderer.domElement.height;
+    fundido.getContext('2d').drawImage(renderer.domElement, 0, 0);
+    fundido.classList.add('visible');
+    capturaPendiente();
+    capturaPendiente = null;
+  }
 
   if (debug) {
     fpsMarcos++;
@@ -257,13 +345,15 @@ if (portada) {
 
 if (debug) {
   window.__museo = {
-    THREE, renderer, escena3d, camara, escena, contemplar, video, obras, ambiente,
+    THREE, renderer, escena3d, camara, escena, contemplar, video, obras, ambiente, diorama,
     estado: () => estado,
     contemplarObra: (id) => {
       estado = 'paseo';
       return abrirObra(contemplar.porId[id]);
     },
     volver: () => volverAlPaseo(),
+    entrarEnCuadro: () => entrarEnCuadro(),
+    salirDelCuadro: () => salirDelCuadro(),
     ir: (x, z, yaw = 0) => {
       camara.position.set(x, ALTURA_OJOS, z);
       camara.rotation.set(0, yaw, 0, 'YXZ');

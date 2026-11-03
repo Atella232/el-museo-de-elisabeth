@@ -37,13 +37,22 @@ export class Ficha extends EventTarget {
       <p>${escapar(obra.texto)}</p>
       <div class="ficha-botones">
         ${obra.youtubeId ? '<button class="boton boton-oro" data-accion="video">▶ Ver vídeo</button>' : ''}
-        ${escultura ? '' : '<button class="boton" disabled title="Muy pronto podrás entrar en el cuadro">Entrar en el cuadro <small>Próximamente</small></button>'}
+        ${escultura ? '' : obra.diorama
+    ? '<button class="boton boton-oro" data-accion="entrar">Entrar en el cuadro</button>'
+    : '<button class="boton" disabled title="Muy pronto podrás entrar en el cuadro">Entrar en el cuadro <small>Próximamente</small></button>'}
         <button class="boton boton-sutil" data-accion="volver">Volver <kbd>Esc</kbd></button>
       </div>
       <p class="ficha-credito">${escultura ? 'Modelo 3D' : 'Imagen'}: <a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a> · dominio público</p>`;
     this.el.hidden = false;
     this.el.scrollTop = 0;
     requestAnimationFrame(() => this.el.classList.add('visible'));
+  }
+
+  cargando(activo) {
+    const b = this.el.querySelector('[data-accion="entrar"]');
+    if (!b) return;
+    b.disabled = activo;
+    b.textContent = activo ? 'Abriendo el cuadro…' : 'Entrar en el cuadro';
   }
 
   ocultar() {

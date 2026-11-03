@@ -1,0 +1,118 @@
+{
+ "ancho": 3051,
+ "alto": 1590,
+ "capas": [
+  {
+   "nombre": "fondo",
+   "archivos": {
+    "alta": "fondo-alta.webp",
+    "media": "fondo-media.webp"
+   },
+   "caja": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "profundidad": 0
+  },
+  {
+   "nombre": "pavo",
+   "archivos": {
+    "alta": "pavo-alta.webp",
+    "media": "pavo-media.webp"
+   },
+   "caja": [
+    0.85972,
+    0.06289,
+    0.14028,
+    0.49057
+   ],
+   "profundidad": 0.05
+  },
+  {
+   "nombre": "armadura",
+   "archivos": {
+    "alta": "armadura-alta.webp",
+    "media": "armadura-media.webp"
+   },
+   "caja": [
+    0.33169,
+    0.63208,
+    0.26844,
+    0.24403
+   ],
+   "profundidad": 0.12
+  },
+  {
+   "nombre": "putto",
+   "archivos": {
+    "alta": "putto-alta.webp",
+    "media": "putto-media.webp"
+   },
+   "caja": [
+    0.50836,
+    0,
+    0.15438,
+    0.18616
+   ],
+   "profundidad": 0.17
+  },
+  {
+   "nombre": "minerva",
+   "archivos": {
+    "alta": "minerva-alta.webp",
+    "media": "minerva-media.webp"
+   },
+   "caja": [
+    0.41069,
+    0.09497,
+    0.20944,
+    0.85597
+   ],
+   "profundidad": 0.19
+  },
+  {
+   "nombre": "venus",
+   "archivos": {
+    "alta": "venus-alta.webp",
+    "media": "venus-media.webp"
+   },
+   "caja": [
+    0.55359,
+    0.05912,
+    0.20682,
+    0.90881
+   ],
+   "profundidad": 0.22
+  },
+  {
+   "nombre": "paris",
+   "archivos": {
+    "alta": "paris-alta.webp",
+    "media": "paris-media.webp"
+   },
+   "caja": [
+    0,
+    0.09686,
+    0.41167,
+    0.88365
+   ],
+   "profundidad": 0.26
+  },
+  {
+   "nombre": "juno",
+   "archivos": {
+    "alta": "juno-alta.webp",
+    "media": "juno-media.webp"
+   },
+   "caja": [
+    0.71255,
+    0.06038,
+    0.255,
+    0.93962
+   ],
+   "profundidad": 0.3
+  }
+ ]
+}

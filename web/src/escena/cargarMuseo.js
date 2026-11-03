@@ -96,5 +96,5 @@ export async function cargarMuseo({ renderer, calidad, alProgreso }) {
     obj.userData.obra = obra;
   });
 
-  return { modelo, escena, mallasPorGrupo };
+  return { modelo, escena, mallasPorGrupo, texturasObras: obras };
 }

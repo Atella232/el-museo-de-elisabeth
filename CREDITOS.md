@@ -45,6 +45,10 @@ Grabaciones de Wikimedia Commons, convertidas a AAC. Las obras son de dominio p�
 - **Claude Debussy: Clair de lune**. Laurens Goedhart, piano.  
   Grabación: [Clair de lune (Claude Debussy) Suite bergamasque.ogg](https://commons.wikimedia.org/wiki/File%3AClair_de_lune_(Claude_Debussy)_Suite_bergamasque.ogg) — CC BY 3.0.
 
+## Dioramas («entrar en el cuadro»)
+
+Las capas salen de las máscaras de figuras (SAM) de los proyectos de animación de cada cuadro. El fondo del *Juicio de Paris*, lo que tapan las figuras, se reconstruyó con el retoque de Magnific (Nano Banana Pro) y está en fuentes/dioramas/.
+
 ## Tipografías
 
 - Cinzel y Cormorant Garamond, con licencia SIL Open Font License (vía Fontsource).

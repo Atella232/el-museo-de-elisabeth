@@ -1,0 +1,105 @@
+{
+ "ancho": 3840,
+ "alto": 2412,
+ "capas": [
+  {
+   "nombre": "fondo",
+   "archivos": {
+    "alta": "fondo-alta.webp",
+    "media": "fondo-media.webp"
+   },
+   "caja": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "profundidad": 0
+  },
+  {
+   "nombre": "tierra",
+   "archivos": {
+    "alta": "tierra-alta.webp",
+    "media": "tierra-media.webp"
+   },
+   "caja": [
+    0.55286,
+    0,
+    0.44714,
+    1
+   ],
+   "profundidad": 0.08
+  },
+  {
+   "nombre": "hora",
+   "archivos": {
+    "alta": "hora-alta.webp",
+    "media": "hora-media.webp"
+   },
+   "caja": [
+    0.60703,
+    0.10697,
+    0.38125,
+    0.81551
+   ],
+   "profundidad": 0.15
+  },
+  {
+   "nombre": "concha",
+   "archivos": {
+    "alta": "concha-alta.webp",
+    "media": "concha-media.webp"
+   },
+   "caja": [
+    0.24219,
+    0.61194,
+    0.43203,
+    0.30846
+   ],
+   "profundidad": 0.19
+  },
+  {
+   "nombre": "venus",
+   "archivos": {
+    "alta": "venus-alta.webp",
+    "media": "venus-media.webp"
+   },
+   "caja": [
+    0.41198,
+    0.06716,
+    0.21849,
+    0.81799
+   ],
+   "profundidad": 0.23
+  },
+  {
+   "nombre": "vientos",
+   "archivos": {
+    "alta": "vientos-alta.webp",
+    "media": "vientos-media.webp"
+   },
+   "caja": [
+    0,
+    0,
+    0.43333,
+    0.74751
+   ],
+   "profundidad": 0.27
+  },
+  {
+   "nombre": "espadanas",
+   "archivos": {
+    "alta": "espadanas-alta.webp",
+    "media": "espadanas-media.webp"
+   },
+   "caja": [
+    0,
+    0.75083,
+    0.17682,
+    0.24917
+   ],
+   "profundidad": 0.34
+  }
+ ],
+ "mar": "mar-media.webp"
+}

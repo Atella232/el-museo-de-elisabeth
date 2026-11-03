@@ -4,6 +4,7 @@
 
 const VOLUMEN_MUSICA = 0.3;
 const PAUSA_ENTRE_PIEZAS = 7; // segundos de silencio entre una pieza y la siguiente
+const VOLUMEN_PASOS = 0.35;
 
 export class Ambiente {
   constructor() {
@@ -76,8 +77,75 @@ export class Ambiente {
     this.#siguientePieza();
   }
 
-  atenuarMusica(atenuar) {
-    if (this.musica) this.musica.gain.setTargetAtTime(atenuar ? 0 : VOLUMEN_MUSICA, this.ctx.currentTime, 0.5);
+  // nivel: 1 normal, 0 en silencio (con un vídeo), algo menos dentro de un cuadro.
+  atenuarMusica(nivel) {
+    if (this.musica) this.musica.gain.setTargetAtTime(VOLUMEN_MUSICA * nivel, this.ctx.currentTime, 0.5);
+  }
+
+  // Sonido de dentro de un cuadro: 'mar' (olas que rompen despacio) o 'viento' (brisa entre
+  // los árboles). null lo apaga. Todo es ruido filtrado y modulado, sin archivos.
+  paisaje(tipo) {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    if (this.paisajeActual) {
+      const { nivel, fuentes } = this.paisajeActual;
+      nivel.gain.setTargetAtTime(0, t, 0.6);
+      setTimeout(() => fuentes.forEach((f) => f.stop()), 3000);
+      this.paisajeActual = null;
+    }
+    if (!tipo) return;
+    const nivel = ctx.createGain();
+    nivel.gain.setValueAtTime(0, t);
+    nivel.gain.setTargetAtTime(1, t + 0.8, 1.2);
+    nivel.connect(this.maestro);
+    const fuentes = [];
+    const ruido = (seg) => {
+      const f = ctx.createBufferSource();
+      f.buffer = this.#ruidoMarron(seg);
+      f.loop = true;
+      fuentes.push(f);
+      return f;
+    };
+    const lfo = (frecuencia, profundidad, destino, base) => {
+      const o = ctx.createOscillator();
+      o.frequency.value = frecuencia;
+      const g = ctx.createGain();
+      g.gain.value = profundidad;
+      destino.value = base;
+      o.connect(g).connect(destino);
+      fuentes.push(o);
+    };
+    if (tipo === 'mar') {
+      // Grave y lento: el oleaje. El volumen sube y baja con cada ola (unos 9 s).
+      const f = ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = 420;
+      const g = ctx.createGain();
+      lfo(0.11, 0.09, g.gain, 0.12);
+      ruido(6).connect(f).connect(g).connect(nivel);
+      // Espuma: un siseo agudo que acompaña la rompiente.
+      const e = ctx.createBiquadFilter();
+      e.type = 'bandpass';
+      e.frequency.value = 2600;
+      e.Q.value = 0.6;
+      const ge = ctx.createGain();
+      lfo(0.11, 0.025, ge.gain, 0.025);
+      ruido(4).connect(e).connect(ge).connect(nivel);
+      ge.connect(this.reverb);
+    } else {
+      // Brisa: banda media que se mueve despacio, con rachas.
+      const f = ctx.createBiquadFilter();
+      f.type = 'bandpass';
+      f.Q.value = 0.8;
+      lfo(0.07, 260, f.frequency, 620);
+      const g = ctx.createGain();
+      lfo(0.045, 0.05, g.gain, 0.08);
+      ruido(5).connect(f).connect(g).connect(nivel);
+      g.connect(this.reverb);
+    }
+    fuentes.forEach((f) => f.start());
+    this.paisajeActual = { nivel, fuentes };
   }
 
   #siguientePieza() {
@@ -115,7 +183,7 @@ export class Ambiente {
     banda.Q.value = 1.1;
     const env = ctx.createGain();
     env.gain.setValueAtTime(0, t);
-    env.gain.linearRampToValueAtTime(0.22 * fuerte, t + 0.004);
+    env.gain.linearRampToValueAtTime(0.22 * VOLUMEN_PASOS * fuerte, t + 0.004);
     env.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
     fuente.connect(banda).connect(env);
     // golpe grave del talón
@@ -123,7 +191,7 @@ export class Ambiente {
     golpe.frequency.setValueAtTime(140, t);
     golpe.frequency.exponentialRampToValueAtTime(60, t + 0.06);
     const envG = ctx.createGain();
-    envG.gain.setValueAtTime(0.18 * fuerte, t);
+    envG.gain.setValueAtTime(0.18 * VOLUMEN_PASOS * fuerte, t);
     envG.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
     golpe.connect(envG);
     for (const n of [env, envG]) {

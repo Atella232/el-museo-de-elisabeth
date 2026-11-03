@@ -82,6 +82,17 @@ export class Contemplar {
     return { pos, q, hueco, lado };
   }
 
+  // Pose con el lienzo (sin marco) llenando toda la pantalla, sin ficha: es el punto desde el
+  // que se entra en el cuadro. Devuelve también la distancia al lienzo.
+  poseLienzo(obra, ancho, alto) {
+    const vfov = THREE.MathUtils.degToRad(this.fovBase);
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * (innerWidth / innerHeight));
+    const dist = Math.min(alto / 2 / Math.tan(vfov / 2), ancho / 2 / Math.tan(hfov / 2)) * 0.97;
+    const pos = obra.centroV.clone().addScaledVector(obra.normalV, dist);
+    const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, obra.centroV, _arriba));
+    return { pos, q, hueco: 0, dist };
+  }
+
   ir(destino, duracion = 1.1) {
     return new Promise((resolver) => {
       this.animacion = {
