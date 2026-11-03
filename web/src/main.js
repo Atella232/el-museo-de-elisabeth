@@ -292,6 +292,7 @@ tactil?.addEventListener('toque', (e) => {
 // --- Tamaño
 function ajustar() {
   const { innerWidth: w, innerHeight: h } = window;
+  if (!w || !h) return; // ventana oculta o a medio cambiar de tamaño
   renderer.setSize(w, h, false);
   lienzo.style.width = `${w}px`;
   lienzo.style.height = `${h}px`;

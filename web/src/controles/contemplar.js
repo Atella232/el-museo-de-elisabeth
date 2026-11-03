@@ -69,7 +69,7 @@ export class Contemplar {
   // deja libre la ficha (que ocupa la fracción `hueco` de la pantalla por `lado`).
   poseFrente(obra, { lado = 'derecha', hueco = 0.36 } = {}) {
     const vfov = THREE.MathUtils.degToRad(this.fovBase);
-    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * (innerWidth / innerHeight));
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.#aspecto());
     const libreAncho = lado === 'derecha' ? 1 - hueco : 1;
     const libreAlto = lado === 'abajo' ? 1 - hueco : 1;
     const margen = 0.78;
@@ -86,11 +86,18 @@ export class Contemplar {
   // ficha: es el punto desde el que se entra en el cuadro. Devuelve también la distancia.
   poseLienzo(obra, ancho, alto) {
     const vfov = THREE.MathUtils.degToRad(this.fovBase);
-    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * (innerWidth / innerHeight));
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.#aspecto());
     const dist = Math.max(alto / 2 / Math.tan(vfov / 2), ancho / 2 / Math.tan(hfov / 2)) * 1.04;
     const pos = obra.centroV.clone().addScaledVector(obra.normalV, dist);
     const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, obra.centroV, _arriba));
     return { pos, q, hueco: 0, dist };
+  }
+
+  // Proporción de la ventana; si en un instante mide cero (al cambiar de tamaño o estar oculta),
+  // la última buena, para no dividir cero entre cero.
+  #aspecto() {
+    if (innerWidth > 0 && innerHeight > 0) this.ultimoAspecto = innerWidth / innerHeight;
+    return this.ultimoAspecto ?? 16 / 9;
   }
 
   ir(destino, duracion = 1.1) {
