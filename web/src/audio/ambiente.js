@@ -5,6 +5,7 @@
 const VOLUMEN_MUSICA = 0.3;
 const PAUSA_ENTRE_PIEZAS = 7; // segundos de silencio entre una pieza y la siguiente
 const VOLUMEN_PASOS = 0.35;
+const FUNDIDO_MUSICA = 2.5; // segundos que tarda la música en difuminarse o en volver
 
 export class Ambiente {
   constructor() {
@@ -79,7 +80,24 @@ export class Ambiente {
 
   // nivel: 1 normal, 0 en silencio (con un vídeo), algo menos dentro de un cuadro.
   atenuarMusica(nivel) {
-    if (this.musica) this.musica.gain.setTargetAtTime(VOLUMEN_MUSICA * nivel, this.ctx.currentTime, 0.5);
+    if (!this.musica) return;
+    // Cambio lento, para que la música se difumine. En silencio total (con un vídeo) la pieza se
+    // pausa al acabar el fundido y, al volver, sigue donde iba.
+    const g = this.musica.gain;
+    const t = this.ctx.currentTime;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(g.value, t);
+    g.linearRampToValueAtTime(VOLUMEN_MUSICA * nivel, t + FUNDIDO_MUSICA);
+    clearTimeout(this.temporizadorPausa);
+    this.callada = nivel === 0;
+    if (this.callada) {
+      this.temporizadorPausa = setTimeout(() => this.audio.pause(), FUNDIDO_MUSICA * 1000 + 100);
+    } else if (this.pendiente) {
+      this.pendiente = false;
+      this.#siguientePieza();
+    } else if (this.audio.paused && !this.audio.ended && this.audio.currentTime > 0) {
+      this.audio.play().catch(() => {});
+    }
   }
 
   // Sonido de dentro de un cuadro: 'mar' (olas que rompen despacio) o 'viento' (brisa entre
@@ -149,6 +167,11 @@ export class Ambiente {
   }
 
   #siguientePieza() {
+    // Con un vídeo abierto no empieza ninguna pieza: espera a que se cierre.
+    if (this.callada) {
+      this.pendiente = true;
+      return;
+    }
     if (!this.cola.length) {
       const anterior = this.pieza;
       this.cola = [...this.lista];
