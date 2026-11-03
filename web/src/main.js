@@ -26,6 +26,7 @@ import { Video } from './ui/video.js';
 import { Ambiente } from './audio/ambiente.js';
 import { Diorama } from './cuadro/diorama.js';
 import { UiCuadro } from './ui/cuadro.js';
+import { VisitaGuiada } from './cuadro/visita.js';
 
 const ALTURA_OJOS = 1.65;
 const RADIO_VISITANTE = 0.32;
@@ -93,6 +94,8 @@ const video = new Video(ui);
 const ambiente = new Ambiente();
 const diorama = new Diorama(renderer, { calidad });
 const uiCuadro = new UiCuadro(ui, { movil });
+const visita = new VisitaGuiada(diorama, ambiente);
+let datosCuadro = null; // lo cargado del diorama abierto (capas y, si la tiene, su visita guiada)
 
 // Fundido entre el museo y el diorama: se congela el último fotograma de uno en un lienzo 2D
 // encima y se desvanece sobre el otro. Así la luz de los focos, el bloom y la viñeta del museo
@@ -174,9 +177,10 @@ async function entrarEnCuadro() {
   await contemplar.ir(pose, 1.4);
   await congelar();
   await diorama.preparar(o.id, { ancho, alto, distancia: pose.dist, fov: camara.fov, aspecto: camara.aspect, cuadroPlano: textura });
+  datosCuadro = await diorama.cargar(o.id);
   desvanecer();
   estado = 'cuadro';
-  uiCuadro.mostrar(o);
+  uiCuadro.mostrar(o, { visita: !!datosCuadro.visita });
   ambiente.paisaje(o.id === 'venus' ? 'mar' : 'viento');
   ambiente.atenuarMusica(0.6);
   await diorama.entrar();
@@ -185,6 +189,7 @@ async function entrarEnCuadro() {
 async function salirDelCuadro() {
   if (estado !== 'cuadro') return;
   estado = 'transicion';
+  visita.terminar();
   uiCuadro.ocultar();
   ambiente.paisaje(null);
   ambiente.atenuarMusica(1);
@@ -219,6 +224,18 @@ async function volverAlPaseo({ gesto = false } = {}) {
 ficha.addEventListener('volver', () => volverAlPaseo({ gesto: true }));
 ficha.addEventListener('entrar', () => entrarEnCuadro());
 uiCuadro.addEventListener('salir', () => salirDelCuadro());
+uiCuadro.addEventListener('visita', () => {
+  if (estado !== 'cuadro' || !datosCuadro?.visita) return;
+  uiCuadro.visita(true);
+  visita.empezar(datosCuadro.visita); // dentro del clic: la voz necesita el gesto en iOS
+});
+uiCuadro.addEventListener('anterior', () => visita.anterior());
+uiCuadro.addEventListener('siguiente', () => visita.siguiente());
+uiCuadro.addEventListener('pausa', () => visita.alternarPausa());
+uiCuadro.addEventListener('terminar', () => visita.terminar());
+visita.addEventListener('parada', (e) => uiCuadro.parada(e.detail));
+visita.addEventListener('pausa', (e) => uiCuadro.pausa(e.detail));
+visita.addEventListener('fin', () => uiCuadro.visita(false));
 ficha.addEventListener('video', () => {
   const o = obras[obraActual?.id];
   if (!o?.youtubeId) return;
@@ -254,6 +271,13 @@ addEventListener('keydown', (e) => {
   if (e.code === 'KeyE' && !e.repeat) {
     if (estado === 'paseo') abrirObra(contemplar.apuntada());
     else if (estado === 'contemplar') volverAlPaseo({ gesto: true });
+  }
+  if (estado === 'cuadro' && visita.activa) {
+    const accion = { ArrowRight: 'siguiente', ArrowLeft: 'anterior', Space: 'alternarPausa' }[e.code];
+    if (accion && !e.repeat) {
+      e.preventDefault();
+      visita[accion]();
+    }
   }
   if (e.code === 'Escape') {
     if (video.abierto) video.cerrar();

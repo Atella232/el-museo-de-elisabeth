@@ -87,5 +87,6 @@
    "profundidad": 0.27
   }
  ],
- "mar": "mar-media.webp"
+ "mar": "mar-media.webp",
+ "visita": "visita.json"
 }

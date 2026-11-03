@@ -7,6 +7,9 @@
 //   <capa>-<calidad>.webp               cada plano recortado a su caja, con transparencia
 //   diorama.json                        las capas de fondo a frente: caja normalizada y profundidad
 //   (Venus) mar-media.webp              máscara del mar para el oleaje
+//   visita.json + voz/<locución>.m4a    la visita guiada: la narración del capítulo «Dentro del
+//                                       cuadro» de cada vídeo, parada a parada, con los contornos
+//                                       de las figuras que se nombran (los mismos que en el vídeo)
 //
 // Los píxeles transparentes de cada capa se rellenan con el color de su borde: si no, al reducir
 // la textura (mipmaps) aparecería un halo oscuro alrededor de cada figura.
@@ -22,8 +25,12 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+
+const ejecutar = promisify(execFile);
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ANIMACIONES = process.env.ANIMACIONES ?? path.join(os.homedir(), 'Documents/Proyectos/Animaciones');
@@ -370,6 +377,91 @@ async function juicio(dir, cfg) {
   return manifiesto;
 }
 
+// --- Visita guiada
+// Cada parada es una locución del capítulo «Dentro del cuadro» del vídeo y las figuras que nombra
+// (sus contornos están en web/assets/painting/outlines.js de cada proyecto). Sin figuras, la
+// cámara vuelve a la vista de todo el cuadro; con `encuadre`, se acerca a esa zona sin contorno.
+const VISITAS = {
+  venus: {
+    proyecto: 'nacimiento-de-venus-botticelli',
+    capaDe: { venus: 'venus', cabello: 'venus', concha: 'concha', zefiro: 'vientos', aura: 'vientos', hora_grupo: 'hora', arboles: 'tierra', espadanas: 'fondo' },
+    paradas: [
+      ['C1'], ['C2', ['zefiro']], ['C3', ['aura']],
+      ['C4', [], { encuadre: [0.05, 0.08, 0.55, 0.6] }], // las rosas, entre los vientos y Venus
+      ['C5', ['venus', 'concha']], ['C6', ['venus']], ['C7', ['cabello']], ['C8', ['venus']], ['C9', ['concha']],
+      ['C10', ['venus']], ['C11', ['venus']], ['C12', ['hora_grupo']], ['C13', ['hora_grupo']], ['C14', ['arboles']],
+      ['C15', ['espadanas']], ['C16'], ['C17', ['venus']], ['C18', ['venus', 'hora_grupo']],
+    ],
+  },
+  juicio: {
+    proyecto: 'juicio-de-paris-rubens',
+    capaDe: Object.fromEntries(CUADROS.juicio.capas.flatMap((c) => c.mascaras.map((m) => [m, c.nombre]))),
+    paradas: [
+      ['F1'], ['F2', ['paris', 'perro']], ['F3', ['hermes', 'manzana']], ['F4', ['minerva', 'venus', 'juno']],
+      ['F5', ['minerva', 'armadura', 'lechuza']], ['F6', ['juno', 'pavo']], ['F7', ['venus', 'cupido']], ['F8', ['putto']],
+      ['F9', ['manzana'], { general: true }], ['F10'], ['F11'],
+    ],
+  },
+};
+// El guion escribe algunos nombres como deben pronunciarse; en los subtítulos van bien escritos.
+const GRAFIAS = [[/Botichelli/g, 'Botticelli']];
+
+// Douglas-Peucker: menos puntos en los contornos, con un error menor que `tol` (fracción del cuadro).
+function simplificar(puntos, tol) {
+  if (puntos.length < 3) return puntos;
+  const [ax, ay] = puntos[0];
+  const [bx, by] = puntos[puntos.length - 1];
+  let max = 0;
+  let idx = 0;
+  const lx = bx - ax;
+  const ly = by - ay;
+  const l = Math.hypot(lx, ly) || 1e-9;
+  for (let i = 1; i < puntos.length - 1; i++) {
+    const d = Math.abs((puntos[i][0] - ax) * ly - (puntos[i][1] - ay) * lx) / l;
+    if (d > max) {
+      max = d;
+      idx = i;
+    }
+  }
+  if (max <= tol) return [puntos[0], puntos[puntos.length - 1]];
+  return [...simplificar(puntos.slice(0, idx + 1), tol).slice(0, -1), ...simplificar(puntos.slice(idx), tol)];
+}
+
+async function prepararVisita(dir, id) {
+  const cfg = VISITAS[id];
+  if (!cfg) return null;
+  const O = path.join(ANIMACIONES, cfg.proyecto);
+  const guion = Object.fromEntries(JSON.parse(await fs.readFile(path.join(O, 'script/script.json'), 'utf8')).segments.map((s) => [s.id, s.text]));
+  const textoContornos = await fs.readFile(path.join(O, 'web/assets/painting/outlines.js'), 'utf8');
+  const contornos = JSON.parse(textoContornos.slice(textoContornos.indexOf('{'), textoContornos.lastIndexOf('}') + 1));
+  await fs.mkdir(path.join(dir, 'voz'), { recursive: true });
+  const figuras = {};
+  const paradas = [];
+  let kb = 0;
+  for (const [seg, nombres = [], extra = {}] of cfg.paradas) {
+    // Voz: AAC mono a 64 kb/s (la mitad que el MP3 original).
+    const voz = `voz/${seg}.m4a`;
+    await ejecutar('afconvert', ['-f', 'm4af', '-d', 'aac', '-b', '64000', path.join(O, `audio/vo/${seg}.mp3`), path.join(dir, voz)]);
+    kb += (await fs.stat(path.join(dir, voz))).size / 1024;
+    for (const n of nombres) {
+      if (figuras[n]) continue;
+      const c = contornos[n];
+      if (!c) throw new Error(`${id}: no hay contorno para «${n}»`);
+      figuras[n] = {
+        capa: cfg.capaDe[n],
+        caja: c.bbox,
+        anillos: c.rings.map((r) => simplificar(r, 0.0006).map(([x, y]) => [Number(x.toFixed(4)), Number(y.toFixed(4))])),
+      };
+    }
+    let texto = guion[seg];
+    for (const [de, a] of GRAFIAS) texto = texto.replace(de, a);
+    paradas.push({ audio: voz, texto, figuras: nombres, ...extra });
+  }
+  await fs.writeFile(path.join(dir, 'visita.json'), JSON.stringify({ paradas, figuras }) + '\n');
+  console.log(`  visita: ${paradas.length} paradas, ${Object.keys(figuras).length} figuras, voz ${kb.toFixed(0)} KB`);
+  return 'visita.json';
+}
+
 const PREPARAR = { venus, juicio };
 for (const [id, cfg] of Object.entries(CUADROS)) {
   const t0 = Date.now();
@@ -378,6 +470,8 @@ for (const [id, cfg] of Object.entries(CUADROS)) {
   await fs.rm(dir, { recursive: true, force: true });
   await fs.mkdir(dir, { recursive: true });
   const manifiesto = await PREPARAR[id](dir, cfg);
+  const visita = await prepararVisita(dir, id);
+  if (visita) manifiesto.visita = visita;
   await fs.writeFile(path.join(dir, 'diorama.json'), JSON.stringify(manifiesto, null, 1) + '\n');
   console.log(`✓ ${id}: ${manifiesto.capas.length} planos en ${((Date.now() - t0) / 1000).toFixed(0)} s`);
 }

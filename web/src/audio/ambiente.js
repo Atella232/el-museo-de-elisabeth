@@ -100,6 +100,30 @@ export class Ambiente {
     }
   }
 
+  // Narración de la visita guiada. Pasa por el volumen general, así que el botón de silencio
+  // también la calla. La primera vez debe llamarse desde un gesto (iOS), y luego se reutiliza
+  // el mismo elemento para cada locución.
+  voz(url) {
+    if (!this.ctx) return null;
+    if (!this.audioVoz) {
+      this.audioVoz = new Audio();
+      this.audioVoz.preload = 'auto';
+      this.ctx.createMediaElementSource(this.audioVoz).connect(this.maestro);
+    }
+    this.audioVoz.src = url;
+    this.audioVoz.play().catch(() => {});
+    return this.audioVoz;
+  }
+
+  callarVoz() {
+    this.audioVoz?.pause();
+  }
+
+  // Volumen del sonido del cuadro (olas o brisa): más bajo mientras habla la visita guiada.
+  nivelPaisaje(nivel) {
+    this.paisajeActual?.nivel.gain.setTargetAtTime(nivel, this.ctx.currentTime, 0.6);
+  }
+
   // Sonido de dentro de un cuadro: 'mar' (olas que rompen despacio) o 'viento' (brisa entre
   // los árboles). null lo apaga. Todo es ruido filtrado y modulado, sin archivos.
   paisaje(tipo) {

@@ -12,6 +12,9 @@ const ENTRADA = 3.2; // segundos que dura la entrada
 const SALIDA = 1.6;
 const AVANCE_ENTRADA = 0.07; // cuánto se adentra el ojo al entrar (fracción de la distancia)
 const suave = (t) => t * t * (3 - 2 * t);
+const ZOOM_MAX = 2; // la visita guiada no acerca más del doble: las capas no tienen más detalle
+const _frente = new THREE.Vector3();
+const _color = new THREE.Color();
 
 export class Diorama {
   constructor(renderer, { calidad }) {
@@ -45,7 +48,8 @@ export class Diorama {
         };
         const capas = await Promise.all(datos.capas.map(async (c) => ({ ...c, textura: await textura(c.archivos[this.calidad.texturas]) })));
         const mar = datos.mar ? await textura(datos.mar, false) : null;
-        return { id, datos, capas, mar };
+        const visita = datos.visita ? { ...(await (await fetch(dir + datos.visita)).json()), dir } : null;
+        return { id, datos, capas, mar, visita };
       })());
     }
     return this.cache.get(id);
@@ -63,7 +67,13 @@ export class Diorama {
     this.camara.fov = fov;
     this.camara.aspect = aspecto;
     this.camara.position.set(0, 0, 0);
+    this.camara.quaternion.identity();
+    this.camara.zoom = 1;
     this.camara.updateProjectionMatrix();
+    this.mira = new THREE.Vector3(0, 0, -distancia);
+    this.guia = null;
+    this.contornos = {};
+    this.capas = capas;
     this.tiempo = 0;
 
     this.planos = capas.map((c, i) => {
@@ -77,6 +87,7 @@ export class Diorama {
       const s = 1 - c.profundidad; // distancia relativa al ojo: así se ve igual que en el cuadro
       plano.position.set((x + w / 2 - 0.5) * ancho * s, (0.5 - (y + h / 2)) * alto * s, -distancia * s);
       plano.scale.set(w * ancho * s, h * alto * s, 1);
+      plano.userData.brillo = 1; // la visita guiada atenúa las capas que no nombra
       this.escena.add(plano);
       return plano;
     });
@@ -162,6 +173,11 @@ export class Diorama {
         this.avanceObjetivo = this.avance;
         tr.resolver();
       }
+    } else if (this.guia) {
+      // En la visita, el ojo se queda en su sitio y solo respira un poco; encuadra el zoom.
+      this.avance += (AVANCE_ENTRADA - this.avance) * Math.min(1, dt * 2);
+      const respira = new THREE.Vector2(Math.sin(this.tiempo * 0.23) * 0.25, Math.sin(this.tiempo * 0.17 + 1) * 0.15);
+      this.desplazamiento.lerp(respira, Math.min(1, dt * 0.8));
     } else {
       this.avance += (THREE.MathUtils.clamp(this.avanceObjetivo, this.avanceMin, this.avanceMax) - this.avance) * Math.min(1, dt * 3);
       // Si el visitante no mueve nada, el ojo deriva despacio, como si respirara.
@@ -180,6 +196,26 @@ export class Diorama {
     const margenY = this.L * 0.04;
     this.camara.position.set(this.desplazamiento.x * margenX, this.desplazamiento.y * margenY, -this.L * this.avance);
 
+    // Qué se encuadra y con cuánto zoom: todo el cuadro de frente, salvo en la visita guiada, que
+    // encuadra cada figura. La cámara nunca gira (el cuadro se vería en escorzo): desplaza la
+    // imagen como el descentrable de una cámara de fotos. Siempre se llega poco a poco.
+    const g = this.guia;
+    const k = Math.min(1, dt * 1.4);
+    this.mira.lerp(g?.mira ?? _frente.set(this.camara.position.x, this.camara.position.y, -this.L), k);
+    this.camara.zoom += ((g?.zoom ?? 1) - this.camara.zoom) * k;
+    this.camara.updateProjectionMatrix();
+    const tanV = Math.tan(THREE.MathUtils.degToRad(this.camara.fov / 2)) / this.camara.zoom;
+    const prof = Math.max(1e-3, this.camara.position.z - this.mira.z);
+    const e = this.camara.projectionMatrix.elements;
+    e[8] = (this.mira.x - this.camara.position.x) / prof / (tanV * this.camara.aspect);
+    e[9] = (this.mira.y - this.camara.position.y) / prof / tanV;
+    this.camara.projectionMatrixInverse.copy(this.camara.projectionMatrix).invert();
+    for (const plano of this.planos) plano.material.color.lerp(_color.setScalar(plano.userData.brillo), Math.min(1, dt * 2));
+    for (const c of Object.values(this.contornos)) {
+      c.material.opacity += ((c.userData.visible ? 1 : 0) - c.material.opacity) * Math.min(1, dt * 2.5);
+      c.visible = c.material.opacity > 0.01;
+    }
+
     for (const m of this.motas) m.material.uniforms.tiempo.value = this.tiempo;
     for (const [i, r] of this.rayos.entries()) {
       r.material.opacity = r.userData.base * (0.65 + 0.35 * Math.sin(this.tiempo * 0.35 + i * 2.1));
@@ -192,11 +228,119 @@ export class Diorama {
     this.renderer.render(this.escena, this.camara);
   }
 
+  // Visita guiada: encuadra y resalta las figuras de una parada (null la termina y devuelve la
+  // vista libre). Encuadra con el zoom de la cámara y no moviendo el ojo: así no se descubren
+  // los rellenos de detrás de las figuras, y nunca acerca más de ZOOM_MAX.
+  guiar(parada, visita) {
+    for (const c of Object.values(this.contornos)) c.userData.visible = false;
+    for (const plano of this.planos) plano.userData.brillo = 1;
+    if (!parada) {
+      this.guia = null;
+      return;
+    }
+    const nombres = parada.figuras ?? [];
+    for (const n of nombres) this.#contorno(n, visita.figuras[n]).userData.visible = true;
+    if (nombres.length && !parada.general) {
+      const capasNombradas = new Set(nombres.map((n) => visita.figuras[n].capa));
+      for (const [i, plano] of this.planos.entries()) plano.userData.brillo = capasNombradas.has(this.capas[i].nombre) ? 1 : 0.62;
+    }
+    let caja = parada.encuadre ?? null;
+    if (!caja && nombres.length && !parada.general) {
+      const cajas = nombres.map((n) => visita.figuras[n].caja);
+      caja = [0, 1, 2, 3].map((k) => (k < 2 ? Math.min : Math.max)(...cajas.map((c) => c[k])));
+    }
+    if (!caja) {
+      this.guia = { mira: null, zoom: 1 };
+      return;
+    }
+    const s = 1 - (nombres.length ? this.#capa(visita.figuras[nombres[0]].capa).profundidad : 0);
+    const { ancho: W, alto: H } = this.lienzo;
+    const tanV = Math.tan(THREE.MathUtils.degToRad(this.camara.fov / 2));
+    const tanH = tanV * this.camara.aspect;
+    const D = this.L * s - this.L * AVANCE_ENTRADA; // del ojo al plano de la figura
+    const [x0, y0, x1, y1] = caja;
+    const zoom = THREE.MathUtils.clamp(Math.min(
+      (0.68 * 2 * D * tanV) / ((y1 - y0) * H * s),
+      (0.68 * 2 * D * tanH) / ((x1 - x0) * W * s),
+    ), 1, ZOOM_MAX);
+    // Que lo encuadrado no se salga del cuadro.
+    const limX = Math.max(0, (W * s) / 2 - (D * tanH) / zoom * 0.95);
+    const limY = Math.max(0, (H * s) / 2 - (D * tanV) / zoom * 0.95);
+    const mira = new THREE.Vector3(
+      THREE.MathUtils.clamp(((x0 + x1) / 2 - 0.5) * W * s, -limX, limX),
+      THREE.MathUtils.clamp((0.5 - (y0 + y1) / 2) * H * s, -limY, limY),
+      -this.L * s,
+    );
+    this.guia = { mira, zoom };
+  }
+
+  #capa(nombre) {
+    const i = Math.max(0, this.capas.findIndex((c) => c.nombre === nombre));
+    return { ...this.capas[i], indice: i };
+  }
+
+  // Contorno dorado de una figura, dibujado desde los mismos trazos que el vídeo, en un plano a
+  // la profundidad de su capa (y con su misma escala, para que encaje con ella).
+  #contorno(nombre, fig) {
+    if (this.contornos[nombre]) return this.contornos[nombre];
+    const capa = this.#capa(fig.capa);
+    const { ancho: W, alto: H } = this.lienzo;
+    const m = 0.015;
+    const [x0, y0, x1, y1] = [fig.caja[0] - m, fig.caja[1] - m, fig.caja[2] + m, fig.caja[3] + m];
+    const bw = x1 - x0;
+    const bh = y1 - y0;
+    const lado = 1024 / Math.max(bw * W, bh * H);
+    const lienzo = document.createElement('canvas');
+    lienzo.width = Math.max(8, Math.round(bw * W * lado));
+    lienzo.height = Math.max(8, Math.round(bh * H * lado));
+    const ctx = lienzo.getContext('2d');
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    const trazar = () => {
+      ctx.beginPath();
+      for (const anillo of fig.anillos) {
+        anillo.forEach(([x, y], i) => {
+          const px = ((x - x0) / bw) * lienzo.width;
+          const py = ((y - y0) / bh) * lienzo.height;
+          if (i) ctx.lineTo(px, py);
+          else ctx.moveTo(px, py);
+        });
+        ctx.closePath();
+      }
+    };
+    const grosor = Math.max(lienzo.width, lienzo.height) / 340;
+    ctx.shadowColor = 'rgba(240, 190, 90, 0.95)';
+    ctx.shadowBlur = grosor * 5;
+    ctx.strokeStyle = 'rgba(255, 210, 130, 0.9)';
+    ctx.lineWidth = grosor;
+    trazar();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = 'rgba(255, 236, 190, 1)';
+    ctx.lineWidth = grosor * 0.45;
+    ctx.stroke();
+    const textura = new THREE.CanvasTexture(lienzo);
+    textura.colorSpace = THREE.SRGBColorSpace;
+    const s = 1 - capa.profundidad;
+    const plano = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
+      map: textura, transparent: true, opacity: 0, blending: THREE.AdditiveBlending,
+      depthTest: false, depthWrite: false, toneMapped: false,
+    }));
+    plano.position.set((x0 + bw / 2 - 0.5) * W * s, (0.5 - (y0 + bh / 2)) * H * s, -this.L * s);
+    plano.scale.set(bw * W * s, bh * H * s, 1);
+    plano.renderOrder = capa.indice + 0.7;
+    plano.visible = false;
+    plano.userData.visible = false;
+    this.escena.add(plano);
+    this.contornos[nombre] = plano;
+    return plano;
+  }
+
   #escuchar() {
     const lienzo = this.renderer.domElement;
     let arrastre = null;
     addEventListener('pointermove', (e) => {
-      if (!this.activo || this.transicion) return;
+      if (!this.activo || this.transicion || this.guia) return;
       this.ultimoMovimiento = this.tiempo;
       if (e.pointerType === 'mouse') {
         this.puntero.set((e.clientX / innerWidth) * 2 - 1, -((e.clientY / innerHeight) * 2 - 1));
@@ -210,13 +354,13 @@ export class Diorama {
     });
     addEventListener('pointerup', () => { arrastre = null; });
     lienzo.addEventListener('wheel', (e) => {
-      if (!this.activo || this.transicion) return;
+      if (!this.activo || this.transicion || this.guia) return;
       e.preventDefault();
       this.ultimoMovimiento = this.tiempo;
       this.avanceObjetivo = THREE.MathUtils.clamp(this.avanceObjetivo - e.deltaY * 0.0006, this.avanceMin, this.avanceMax);
     }, { passive: false });
     addEventListener('keydown', (e) => {
-      if (!this.activo || this.transicion) return;
+      if (!this.activo || this.transicion || this.guia) return;
       const paso = { KeyW: 1, ArrowUp: 1, KeyS: -1, ArrowDown: -1 }[e.code];
       if (!paso) return;
       e.preventDefault();
