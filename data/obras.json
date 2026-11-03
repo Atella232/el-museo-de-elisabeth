@@ -1,6 +1,7 @@
 [
   {
     "id": "ulises",
+    "vivo": { "caja": [0.0636, -0.00065, 0.87281, 1.00255] },
     "titulo": "Ulises y las sirenas",
     "autor": "John William Waterhouse",
     "fecha": "1891",
@@ -14,6 +15,7 @@
   },
   {
     "id": "flaxman-sirenas",
+    "vivo": { "caja": [-0.08794, 0.07724, 1.17525, 0.84552] },
     "titulo": "Las sirenas",
     "autor": "John Flaxman",
     "fecha": "Composición de 1793",
@@ -27,6 +29,7 @@
   },
   {
     "id": "baco",
+    "vivo": { "caja": [0.04779, 0.00025, 0.90505, 0.99951] },
     "titulo": "Baco y Ariadna",
     "autor": "Tiziano",
     "fecha": "1520–1523",
@@ -40,6 +43,7 @@
   },
   {
     "id": "eco",
+    "vivo": { "caja": [0.00856, 0.00586, 0.98288, 0.98703] },
     "titulo": "Eco y Narciso",
     "autor": "John William Waterhouse",
     "fecha": "1903",
@@ -53,6 +57,7 @@
   },
   {
     "id": "flaxman-hector",
+    "vivo": { "caja": [-0.27575, -0.11316, 1.55048, 1.2257] },
     "titulo": "Héctor reprende a Paris",
     "autor": "John Flaxman",
     "fecha": "Dibujo de 1793, grabado en 1795",
@@ -66,6 +71,7 @@
   },
   {
     "id": "juicio",
+    "vivo": { "caja": [0.0445, -0.00352, 0.91099, 1.00705] },
     "diorama": true,
     "titulo": "El juicio de Paris",
     "autor": "Pedro Pablo Rubens",
@@ -80,6 +86,7 @@
   },
   {
     "id": "venus",
+    "vivo": { "caja": [-0.21952, -0.11203, 1.43904, 1.22407] },
     "diorama": true,
     "titulo": "El nacimiento de Venus",
     "autor": "Sandro Botticelli",

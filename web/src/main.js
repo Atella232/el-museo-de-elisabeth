@@ -14,6 +14,7 @@ import { crearHaces, CAPA_AIRE } from './escena/hacesLuz.js';
 import { crearPolvo } from './escena/polvo.js';
 import { crearPostproceso } from './escena/postproceso.js';
 import { pintarCartelas } from './escena/cartelas.js';
+import { CuadrosVivos } from './escena/vivos.js';
 import { ControlesEscritorio } from './controles/escritorio.js';
 import { ControlesTactiles } from './controles/tactil.js';
 import { Contemplar } from './controles/contemplar.js';
@@ -29,6 +30,7 @@ import { UiCuadro } from './ui/cuadro.js';
 const ALTURA_OJOS = 1.65;
 const RADIO_VISITANTE = 0.32;
 const PASO = 0.72; // metros por paso (para el sonido y el balanceo)
+const ESPERA_VIVO = 3; // segundos mirando un cuadro hasta que empieza a moverse
 
 const BASE = import.meta.env.BASE_URL;
 const obras = Object.fromEntries(datosObras.map((o) => [o.id, o]));
@@ -58,6 +60,7 @@ const { modelo, escena, mallasPorGrupo, texturasObras } = await cargarMuseo({
 });
 escena3d.add(modelo);
 await pintarCartelas(modelo, escena, obras, renderer);
+const vivos = new CuadrosVivos(modelo, obras, { calidad });
 const listaMusica = await fetch(`${BASE}musica/lista.json`).then((r) => (r.ok ? r.json() : []), () => []);
 const medio = (escena.limites.zmin + escena.limites.zmax) / 2;
 capturarEntorno(renderer, escena3d, new THREE.Vector3(0, 2.2, medio), { intensidad: 1.25 });
@@ -137,6 +140,7 @@ async function abrirObra(obra) {
     escritorio.desbloquear();
   }
   ficha.mostrar(obras[obra.id]);
+  vivos.enfocar(obra.id, ESPERA_VIVO);
   await contemplar.acercarse(obra, opcionesFicha());
   estado = 'contemplar';
 }
@@ -166,6 +170,7 @@ async function entrarEnCuadro() {
     return;
   }
   ficha.ocultar();
+  vivos.enfocar(null);
   await contemplar.ir(pose, 1.4);
   await congelar();
   await diorama.preparar(o.id, { ancho, alto, distancia: pose.dist, fov: camara.fov, aspecto: camara.aspect, cuadroPlano: textura });
@@ -196,11 +201,19 @@ async function volverAlPaseo({ gesto = false } = {}) {
   if (estado !== 'contemplar') return;
   estado = 'transicion';
   ficha.ocultar();
+  vivos.enfocar(null);
   if (video.abierto) video.cerrar();
   if (escritorio && gesto) escritorio.bloquear();
   await contemplar.volver();
   obraActual = null;
-  entrarEnPaseo();
+  // Si se volvió con Esc, el navegador no deja recuperar la captura del ratón (Esc no cuenta
+  // como gesto del visitante): se muestra la pausa y un clic la recupera.
+  if (escritorio?.capturaPosible && !escritorio.bloqueado) {
+    estado = 'pausa';
+    hud.mostrarPausa(true);
+  } else {
+    entrarEnPaseo();
+  }
 }
 
 ficha.addEventListener('volver', () => volverAlPaseo({ gesto: true }));
@@ -236,7 +249,12 @@ document.addEventListener('mousedown', (e) => {
   if (estado === 'paseo' && escritorio?.bloqueado && e.button === 0) abrirObra(contemplar.apuntada());
 });
 addEventListener('keydown', (e) => {
-  if (e.code === 'KeyE' && estado === 'paseo') abrirObra(contemplar.apuntada());
+  // E abre el cuadro al que se mira y, con la ficha abierta, vuelve al pasillo recuperando la
+  // captura del ratón (una tecla normal sí cuenta como gesto del visitante, Esc no).
+  if (e.code === 'KeyE' && !e.repeat) {
+    if (estado === 'paseo') abrirObra(contemplar.apuntada());
+    else if (estado === 'contemplar') volverAlPaseo({ gesto: true });
+  }
   if (e.code === 'Escape') {
     if (video.abierto) video.cerrar();
     else if (estado === 'cuadro') salirDelCuadro();
@@ -295,11 +313,16 @@ renderer.setAnimationLoop((ahora) => {
     }
     if (!movil) {
       const o = contemplar.apuntada();
-      if (o?.id !== apuntada?.id) hud.apuntando(o ? obras[o.id] : null);
+      if (o?.id !== apuntada?.id) {
+        hud.apuntando(o ? obras[o.id] : null);
+        // Si se queda mirando un cuadro vivo, al rato empieza a moverse; si deja de mirarlo, se para.
+        vivos.enfocar(o?.id ?? null, ESPERA_VIVO);
+      }
       apuntada = o;
     }
   }
 
+  vivos.actualizar(dt);
   if (diorama.activo) {
     diorama.actualizar(dt);
     diorama.render();
@@ -345,7 +368,7 @@ if (portada) {
 
 if (debug) {
   window.__museo = {
-    THREE, renderer, escena3d, camara, escena, contemplar, video, obras, ambiente, diorama,
+    THREE, renderer, escena3d, camara, escena, contemplar, video, obras, ambiente, diorama, vivos,
     estado: () => estado,
     contemplarObra: (id) => {
       estado = 'paseo';

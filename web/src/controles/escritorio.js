@@ -29,7 +29,9 @@ export class ControlesEscritorio extends EventTarget {
     this.pulsadas = new Set();
     this.activo = true;
     this.arrastre = null;
+    this.capturaPosible = false; // el navegador ha dejado capturar el ratón alguna vez
     this.puntero.addEventListener('lock', () => {
+      this.capturaPosible = true;
       lienzo.classList.remove('arrastrable');
       this.dispatchEvent(new Event('bloqueo'));
     });

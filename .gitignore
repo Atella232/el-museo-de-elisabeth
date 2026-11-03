@@ -17,3 +17,6 @@ __pycache__/
 
 # Fotos personales para escanear piezas (se procesan en local; no se publican)
 fotos/
+
+# Copias temporales que deja el entorno aislado al escribir archivos
+*.sb-*

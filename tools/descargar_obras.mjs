@@ -128,6 +128,7 @@ await fs.writeFile(
   `## Esculturas\n\nEscaneos 3D de vaciados en yeso de la Colección Real de Vaciados del Statens Museum for Kunst (SMK), publicados en Wikimedia Commons.\n\n${creditosEsculturas.join('\n')}\n\n` +
   `## Música\n\nGrabaciones de Wikimedia Commons, convertidas a AAC. Las obras son de dominio público; cada grabación tiene la licencia indicada.\n\n${creditosMusica.join('\n')}\n\n` +
   `## Dioramas («entrar en el cuadro»)\n\nLas capas salen de las máscaras de figuras (SAM) de los proyectos de animación de cada cuadro. El fondo del *Juicio de Paris*, lo que tapan las figuras, se reconstruyó con el retoque de Magnific (Nano Banana Pro) y está en fuentes/dioramas/.\n\n` +
+  `## Cuadros vivos\n\nLos vídeos de web/public/vivos/ se generaron con Kling 2.5 (Ulises y Héctor) y MiniMax Hailuo 3 (el resto), vía Magnific, a partir de las pinturas, con la propia pintura como primer y último fotograma.\n\n` +
   `## Tipografías\n\n- Cinzel y Cormorant Garamond, con licencia SIL Open Font License (vía Fontsource).\n`,
 );
 console.log('CREDITOS.md actualizado');

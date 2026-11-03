@@ -40,7 +40,7 @@ export class Ficha extends EventTarget {
         ${escultura ? '' : obra.diorama
     ? '<button class="boton boton-oro" data-accion="entrar">Entrar en el cuadro</button>'
     : '<button class="boton" disabled title="Muy pronto podrás entrar en el cuadro">Entrar en el cuadro <small>Próximamente</small></button>'}
-        <button class="boton boton-sutil" data-accion="volver">Volver <kbd>Esc</kbd></button>
+        <button class="boton boton-sutil" data-accion="volver">Volver <kbd>E</kbd></button>
       </div>
       <p class="ficha-credito">${escultura ? 'Modelo 3D' : 'Imagen'}: <a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a> · dominio público</p>`;
     this.el.hidden = false;

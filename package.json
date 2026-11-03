@@ -9,6 +9,7 @@
     "obras": "node tools/descargar_obras.mjs",
     "musica": "node tools/descargar_musica.mjs",
     "dioramas": "node tools/preparar_dioramas.mjs",
+    "vivo": "node tools/preparar_vivo.mjs",
     "blender": "sh blender/todo.sh",
     "optimizar": "node tools/optimizar_glb.mjs"
   },

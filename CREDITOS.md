@@ -49,6 +49,10 @@ Grabaciones de Wikimedia Commons, convertidas a AAC. Las obras son de dominio p�
 
 Las capas salen de las máscaras de figuras (SAM) de los proyectos de animación de cada cuadro. El fondo del *Juicio de Paris*, lo que tapan las figuras, se reconstruyó con el retoque de Magnific (Nano Banana Pro) y está en fuentes/dioramas/.
 
+## Cuadros vivos
+
+Los vídeos de web/public/vivos/ se generaron con Kling 2.5 (Ulises y Héctor) y MiniMax Hailuo 3 (el resto), vía Magnific, a partir de las pinturas, con la propia pintura como primer y último fotograma.
+
 ## Tipografías
 
 - Cinzel y Cormorant Garamond, con licencia SIL Open Font License (vía Fontsource).

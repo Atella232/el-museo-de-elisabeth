@@ -38,6 +38,11 @@ data/layout.json + data/obras.json     ← planta del museo y fichas de las obra
   planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
   animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que
   recorta las figuras con sus máscaras y rellena lo que tapaban en el fondo.
+- **Cuadros vivos** (`web/src/escena/vivos.js`): al contemplar un cuadro, o al quedarse mirándolo,
+  la pintura se mueve unos segundos dentro de su marco. Son vídeos generados con IA (Kling 2.5 y
+  MiniMax en Magnific) que empiezan y acaban en la propia pintura. Para añadir uno:
+  `npm run vivo -- <id> <vídeo.mp4>` lo alinea con el cuadro, lo recodifica y lo activa en
+  `data/obras.json` (necesita macOS).
 - **La web** carga el modelo, aplica las lightmaps (canal UV 1) y añade lo que no se hornea:
   el reflejo del suelo pulido, los haces de luz, el polvo, el reflejo de los marcos dorados,
   las cartelas y las fichas.
