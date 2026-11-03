@@ -1,0 +1,31 @@
+{
+  "name": "el-museo-de-elisabeth",
+  "version": "1.0.0",
+  "description": "El Museo de Elisabeth: un museo neoclásico en 3D para recorrer en el navegador",
+  "scripts": {
+    "dev": "vite web",
+    "build": "vite build web",
+    "preview": "vite preview web",
+    "obras": "node tools/descargar_obras.mjs",
+    "blender": "sh blender/todo.sh",
+    "optimizar": "node tools/optimizar_glb.mjs"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "module",
+  "dependencies": {
+    "@fontsource/cinzel": "^5.3.0",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "meshoptimizer": "^1.3.0",
+    "sharp": "^0.35.5",
+    "vite": "^8.3.5"
+  },
+  "private": true
+}

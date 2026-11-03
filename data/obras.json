@@ -1,0 +1,93 @@
+[
+  {
+    "id": "ulises",
+    "titulo": "Ulises y las sirenas",
+    "autor": "John William Waterhouse",
+    "fecha": "1891",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": { "alto": 100.6, "ancho": 202.0 },
+    "museo": "National Gallery of Victoria, Melbourne",
+    "commons": "File:John William Waterhouse - Ulysses and the Sirens - Google Art Project.jpg",
+    "mito": "En el canto XII de la Odisea, la hechicera Circe advierte a Ulises: quien escucha el canto de las sirenas olvida el regreso a casa. Ulises tapa con cera los oídos de sus remeros y se hace atar al mástil para poder oírlas sin perderse.",
+    "texto": "Waterhouse pinta a las sirenas como aves con cabeza de mujer, tal como aparecen en la cerámica griega antigua, y no como las sirenas con cola de pez que imaginó la Edad Media. Se cree que se inspiró en un vaso ático del siglo V a. C. que se conserva en el Museo Británico. Los remeros bogan con la mirada fija mientras Ulises, atado, se tensa hacia el canto.",
+    "youtubeId": null
+  },
+  {
+    "id": "flaxman-sirenas",
+    "titulo": "Las sirenas",
+    "autor": "John Flaxman",
+    "fecha": "Composición de 1793",
+    "tecnica": "Grabado a línea, edición posterior de las ilustraciones de la Odisea",
+    "medidas": null,
+    "museo": "Ilustraciones para la Odisea de Homero",
+    "commons": "File:OdysseySirens.png",
+    "mito": "Las sirenas cantan desde su prado, rodeadas de los huesos de los marineros que no pudieron resistirse. El barco de Ulises pasa de largo.",
+    "texto": "El escultor inglés John Flaxman dibujó en Roma, entre 1792 y 1793, una serie de ilustraciones para la Ilíada y la Odisea hechas solo con líneas, sin sombras, a la manera de las figuras de los vasos griegos. Grabadas por Tommaso Piroli, se difundieron por toda Europa e influyeron en pintores como Ingres o Goya. Aquí se cuelga frente a las sirenas de Waterhouse, para comparar dos maneras de contar la misma escena con cien años de diferencia.",
+    "youtubeId": null
+  },
+  {
+    "id": "baco",
+    "titulo": "Baco y Ariadna",
+    "autor": "Tiziano",
+    "fecha": "1520–1523",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": { "alto": 176.5, "ancho": 191.0 },
+    "museo": "National Gallery, Londres",
+    "commons": "File:Titian - Bacchus and Ariadne - Google Art Project.jpg",
+    "mito": "Ariadna ayudó a Teseo a salir del laberinto del Minotauro, pero él la abandonó dormida en la isla de Naxos. Al despertar, mientras ve alejarse su barco, llega Baco con su cortejo, se enamora de ella al instante y le promete convertir su corona en estrellas.",
+    "texto": "Tiziano lo pintó para el gabinete privado de Alfonso d'Este, duque de Ferrara. Baco salta de su carro, tirado por dos guepardos, en el instante en que ve a Ariadna; detrás le sigue un cortejo ruidoso de sátiros y ménades. Arriba a la izquierda brilla la corona de Ariadna ya convertida en constelación, y el cielo está pintado con azul ultramar, el pigmento más caro de su tiempo.",
+    "youtubeId": null
+  },
+  {
+    "id": "eco",
+    "titulo": "Eco y Narciso",
+    "autor": "John William Waterhouse",
+    "fecha": "1903",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": { "alto": 109.2, "ancho": 189.2 },
+    "museo": "Walker Art Gallery, Liverpool",
+    "commons": "File:John William Waterhouse - Echo and Narcissus - Google Art Project.jpg",
+    "mito": "La ninfa Eco, castigada por Juno, solo puede repetir las últimas palabras que oye. Se enamora del bello Narciso, que la rechaza; ella se consume hasta quedar reducida a su voz. Narciso, castigado a su vez, se enamora de su propio reflejo en un estanque y muere contemplándolo. En su lugar nace una flor: el narciso.",
+    "texto": "Waterhouse sigue el relato de las Metamorfosis de Ovidio. Narciso, inclinado sobre el agua, no ve nada más que a sí mismo; Eco lo mira desde la orilla sin poder llamarlo. Junto al agua ya asoman las flores de narciso que anuncian el final de la historia.",
+    "youtubeId": null
+  },
+  {
+    "id": "flaxman-hector",
+    "titulo": "Héctor reprende a Paris",
+    "autor": "John Flaxman",
+    "fecha": "Dibujo de 1793, grabado en 1795",
+    "tecnica": "Grabado a línea de Tommaso Piroli",
+    "medidas": { "alto": 18.2, "ancho": 25.2 },
+    "museo": "Ilustraciones para la Ilíada de Homero",
+    "commons": "File:(10) Flaxman Ilias 1795, Zeichnung 1793, 182 x 252 mm.jpg",
+    "mito": "En el canto VI de la Ilíada, mientras los troyanos mueren defendiendo la ciudad, Héctor encuentra a su hermano Paris en casa, junto a Helena, ocupado en pulir sus armas. Le reprocha que se esconda de una guerra que él mismo provocó.",
+    "texto": "Es la consecuencia del cuadro que tiene enfrente: el premio que Venus prometió a Paris fue Helena, y por ella estalló la guerra de Troya. Flaxman resume la escena en tres figuras de línea pura: Helena sentada, Paris de pie y Héctor con su lanza.",
+    "youtubeId": null
+  },
+  {
+    "id": "juicio",
+    "titulo": "El juicio de Paris",
+    "autor": "Pedro Pablo Rubens",
+    "fecha": "1638–1639",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": { "alto": 199.0, "ancho": 381.0 },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Peter Paul Rubens 115.jpg",
+    "mito": "En la boda de Peleo y Tetis, la Discordia arroja una manzana de oro «para la más bella». Juno, Minerva y Venus se la disputan, y Júpiter encarga al pastor troyano Paris que decida. Juno le ofrece poder, Minerva sabiduría y victoria, y Venus el amor de la mujer más hermosa del mundo, Helena. Paris elige a Venus, y su elección desencadena la guerra de Troya.",
+    "texto": "Es una de las últimas obras de Rubens, pintada para Felipe IV. Mercurio acompaña a Paris, que sostiene la manzana; las tres diosas se muestran a su juicio, con las armas de Minerva en el suelo y Cupido junto a Venus, mientras un amorcillo desciende para coronar a la vencedora. Según una carta del cardenal-infante don Fernando, la Venus del centro se parecía mucho a Helena Fourment, la esposa del pintor.",
+    "youtubeId": null
+  },
+  {
+    "id": "venus",
+    "titulo": "El nacimiento de Venus",
+    "autor": "Sandro Botticelli",
+    "fecha": "c. 1484–1486",
+    "tecnica": "Temple sobre lienzo",
+    "medidas": { "alto": 172.5, "ancho": 278.9 },
+    "museo": "Galería de los Uffizi, Florencia",
+    "commons": "File:Sandro Botticelli - La nascita di Venere - Google Art Project - edited.jpg",
+    "mito": "Según la Teogonía de Hesíodo, Venus nació de la espuma del mar ya adulta. Aquí llega a la orilla sobre una concha, empujada por el soplo de Céfiro, el viento del oeste, abrazado a una ninfa. En la orilla la espera una de las Horas, diosa de las estaciones, con un manto bordado de flores para cubrirla.",
+    "texto": "Botticelli lo pintó en Florencia, en el círculo de los Médici, y Giorgio Vasari lo vio en el siglo XVI en la villa medicea de Castello. Fue uno de los primeros desnudos femeninos de gran tamaño desde la Antigüedad. Las rosas que caen alrededor de la diosa recuerdan la leyenda de que nacieron con ella.",
+    "youtubeId": null
+  }
+]

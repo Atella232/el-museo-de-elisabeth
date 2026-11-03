@@ -1,0 +1,16 @@
+node_modules/
+web/dist/
+
+# Generado por los scripts de Blender (reproducible con `npm run blender`)
+build/
+*.blend
+*.blend1
+
+# Descargas originales de Commons (las versiones WebP sí se suben)
+tools/cache/
+
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
