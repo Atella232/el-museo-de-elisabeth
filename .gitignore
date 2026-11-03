@@ -14,3 +14,6 @@ tools/cache/
 # Python
 __pycache__/
 *.pyc
+
+# Fotos personales para escanear piezas (se procesan en local; no se publican)
+fotos/

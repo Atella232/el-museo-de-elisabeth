@@ -7,6 +7,10 @@ se guarda como:
   build/lightmaps/<grupo>.png          (8 bits, codificado sRGB y normalizado; lo usa la web)
   build/lightmaps/lightmaps.json       (grupo → archivo y escala para deshacer la normalización)
 
+Las esculturas escaneadas son la excepción: un mapa UV de una malla orgánica sale en miles de
+islas con costuras, así que su luz se hornea en los vértices (atributo de color "Luz", que se
+exporta como COLOR_0, también normalizado y codificado en sRGB).
+
 Uso: Blender --background build/museo.blend --python blender/hornear_luz.py -- [--rapido]
 """
 import json
@@ -29,6 +33,7 @@ GRUPOS = {
     'piezas': {'res': 2048, 'muestras': 512},
     'obras':  {'res': 1024, 'muestras': 512},
     'marcos': {'res': 1024, 'muestras': 384},
+    'esculturas': {'vertices': True, 'muestras': 1024},
 }
 
 
@@ -134,18 +139,54 @@ def quitar_ruido(imagen):
     return px.reshape(alto, ancho, 4)
 
 
+def codificar(rgb, escala):
+    n = np.clip(rgb / escala, 0.0, 1.0)
+    return np.where(n <= 0.0031308, 12.92 * n, 1.055 * np.power(n, 1 / 2.4) - 0.055)
+
+
+def escala_robusta(brillo):
+    # Percentil de los valores usados, para que unos pocos puntos muy calientes (junto a las
+    # luminarias) no aplasten el resto en los valores más bajos.
+    usados = brillo[brillo > 1e-5]
+    return float(np.percentile(usados, 99.7)) if usados.size else 1.0
+
+
+def hornear_vertices(objs):
+    """Hornea la luz difusa en el atributo de color "Luz" de cada vértice, la suaviza un poco
+    con sus vecinos (quita el ruido residual) y la deja normalizada en sRGB."""
+    for o in objs:
+        attr = o.data.color_attributes.get('Luz') or o.data.color_attributes.new('Luz', 'FLOAT_COLOR', 'POINT')
+        o.data.color_attributes.active_color = attr
+    bpy.ops.object.bake(type='DIFFUSE', pass_filter={'DIRECT', 'INDIRECT'}, target='VERTEX_COLORS')
+    luces = []
+    for o in objs:
+        m = o.data
+        c = np.empty(len(m.vertices) * 4, np.float32)
+        m.color_attributes['Luz'].data.foreach_get('color', c)
+        rgb = c.reshape(-1, 4)[:, :3].astype(np.float64)
+        aristas = np.empty(len(m.edges) * 2, np.int32)
+        m.edges.foreach_get('vertices', aristas)
+        a, b = aristas.reshape(-1, 2).T
+        suma, cuenta = rgb.copy(), np.ones(len(rgb))
+        np.add.at(suma, a, rgb[b])
+        np.add.at(suma, b, rgb[a])
+        np.add.at(cuenta, a, 1)
+        np.add.at(cuenta, b, 1)
+        luces.append(0.5 * rgb + 0.5 * suma / cuenta[:, None])
+    escala = escala_robusta(np.concatenate([l.max(axis=1) for l in luces])) or 1.0
+    for o, rgb in zip(objs, luces):
+        c = np.ones((len(rgb), 4), np.float32)
+        c[:, :3] = codificar(rgb, escala)
+        o.data.color_attributes['Luz'].data.foreach_set('color', c.ravel())
+    return escala
+
+
 def guardar(grupo, px):
     """Guarda el EXR lineal y el PNG normalizado en sRGB de 8 bits."""
     alto, ancho = px.shape[:2]
     rgb = np.clip(px[..., :3], 0.0, None)
-    # Escala robusta: percentil de los texeles usados, para que unos pocos puntos muy
-    # calientes (junto a las luminarias) no aplasten el resto en los valores más bajos.
-    brillo = rgb.max(axis=2)
-    usados = brillo[brillo > 1e-5]
-    escala = float(np.percentile(usados, 99.7)) if usados.size else 1.0
-    escala = escala or 1.0
-    n = np.clip(rgb / escala, 0.0, 1.0)
-    srgb = np.where(n <= 0.0031308, 12.92 * n, 1.055 * np.power(n, 1 / 2.4) - 0.055)
+    escala = escala_robusta(rgb.max(axis=2)) or 1.0
+    srgb = codificar(rgb, escala)
 
     ruta_exr = comun.ruta_build('lightmaps', f'{grupo}.exr')
     ruta_png = comun.ruta_build('lightmaps', f'{grupo}.png')
@@ -184,18 +225,24 @@ def hornear(grupos=None, rapido=False):
         objs = objetos_del_grupo(grupo)
         if not objs:
             continue
-        res = cfg['res'] // (4 if rapido else 1)
         muestras = max(16, cfg['muestras'] // (8 if rapido else 1))
-        t0 = time.time()
-        print(f'[hornear] {grupo}: {len(objs)} objetos, {res}px, {muestras} muestras')
-        crear_uv_lightmap(objs, cara_a_cara=grupo == 'obras')
-        imagen = bpy.data.images.new(f'LM_{grupo}', res, res, float_buffer=True, alpha=False)
-        destino = preparar_destino(objs, imagen)
         sc.cycles.samples = muestras
+        t0 = time.time()
         bpy.ops.object.select_all(action='DESELECT')
         for o in objs:
             o.select_set(True)
         bpy.context.view_layer.objects.active = objs[0]
+        if cfg.get('vertices'):
+            print(f'[hornear] {grupo}: {len(objs)} objetos, en los vértices, {muestras} muestras')
+            escala = hornear_vertices(objs)
+            indice[grupo] = {'vertices': True, 'escala': round(escala, 5)}
+            print(f'[hornear] {grupo} listo en {time.time() - t0:.0f} s (escala {escala:.3f})')
+            continue
+        res = cfg['res'] // (4 if rapido else 1)
+        print(f'[hornear] {grupo}: {len(objs)} objetos, {res}px, {muestras} muestras')
+        crear_uv_lightmap(objs, cara_a_cara=grupo == 'obras')
+        imagen = bpy.data.images.new(f'LM_{grupo}', res, res, float_buffer=True, alpha=False)
+        destino = preparar_destino(objs, imagen)
         bpy.ops.object.bake(type='DIFFUSE', pass_filter={'DIRECT', 'INDIRECT'},
                             margin=8, use_clear=True, target='IMAGE_TEXTURES')
         quitar_destino(destino)

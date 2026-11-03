@@ -2,7 +2,8 @@
 //   build/museo.glb            → web/public/modelos/museo.glb   (comprimido con meshopt)
 //   build/escena.json          → web/public/modelos/escena.json
 //   build/lightmaps/<g>.png    → web/public/lightmaps/<g>-alta.webp y <g>-media.webp
-// y comprueba que cada malla con lightmap conserva su segundo mapa UV (TEXCOORD_1).
+// y comprueba que cada malla con lightmap conserva su segundo mapa UV (TEXCOORD_1), o su
+// color de vértice (COLOR_0) si la luz se horneó en los vértices (las esculturas).
 //
 // Uso: npm run optimizar
 import fs from 'node:fs/promises';
@@ -22,6 +23,9 @@ const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 await fs.mkdir(path.join(publico, 'modelos'), { recursive: true });
 await fs.mkdir(path.join(publico, 'lightmaps'), { recursive: true });
 
+const escena = JSON.parse(await fs.readFile(path.join(build, 'escena.json'), 'utf8'));
+const lightmaps = escena.lightmaps ?? {};
+
 // --- Modelo
 await MeshoptEncoder.ready;
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.encoder': MeshoptEncoder });
@@ -33,30 +37,31 @@ await doc.transform(
   meshopt({ encoder: MeshoptEncoder, level: 'medium', quantizeTexcoord: 16, quantizePosition: 16 }),
 );
 
-const sinLightmapUV = [];
+const sinLuz = [];
 let conLightmap = 0;
 for (const nodo of doc.getRoot().listNodes()) {
   const grupo = nodo.getExtras()?.lightmap;
   const malla = nodo.getMesh();
   if (!grupo || !malla) continue;
   conLightmap++;
+  const atributo = lightmaps[grupo]?.vertices ? 'COLOR_0' : 'TEXCOORD_1';
   for (const prim of malla.listPrimitives()) {
-    if (!prim.getAttribute('TEXCOORD_1')) sinLightmapUV.push(`${nodo.getName()} (${grupo})`);
+    if (!prim.getAttribute(atributo)) sinLuz.push(`${nodo.getName()} (${grupo}, sin ${atributo})`);
   }
 }
-if (sinLightmapUV.length) {
-  console.error('✗ Mallas con lightmap pero sin TEXCOORD_1:', sinLightmapUV.join(', '));
+if (sinLuz.length) {
+  console.error('✗ Mallas que han perdido su luz horneada:', sinLuz.join(', '));
   process.exit(1);
 }
 const destinoGlb = path.join(publico, 'modelos/museo.glb');
 await io.write(destinoGlb, doc);
 const antes = (await fs.stat(path.join(build, 'museo.glb'))).size;
 const despues = (await fs.stat(destinoGlb)).size;
-console.log(`✓ museo.glb ${kb(antes)} → ${kb(despues)} · ${conLightmap} nodos con lightmap, todos con TEXCOORD_1`);
+console.log(`✓ museo.glb ${kb(antes)} → ${kb(despues)} · ${conLightmap} nodos con luz horneada, ninguno la ha perdido`);
 
 // --- Escena
-const escena = JSON.parse(await fs.readFile(path.join(build, 'escena.json'), 'utf8'));
-for (const [grupo, lm] of Object.entries(escena.lightmaps ?? {})) {
+for (const [grupo, lm] of Object.entries(lightmaps)) {
+  if (lm.vertices) continue; // va dentro del modelo
   const origen = path.join(build, 'lightmaps', lm.archivo);
   const exr = await fs.stat(origen.replace(/\.png$/, '.exr')).then((s) => s.size, () => 0);
   const variantes = { alta: lm.resolucion, media: Math.max(256, lm.resolucion / 2) };

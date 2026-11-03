@@ -16,7 +16,10 @@ export class Ficha extends EventTarget {
   }
 
   mostrar(obra) {
-    const medidas = obra.medidas ? `${fmt(obra.medidas.alto)} × ${fmt(obra.medidas.ancho)} cm` : null;
+    const escultura = obra.tipo === 'escultura';
+    const medidas = !obra.medidas ? null
+      : obra.medidas.ancho ? `${fmt(obra.medidas.alto)} × ${fmt(obra.medidas.ancho)} cm`
+        : `${fmt(obra.medidas.alto)} cm de alto`;
     const enlace = `https://commons.wikimedia.org/wiki/${encodeURIComponent(obra.commons.replace(/ /g, '_'))}`;
     this.el.innerHTML = `
       <button class="ficha-cerrar" data-accion="volver" aria-label="Volver al pasillo">×</button>
@@ -30,14 +33,14 @@ export class Ficha extends EventTarget {
       </dl>
       <h3>El mito</h3>
       <p>${escapar(obra.mito)}</p>
-      <h3>La obra</h3>
+      <h3>${escultura ? 'La escultura' : 'La obra'}</h3>
       <p>${escapar(obra.texto)}</p>
       <div class="ficha-botones">
         ${obra.youtubeId ? '<button class="boton boton-oro" data-accion="video">▶ Ver vídeo</button>' : ''}
-        <button class="boton" disabled title="Muy pronto podrás entrar en el cuadro">Entrar en el cuadro <small>Próximamente</small></button>
+        ${escultura ? '' : '<button class="boton" disabled title="Muy pronto podrás entrar en el cuadro">Entrar en el cuadro <small>Próximamente</small></button>'}
         <button class="boton boton-sutil" data-accion="volver">Volver <kbd>Esc</kbd></button>
       </div>
-      <p class="ficha-credito">Imagen: <a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a> · dominio público</p>`;
+      <p class="ficha-credito">${escultura ? 'Modelo 3D' : 'Imagen'}: <a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a> · dominio público</p>`;
     this.el.hidden = false;
     this.el.scrollTop = 0;
     requestAnimationFrame(() => this.el.classList.add('visible'));

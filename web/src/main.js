@@ -28,6 +28,7 @@ const ALTURA_OJOS = 1.65;
 const RADIO_VISITANTE = 0.32;
 const PASO = 0.72; // metros por paso (para el sonido y el balanceo)
 
+const BASE = import.meta.env.BASE_URL;
 const obras = Object.fromEntries(datosObras.map((o) => [o.id, o]));
 const ui = document.querySelector('#ui');
 const lienzo = document.querySelector('#lienzo');
@@ -55,6 +56,7 @@ const { modelo, escena, mallasPorGrupo } = await cargarMuseo({
 });
 escena3d.add(modelo);
 await pintarCartelas(modelo, escena, obras, renderer);
+const listaMusica = await fetch(`${BASE}musica/lista.json`).then((r) => (r.ok ? r.json() : []), () => []);
 const medio = (escena.limites.zmin + escena.limites.zmax) / 2;
 capturarEntorno(renderer, escena3d, new THREE.Vector3(0, 2.2, medio), { intensidad: 1.25 });
 
@@ -134,8 +136,11 @@ async function volverAlPaseo({ gesto = false } = {}) {
 ficha.addEventListener('volver', () => volverAlPaseo({ gesto: true }));
 ficha.addEventListener('video', () => {
   const o = obras[obraActual?.id];
-  if (o?.youtubeId) video.abrir(o.youtubeId, o.titulo);
+  if (!o?.youtubeId) return;
+  ambiente.atenuarMusica(true);
+  video.abrir(o.youtubeId, o.titulo);
 });
+video.addEventListener('cerrado', () => ambiente.atenuarMusica(false));
 hud.addEventListener('sonido', () => hud.sonido(ambiente.alternarSilencio()));
 hud.addEventListener('continuar', () => {
   escritorio?.bloquear();
@@ -244,6 +249,7 @@ renderer.setAnimationLoop((ahora) => {
 if (portada) {
   await portada.lista();
   ambiente.iniciar();
+  ambiente.iniciarMusica(listaMusica, BASE);
   escritorio?.bloquear();
   portada.ocultar();
   entrarEnPaseo();
@@ -251,7 +257,7 @@ if (portada) {
 
 if (debug) {
   window.__museo = {
-    THREE, renderer, escena3d, camara, escena, contemplar, video, obras,
+    THREE, renderer, escena3d, camara, escena, contemplar, video, obras, ambiente,
     estado: () => estado,
     contemplarObra: (id) => {
       estado = 'paseo';

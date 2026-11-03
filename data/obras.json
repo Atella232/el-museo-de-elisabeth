@@ -89,5 +89,33 @@
     "mito": "Según la Teogonía de Hesíodo, Venus nació de la espuma del mar ya adulta. Aquí llega a la orilla sobre una concha, empujada por el soplo de Céfiro, el viento del oeste, abrazado a una ninfa. En la orilla la espera una de las Horas, diosa de las estaciones, con un manto bordado de flores para cubrirla.",
     "texto": "Botticelli lo pintó en Florencia, en el círculo de los Médici, y Giorgio Vasari lo vio en el siglo XVI en la villa medicea de Castello. Fue uno de los primeros desnudos femeninos de gran tamaño desde la Antigüedad. Las rosas que caen alrededor de la diosa recuerdan la leyenda de que nacieron con ella.",
     "youtubeId": null
+  },
+  {
+    "id": "antinoo",
+    "tipo": "escultura",
+    "titulo": "Antínoo como Dioniso",
+    "autor": "Escultor romano anónimo",
+    "fecha": "Siglo II d. C. (original)",
+    "tecnica": "Vaciado en yeso, siglo XIX",
+    "medidas": { "alto": 97, "ancho": null },
+    "museo": "Colección Real de Vaciados, SMK, Copenhague",
+    "commons": "File:Ubekendt, Buste fra statue af Antinoos som Dionysos, med efeukrans med druer, , KAS1513, Statens Museum for Kunst, 3D model.stl",
+    "mito": "Antínoo era un joven griego de Bitinia, el favorito del emperador Adriano. En el año 130 se ahogó en el Nilo, y Adriano, desolado, lo convirtió en dios: fundó una ciudad con su nombre y llenó el imperio de estatuas suyas, a menudo con los rasgos de Dioniso. Dioniso, el Baco de los romanos, es el dios del vino y del éxtasis; en la isla de Naxos encontró a Ariadna, abandonada por Teseo, y la hizo su esposa.",
+    "texto": "Este busto reproduce en yeso la parte superior de una estatua de Antínoo. La corona de hiedra con racimos de uvas lo identifica con Dioniso, y la cabeza inclinada y la mirada baja son las de casi todos sus retratos, que mezclan belleza y melancolía. Parte del pelo y de la corona no son antiguos, sino restauraciones posteriores. El Statens Museum for Kunst de Copenhague escaneó en 3D el vaciado y liberó el modelo. Enfrente cuelga el Baco de Tiziano: el mismo dios, pintado unos mil cuatrocientos años después.",
+    "youtubeId": null
+  },
+  {
+    "id": "hera",
+    "tipo": "escultura",
+    "titulo": "Cabeza de la Hera Barberini",
+    "autor": "Escultor romano anónimo",
+    "fecha": "Copia romana de un original griego del siglo V a. C.",
+    "tecnica": "Vaciado en yeso",
+    "medidas": null,
+    "museo": "Colección Real de Vaciados, SMK, Copenhague",
+    "commons": "File:Ubekendt, Hoved fra statuen Hera Barberini, , KAS622, Statens Museum for Kunst, 3D model.stl",
+    "mito": "Hera, la Juno de los romanos, reina de los dioses y esposa de Zeus, castigó a la ninfa Eco: Eco la entretenía con largas charlas mientras las amantes de Zeus escapaban. Desde entonces solo pudo repetir las últimas palabras que oía, y por eso nunca pudo declarar su amor a Narciso. Hera es también una de las tres diosas del juicio de Paris.",
+    "texto": "La estatua de la que procede esta cabeza, la llamada Hera Barberini, se encontró en Roma, en la colina del Viminal, y hoy está en el Museo Pío-Clementino del Vaticano. Es una copia romana de una estatua griega del siglo V a. C. El vaciado pertenece a la Colección Real de Vaciados de Copenhague, que lo escaneó en 3D y liberó el modelo. Desde su hornacina mira hacia Eco, la ninfa a la que condenó a repetir.",
+    "youtubeId": null
   }
 ]

@@ -1,8 +1,9 @@
 # El Museo de Elisabeth
 
 Un pasillo de museo neoclásico, de noche y después del cierre, para recorrer en el navegador.
-Las obras son cuadros reales de dominio público; cada una tiene su ficha y, más adelante,
-se podrá «entrar» en ella.
+Las obras son cuadros reales de dominio público y dos esculturas escaneadas en 3D; cada una tiene
+su ficha y, más adelante, se podrá «entrar» en los cuadros. De fondo suena, muy baja, música
+clásica de grabaciones libres.
 
 ## Cómo se usa
 
@@ -30,6 +31,9 @@ data/layout.json + data/obras.json     ← planta del museo y fichas de las obra
 - **Blender** (5.2, `/Applications/Blender.app`) construye todo el museo por código
   (`blender/construir_museo.py`), hornea la luz de los focos con Cycles en lightmaps
   (`hornear_luz.py`) y lo exporta a glTF (`exportar.py`).
+- **Las esculturas** son escaneos 3D (STL) de vaciados en yeso del Statens Museum for Kunst.
+  Blender las reduce, las coloca en las hornacinas y hornea su luz en los vértices (no en una
+  lightmap: el mapa UV de un escaneo sale en miles de trozos con costuras).
 - **La web** carga el modelo, aplica las lightmaps (canal UV 1) y añade lo que no se hornea:
   el reflejo del suelo pulido, los haces de luz, el polvo, el reflejo de los marcos dorados,
   las cartelas y las fichas.
@@ -37,9 +41,10 @@ data/layout.json + data/obras.json     ← planta del museo y fichas de las obra
 ### Regenerar el museo
 
 ```bash
-npm run obras                  # descarga las obras de Wikimedia Commons (solo la primera vez)
+npm run obras                  # descarga las obras y esculturas de Wikimedia Commons (solo la primera vez)
+npm run musica                 # descarga la música y la convierte a AAC (usa afconvert, de macOS)
 npm run blender -- --rapido    # construir + hornear rápido + exportar (unos 4 minutos)
-npm run blender                # calidad final (unos 40 minutos en un M5)
+npm run blender                # calidad final (unos 5 minutos en un M5, con los kernels ya compilados)
 ```
 
 Para revisar el aspecto sin hornear:
@@ -54,7 +59,9 @@ Para revisar el aspecto sin hornear:
 - **Textos de las fichas, vídeos:** `data/obras.json`. Para añadir un vídeo de YouTube basta con
   poner su identificador en `youtubeId` (lo que va después de `v=` en el enlace). No hace falta
   volver a hornear.
-- **Colocación de obras, medidas, cámaras:** `data/layout.json` y después `npm run blender`.
+- **Colocación de obras, esculturas, medidas, cámaras:** `data/layout.json` y después `npm run blender`.
+- **Música:** `data/musica.json` y después `npm run musica` y `npm run obras` (para los créditos).
+  El volumen general está en `VOLUMEN_MUSICA`, en `web/src/audio/ambiente.js`.
 
 ## Créditos
 

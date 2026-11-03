@@ -1,0 +1,50 @@
+[
+  {
+    "id": "gymnopedie-1",
+    "titulo": "Gymnopédie n.º 1",
+    "compositor": "Erik Satie",
+    "interprete": "Robin Alciatore, piano",
+    "commons": "File:Erik Satie - gymnopedies - la 1 ere. lent et douloureux.ogg",
+    "licencia": "dominio público"
+  },
+  {
+    "id": "goldberg-aria",
+    "titulo": "Aria de las Variaciones Goldberg",
+    "compositor": "Johann Sebastian Bach",
+    "interprete": "Kimiko Ishizaka, piano",
+    "commons": "File:Kimiko Ishizaka - 01 - Aria.ogg",
+    "licencia": "CC0"
+  },
+  {
+    "id": "nocturno-72-1",
+    "titulo": "Nocturno en mi menor, op. 72 n.º 1",
+    "compositor": "Frédéric Chopin",
+    "interprete": "Luke Faulkner, piano",
+    "commons": "File:Chopin - Nocturne No. 19 in E minor, Op. 72 No. 1 (Luke Faulkner).flac",
+    "licencia": "dominio público"
+  },
+  {
+    "id": "syrinx",
+    "titulo": "Syrinx",
+    "compositor": "Claude Debussy",
+    "interprete": "Sarah Bassingthwaite, flauta",
+    "commons": "File:Debussy - Syrinx.ogg",
+    "licencia": "CC BY-SA 2.0"
+  },
+  {
+    "id": "nocturno-32-2",
+    "titulo": "Nocturno en la bemol mayor, op. 32 n.º 2",
+    "compositor": "Frédéric Chopin",
+    "interprete": "Olga Gurevich, piano",
+    "commons": "File:Chopin - Nocturne No. 10 in A-flat major, Op. 32 No. 2 (Olga Gurevich).flac",
+    "licencia": "dominio público"
+  },
+  {
+    "id": "clair-de-lune",
+    "titulo": "Clair de lune",
+    "compositor": "Claude Debussy",
+    "interprete": "Laurens Goedhart, piano",
+    "commons": "File:Clair de lune (Claude Debussy) Suite bergamasque.ogg",
+    "licencia": "CC BY 3.0"
+  }
+]

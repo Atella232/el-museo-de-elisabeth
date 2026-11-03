@@ -42,6 +42,7 @@ def exportar():
         export_normals=True,
         export_tangents=False,
         export_materials='EXPORT',
+        export_vertex_color='ACTIVE',  # la luz horneada en los vértices de las esculturas
         export_image_format='WEBP',
         export_extras=True,
         export_cameras=False,

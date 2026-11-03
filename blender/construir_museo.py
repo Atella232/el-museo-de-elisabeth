@@ -13,6 +13,7 @@ import sys
 
 import bmesh
 import bpy
+import numpy as np
 from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -69,6 +70,7 @@ def materiales():
     M['madera'] = comun.material('madera', imagen=t['madera'], rugosidad=0.45)
     M['hierro'] = comun.material('hierro', color='#1b1b1c', rugosidad=0.5, especular=0.5)
     M['terracota'] = comun.material('terracota', imagen=t['terracota'], rugosidad=0.55)
+    M['vaciado'] = comun.material('vaciado', color='#e6dfd2', rugosidad=0.7, especular=0.35)
     M['terciopelo'] = comun.material('terciopelo', color='#5b0f15', rugosidad=0.95, especular=0.2)
     M['cartela'] = comun.material('cartelas', color='#e9e3d6', rugosidad=0.8, especular=0.3)
     M['luna'] = comun.material('luna', color='#05070d', rugosidad=0.1, emision='#1c2b52', fuerza_emision=0.3)
@@ -285,9 +287,12 @@ def entablamento(c):
 
 # ------------------------------------------------------------------ muros
 
-def hornacina(c, mk, uc, pieza, piezas):
+HORNACINA = {'radio': 0.8, 'fondo': 0.72, 'imposta': 2.45}
+
+
+def hornacina(c, mk, uc, h, piezas):
     """Hornacina de planta semicircular con cuarto de esfera, interior en rojo pompeyano."""
-    r, zs, za, prof = 0.72, Z_ZOC, 2.45, 0.5
+    r, zs, za, prof = HORNACINA['radio'], Z_ZOC, HORNACINA['imposta'], HORNACINA['fondo']
     n = 16
     centro_eje = mk.p(uc, 0, za)
     for k in range(n):
@@ -316,8 +321,84 @@ def hornacina(c, mk, uc, pieza, piezas):
             c.cara(lado, M['piedra'], hacia=(cl - centro_eje) if s else (centro_eje - cl))
     for s in (-1, 1):
         c.caja_local(mk, uc + s * r - (w if s < 0 else 0), uc + s * r + (0 if s < 0 else w), 0, 0.035, Z_ZOC + 0.05, za, M['piedra'])
-    pieza_hornacina(mk, uc, zs, pieza, piezas)
-    return {'u0': uc - r, 'u1': uc + r, 'z0': zs, 'z1': za, 'arco': True}
+    frente = 0.05
+    if h.get('escultura'):
+        frente = colocar_escultura(mk, uc, h, piezas)
+    else:
+        pieza_hornacina(mk, uc, zs, h['pieza'], piezas)
+    return {'u0': uc - r, 'u1': uc + r, 'z0': zs, 'z1': za, 'arco': True, 'frente': frente}
+
+
+TRIANGULOS_ESCULTURA = 60000
+
+
+def colocar_escultura(mk, uc, h, piezas):
+    """Escaneo 3D (STL descargado por `npm run obras`) sobre una peana dentro de la hornacina.
+    Los escaneos miran hacia -Y con Z hacia arriba; se escalan a su altura real y se meten
+    en la hornacina tan al fondo como permite su planta. Devuelve hasta dónde sobresalen."""
+    oid = h['escultura']
+    meta = OBRAS[oid]
+    alto = h.get('alto') or meta['medidas']['alto'] / 100
+    peana = h.get('peana', 0.1)
+    r, prof, zs = HORNACINA['radio'], HORNACINA['fondo'], Z_ZOC
+
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.ops.wm.stl_import(filepath=os.path.join(comun.RAIZ, 'tools', 'cache', 'esculturas', f'{oid}.stl'))
+    ob = bpy.context.selected_objects[0]
+    ob.name = f'escultura_{oid}'
+    bpy.context.view_layer.objects.active = ob
+    reducir = ob.modifiers.new('reducir', 'DECIMATE')
+    reducir.ratio = min(1.0, TRIANGULOS_ESCULTURA / len(ob.data.polygons))
+    bpy.ops.object.modifier_apply(modifier=reducir.name)
+
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    malla = ob.data
+    v = np.empty(len(malla.vertices) * 3, np.float32)
+    malla.vertices.foreach_get('co', v)
+    v = v.reshape(-1, 3).astype(np.float64)
+    s = alto / (v[:, 2].max() - v[:, 2].min())
+    v = (v - [0, 0, v[:, 2].min()]) * s
+    en_base = v[:, 2] < 0.04 * alto  # el zócalo del busto, para centrarlo en la peana
+    v[:, :2] -= (v[en_base, :2].min(axis=0) + v[en_base, :2].max(axis=0)) / 2
+    radio_peana = float(np.hypot(v[en_base, 0], v[en_base, 1]).max()) + 0.04
+
+    # Profundidad: la más honda en la que todo el busto (y la peana) cabe en la planta elíptica.
+    a = np.linspace(0, 2 * np.pi, 48)
+    planta = np.concatenate([v[:, :2], np.stack([radio_peana * np.cos(a), radio_peana * np.sin(a)], 1)])
+    holgura = 0.95
+    dentro = np.abs(planta[:, 0]) < holgura * r
+    d_min = np.where(dentro, -prof * np.sqrt(np.clip(holgura ** 2 - (planta[:, 0] / r) ** 2, 0, None)), 0.0)
+    d_c = float((planta[:, 1] + d_min).max())  # d = d_c - y (la cara, -Y, mira a la sala)
+
+    du, dd, dz = mk.u, mk.d, mk.z
+    pos = (np.outer(uc + v[:, 0], du) + np.outer(d_c - v[:, 1], dd) + np.outer(zs + peana + v[:, 2], dz) + np.array(mk.o))
+    malla.vertices.foreach_set('co', pos.astype(np.float32).ravel())
+    ob.matrix_world = Matrix.Identity(4)
+    malla.polygons.foreach_set('use_smooth', np.ones(len(malla.polygons), bool))
+    malla.update()
+    malla.materials.clear()
+    malla.materials.append(M['vaciado'])
+    ob[comun.PROP_LIGHTMAP] = 'esculturas'
+
+    torno(piezas, [(0.0, 0.0), (radio_peana, 0.0), (radio_peana, peana - 0.02), (radio_peana - 0.02, peana), (0.0, peana)],
+          mk.p(uc, d_c, zs), M['piedra'], segmentos=32)
+
+    frente = float((d_c - v[:, 1]).max())
+    ancho = float(v[:, 0].max() - v[:, 0].min())
+    indice = len(escena['cartelas'])
+    escena['cartelas'][oid] = indice
+    cartela(piezas, mk, uc + r + 0.4, 1.42, indice)
+    escena['obras'].append({
+        'id': oid,
+        'tipo': 'escultura',
+        'centro': comun.a_three(mk.p(uc, max(frente, 0.0), zs + peana + alto / 2)),
+        'normal': comun.a_three(mk.d),
+        'ancho': round(ancho + 0.2, 3),
+        'alto': round(alto + peana + 0.1, 3),
+        'marco': None,
+    })
+    focos_escultura(mk, uc, d_c, zs + peana + alto * 0.72)
+    return frente
 
 
 def torno(c, perfil, base, mat, segmentos=40):
@@ -433,9 +514,9 @@ def muros(piezas):
         signo = 1 if lado == 'izquierda' else -1  # u = y en la izquierda, u = -y en la derecha
         huecos = []
         for h in hornacinas.get(lado, []):
-            hk = hornacina(c, mk, signo * h['y'], h['pieza'], piezas)
+            hk = hornacina(c, mk, signo * h['y'], h, piezas)
             huecos.append(hk)
-            escena['obstaculos'].append(rect_plano(mk, signo * h['y'] - 0.3, signo * h['y'] + 0.3, -0.5, 0.05))
+            escena['obstaculos'].append(rect_plano(mk, signo * h['y'] - 0.4, signo * h['y'] + 0.4, -0.5, max(0.05, hk['frente'] + 0.05)))
         u0, u1 = sorted((0, signo * LARGO))
         pared_con_huecos(c, mk, u0, u1, Z_ZOC, Z_ENT, huecos, M['yeso'])
         zocalo(c, mk, u0, u1)
@@ -767,7 +848,7 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
 
 
 CARTELA = (0.3, 0.19)
-ATLAS_CARTELAS = (4, 2)
+ATLAS_CARTELAS = (4, 3)
 
 
 def cartela(c, mk, uc, zc, indice):
@@ -879,6 +960,21 @@ def focos_obra(mk, cfg, ancho_ext, zc):
         cubrir = (ancho_ext / n) / 2 + 0.45
         ang = max(24, min(56, math.degrees(2 * math.atan(cubrir / dist))))
         anadir_foco(pos, objetivo, ang, 0.55 if ancho_ext < 1.2 else 1.0)
+
+
+def focos_escultura(mk, uc, d_c, z_cara):
+    """Luz principal desde el carril de enfrente, más frontal (unos 40°) y algo ladeada para
+    modelar el volumen; un relleno suave desde el carril del mismo lado, más cenital."""
+    x_carril, z_carril = L['carriles']['x'], L['carriles']['z'] - 0.14
+    objetivo = mk.p(uc, d_c, z_cara)
+    lado = 1 if mk.d.x > 0 else -1  # pared izquierda: la sala queda hacia +x
+    anadir_foco((lado * x_carril, objetivo.y + 1.8, z_carril), objetivo, 18, 1.6)
+    anadir_foco((-lado * x_carril, objetivo.y - 0.7, z_carril), objetivo, 22, 0.35)
+    # Dos luces pequeñas escondidas en el alféizar levantan las sombras de la cara, que desde
+    # los carriles (a 6 m) quedan bajo la frente y la corona. Sin luminaria ni haz visible.
+    for s in (-1, 1):
+        comun.foco(f'foco_alfeizar_{len(focos_lista)}_{s}', mk.p(uc + s * 0.5, -0.06, Z_ZOC + 0.03), objetivo,
+                   2.5, 26, mezcla=0.8, radio=0.02, color=COLOR_FOCO)
 
 
 focos_lista = []

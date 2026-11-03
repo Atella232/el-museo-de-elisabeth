@@ -34,8 +34,8 @@
   ],
 
   "hornacinas": [
-    { "pared": "izquierda", "y": 14.5, "pieza": "anfora" },
-    { "pared": "derecha",   "y": 21.5, "pieza": "cratera" }
+    { "pared": "izquierda", "y": 14.5, "escultura": "antinoo", "peana": 0.1 },
+    { "pared": "derecha",   "y": 21.5, "escultura": "hera", "alto": 0.72, "peana": 0.3 }
   ],
 
   "banco": { "x": 0.0, "y": 21.5, "largo": 2.2, "fondo": 0.55, "alto": 0.45 },

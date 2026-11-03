@@ -7,6 +7,7 @@
     "build": "vite build web",
     "preview": "vite preview web",
     "obras": "node tools/descargar_obras.mjs",
+    "musica": "node tools/descargar_musica.mjs",
     "blender": "sh blender/todo.sh",
     "optimizar": "node tools/optimizar_glb.mjs"
   },

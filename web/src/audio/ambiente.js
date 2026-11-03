@@ -1,5 +1,10 @@
 // Sonido generado con Web Audio, sin archivos: rumor de sala vacía y pasos sobre mármol
-// con la reverberación larga de una galería de piedra.
+// con la reverberación larga de una galería de piedra. Y, muy baja, música de fondo
+// (web/public/musica/, la prepara tools/descargar_musica.mjs).
+
+const VOLUMEN_MUSICA = 0.3;
+const PAUSA_ENTRE_PIEZAS = 7; // segundos de silencio entre una pieza y la siguiente
+
 export class Ambiente {
   constructor() {
     this.ctx = null;
@@ -32,6 +37,63 @@ export class Ambiente {
     ruido.connect(filtro).connect(nivel).connect(this.maestro);
     ruido.start();
     this.blanco = this.#ruidoBlanco(0.25);
+  }
+
+  // Debe llamarse justo después de iniciar(), en el mismo gesto (iOS solo deja sonar un
+  // <audio> que empezó en un gesto; luego se reutiliza el mismo elemento para cada pieza).
+  // Las piezas suenan en orden aleatorio y la lista se vuelve a barajar al acabar.
+  iniciarMusica(lista, base) {
+    if (!this.ctx || this.audio || !lista.length) return;
+    const ctx = this.ctx;
+    this.lista = lista;
+    this.base = base;
+    this.cola = [];
+    this.fallos = 0;
+    const audio = (this.audio = new Audio());
+    audio.preload = 'auto';
+    this.ganancia = ctx.createGain(); // iguala el volumen de cada pieza
+    this.musica = ctx.createGain(); // volumen general; baja a 0 mientras hay un vídeo
+    this.musica.gain.setValueAtTime(0, ctx.currentTime);
+    this.musica.gain.linearRampToValueAtTime(VOLUMEN_MUSICA, ctx.currentTime + 6);
+    // Sin brillo y con la reverberación de la sala: como si sonara lejos, en otra galería.
+    const tono = ctx.createBiquadFilter();
+    tono.type = 'lowpass';
+    tono.frequency.value = 3800;
+    const directo = ctx.createGain();
+    directo.gain.value = 0.6;
+    const envio = ctx.createGain();
+    envio.gain.value = 0.5;
+    ctx.createMediaElementSource(audio).connect(this.ganancia).connect(tono).connect(this.musica);
+    this.musica.connect(directo).connect(this.maestro);
+    this.musica.connect(envio).connect(this.reverb);
+    audio.addEventListener('ended', () => {
+      this.fallos = 0;
+      setTimeout(() => this.#siguientePieza(), PAUSA_ENTRE_PIEZAS * 1000);
+    });
+    audio.addEventListener('error', () => {
+      if (++this.fallos < this.lista.length) setTimeout(() => this.#siguientePieza(), 1000);
+    });
+    this.#siguientePieza();
+  }
+
+  atenuarMusica(atenuar) {
+    if (this.musica) this.musica.gain.setTargetAtTime(atenuar ? 0 : VOLUMEN_MUSICA, this.ctx.currentTime, 0.5);
+  }
+
+  #siguientePieza() {
+    if (!this.cola.length) {
+      const anterior = this.pieza;
+      this.cola = [...this.lista];
+      for (let i = this.cola.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.cola[i], this.cola[j]] = [this.cola[j], this.cola[i]];
+      }
+      if (this.cola.length > 1 && this.cola[0] === anterior) this.cola.push(this.cola.shift());
+    }
+    this.pieza = this.cola.shift();
+    this.ganancia.gain.value = this.pieza.ganancia;
+    this.audio.src = `${this.base}musica/${this.pieza.archivo}`;
+    this.audio.play().catch(() => {});
   }
 
   alternarSilencio() {

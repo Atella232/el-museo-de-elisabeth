@@ -1,0 +1,50 @@
+[
+  {
+    "archivo": "gymnopedie-1.m4a",
+    "titulo": "Gymnopédie n.º 1",
+    "compositor": "Erik Satie",
+    "interprete": "Robin Alciatore, piano",
+    "duracion": 184,
+    "ganancia": 6.095
+  },
+  {
+    "archivo": "goldberg-aria.m4a",
+    "titulo": "Aria de las Variaciones Goldberg",
+    "compositor": "Johann Sebastian Bach",
+    "interprete": "Kimiko Ishizaka, piano",
+    "duracion": 300,
+    "ganancia": 4.48
+  },
+  {
+    "archivo": "nocturno-72-1.m4a",
+    "titulo": "Nocturno en mi menor, op. 72 n.º 1",
+    "compositor": "Frédéric Chopin",
+    "interprete": "Luke Faulkner, piano",
+    "duracion": 273,
+    "ganancia": 2.926
+  },
+  {
+    "archivo": "syrinx.m4a",
+    "titulo": "Syrinx",
+    "compositor": "Claude Debussy",
+    "interprete": "Sarah Bassingthwaite, flauta",
+    "duracion": 146,
+    "ganancia": 2.062
+  },
+  {
+    "archivo": "nocturno-32-2.m4a",
+    "titulo": "Nocturno en la bemol mayor, op. 32 n.º 2",
+    "compositor": "Frédéric Chopin",
+    "interprete": "Olga Gurevich, piano",
+    "duracion": 343,
+    "ganancia": 1.998
+  },
+  {
+    "archivo": "clair-de-lune.m4a",
+    "titulo": "Clair de lune",
+    "compositor": "Claude Debussy",
+    "interprete": "Laurens Goedhart, piano",
+    "duracion": 304,
+    "ganancia": 4.039
+  }
+]
