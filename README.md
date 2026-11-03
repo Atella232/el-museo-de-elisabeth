@@ -5,6 +5,8 @@ Las obras son cuadros reales de dominio público y dos esculturas escaneadas en 
 su ficha, y en *El nacimiento de Venus* y *El juicio de Paris* se puede «entrar» en el cuadro. De fondo suena, muy baja, música
 clásica de grabaciones libres.
 
+**Visítalo en <https://atella232.github.io/el-museo-de-elisabeth/>**
+
 ## Cómo se usa
 
 ```bash
@@ -72,6 +74,18 @@ Para revisar el aspecto sin hornear:
 - **Colocación de obras, esculturas, medidas, cámaras:** `data/layout.json` y después `npm run blender`.
 - **Música:** `data/musica.json` y después `npm run musica` y `npm run obras` (para los créditos).
   El volumen general está en `VOLUMEN_MUSICA`, en `web/src/audio/ambiente.js`.
+
+## Publicación
+
+Cada vez que se sube algo a `main`, GitHub Actions compila la web
+(`.github/workflows/pages.yml`) y la publica en GitHub Pages. Solo hace falta Vite: todo lo que
+sale de Blender, las obras, la música y los vídeos ya está en `web/public`.
+
+Para probar en local la versión publicada:
+
+```bash
+BASE=/el-museo-de-elisabeth/ npm run build && BASE=/el-museo-de-elisabeth/ npm run preview
+```
 
 ## Créditos
 

@@ -360,6 +360,7 @@ renderer.setAnimationLoop((ahora) => {
 if (portada) {
   await portada.lista();
   ambiente.iniciar();
+  ambiente.alEmpezarPieza = (pieza) => hud.musica(pieza);
   ambiente.iniciarMusica(listaMusica, BASE);
   escritorio?.bloquear();
   portada.ocultar();

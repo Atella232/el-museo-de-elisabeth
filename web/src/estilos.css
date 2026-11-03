@@ -259,6 +259,36 @@ kbd {
   color: var(--oro-claro);
 }
 
+.musica-aviso {
+  position: fixed;
+  left: 18px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  margin: 0;
+  max-width: calc(100vw - 36px);
+  font-size: 0.95rem;
+  color: var(--tinta-suave);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 1.6s ease;
+  pointer-events: none !important;
+  z-index: 4;
+}
+
+.musica-aviso.movil {
+  bottom: auto;
+  top: max(18px, env(safe-area-inset-top));
+  max-width: calc(100vw - 90px);
+}
+
+.musica-aviso.visible {
+  opacity: 0.85;
+}
+
+.musica-aviso small {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
 .depuracion {
   position: fixed;
   left: 10px;

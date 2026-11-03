@@ -161,7 +161,8 @@ export class Ambiente {
     this.pieza = this.cola.shift();
     this.ganancia.gain.value = this.pieza.ganancia;
     this.audio.src = `${this.base}musica/${this.pieza.archivo}`;
-    this.audio.play().catch(() => {});
+    const pieza = this.pieza;
+    this.audio.play().then(() => this.alEmpezarPieza?.(pieza), () => {});
   }
 
   alternarSilencio() {

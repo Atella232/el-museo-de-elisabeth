@@ -111,6 +111,7 @@ for (const pieza of piezas) {
     titulo: pieza.titulo,
     compositor: pieza.compositor,
     interprete: pieza.interprete,
+    licencia: pieza.licencia,
     duracion: Math.round(duracion),
     ganancia: Number(ganancia.toFixed(3)),
   });

@@ -4,6 +4,7 @@
     "titulo": "Gymnopédie n.º 1",
     "compositor": "Erik Satie",
     "interprete": "Robin Alciatore, piano",
+    "licencia": "dominio público",
     "duracion": 184,
     "ganancia": 6.095
   },
@@ -12,6 +13,7 @@
     "titulo": "Aria de las Variaciones Goldberg",
     "compositor": "Johann Sebastian Bach",
     "interprete": "Kimiko Ishizaka, piano",
+    "licencia": "CC0",
     "duracion": 300,
     "ganancia": 4.48
   },
@@ -20,6 +22,7 @@
     "titulo": "Nocturno en mi menor, op. 72 n.º 1",
     "compositor": "Frédéric Chopin",
     "interprete": "Luke Faulkner, piano",
+    "licencia": "dominio público",
     "duracion": 273,
     "ganancia": 2.926
   },
@@ -28,6 +31,7 @@
     "titulo": "Syrinx",
     "compositor": "Claude Debussy",
     "interprete": "Sarah Bassingthwaite, flauta",
+    "licencia": "CC BY-SA 2.0",
     "duracion": 146,
     "ganancia": 2.062
   },
@@ -36,6 +40,7 @@
     "titulo": "Nocturno en la bemol mayor, op. 32 n.º 2",
     "compositor": "Frédéric Chopin",
     "interprete": "Olga Gurevich, piano",
+    "licencia": "dominio público",
     "duracion": 343,
     "ganancia": 1.998
   },
@@ -44,6 +49,7 @@
     "titulo": "Clair de lune",
     "compositor": "Claude Debussy",
     "interprete": "Laurens Goedhart, piano",
+    "licencia": "CC BY 3.0",
     "duracion": 304,
     "ganancia": 4.039
   }

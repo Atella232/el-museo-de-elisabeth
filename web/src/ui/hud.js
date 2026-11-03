@@ -16,6 +16,7 @@ export class Hud extends EventTarget {
           <p class="portada-ayuda"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o flechas para caminar · <kbd>Mayús</kbd> más rápido · ratón para mirar · <kbd>clic</kbd> o <kbd>E</kbd> para contemplar</p>
         </div>
       </div>
+      <p class="musica-aviso" aria-live="polite"></p>
       <div class="esquina">
         <button class="boton-icono" data-accion="sonido" aria-label="Silenciar">${ICONO_SONIDO}</button>
       </div>
@@ -26,6 +27,8 @@ export class Hud extends EventTarget {
     this.pausa = el.querySelector('.pausa');
     this.botonSonido = el.querySelector('[data-accion="sonido"]');
     this.depuracion = el.querySelector('.depuracion');
+    this.avisoMusica = el.querySelector('.musica-aviso');
+    if (movil) this.avisoMusica.classList.add('movil');
     el.addEventListener('click', (e) => {
       const accion = e.target.closest('[data-accion]')?.dataset.accion;
       if (accion) this.dispatchEvent(new CustomEvent(accion));
@@ -55,6 +58,18 @@ export class Hud extends EventTarget {
   sonido(silencio) {
     this.botonSonido.innerHTML = silencio ? ICONO_MUDO : ICONO_SONIDO;
     this.botonSonido.setAttribute('aria-label', silencio ? 'Activar el sonido' : 'Silenciar');
+  }
+
+  // Qué suena: aparece en pequeño al empezar cada pieza y se desvanece. Además de informar,
+  // cumple con las licencias de las grabaciones que piden nombrar al intérprete.
+  musica(pieza) {
+    const libre = /dominio|CC0/i.test(pieza.licencia ?? '');
+    const esc = (s = '') => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+    this.avisoMusica.innerHTML = `♪ ${esc(pieza.compositor)} · <em>${esc(pieza.titulo)}</em> — ${esc(pieza.interprete)}`
+      + (libre ? '' : ` <small>(${esc(pieza.licencia)})</small>`);
+    this.avisoMusica.classList.add('visible');
+    clearTimeout(this.temporizadorMusica);
+    this.temporizadorMusica = setTimeout(() => this.avisoMusica.classList.remove('visible'), 9000);
   }
 
   datos(texto) {
