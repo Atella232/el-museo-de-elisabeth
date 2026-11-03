@@ -1,8 +1,8 @@
 // Entrar en el cuadro: la pintura se convierte en un diorama, un teatro de papel con cada
 // figura en un plano a su profundidad (capas preparadas por tools/preparar_dioramas.mjs).
 //
-// El ojo empieza exactamente donde acaba el acercamiento del museo, con el lienzo llenando la
-// pantalla. Cada plano se escala según su distancia, así que desde ese punto el apilado se ve
+// El ojo empieza exactamente donde acaba el acercamiento del museo, con el lienzo entero a la
+// vista. Cada plano se escala según su distancia, así que desde ese punto el apilado se ve
 // igual que el cuadro; la profundidad aparece al moverse. Encima hay una copia plana del cuadro
 // que se desvanece al entrar y vuelve al salir, para que el paso del museo al diorama no se note.
 import * as THREE from 'three';
@@ -10,6 +10,7 @@ import * as THREE from 'three';
 const BASE = import.meta.env.BASE_URL;
 const ENTRADA = 3.2; // segundos que dura la entrada
 const SALIDA = 1.6;
+const AVANCE_ENTRADA = 0.07; // cuánto se adentra el ojo al entrar (fracción de la distancia)
 const suave = (t) => t * t * (3 - 2 * t);
 
 export class Diorama {
@@ -94,14 +95,14 @@ export class Diorama {
     this.#limites();
     this.opacidadPlano = 1;
     this.avance = 0;
-    this.avanceObjetivo = 0.22;
+    this.avanceObjetivo = AVANCE_ENTRADA;
     this.desplazamiento.set(0, 0);
     this.puntero.set(0, 0);
     this.activo = true;
   }
 
   entrar() {
-    return this.#animar({ desde: 1, hasta: 0, avanceFinal: 0.22, duracion: ENTRADA });
+    return this.#animar({ desde: 1, hasta: 0, avanceFinal: AVANCE_ENTRADA, duracion: ENTRADA });
   }
 
   // Vuelve al punto de partida; el diorama sigue dibujándose hasta que se llama a cerrar().
@@ -127,16 +128,14 @@ export class Diorama {
     if (this.activo) this.#limites();
   }
 
-  // Hasta dónde puede asomarse el ojo sin que se vean los bordes del fondo, para cada avance.
+  // Hasta dónde puede adentrarse el ojo: desde el punto de partida (el cuadro entero a la vista)
+  // hasta poco más de lo justo para que el fondo llene la pantalla.
   #limites() {
     const tv = Math.tan(THREE.MathUtils.degToRad(this.camara.fov / 2));
     const th = tv * this.camara.aspect;
-    this.tanV = tv;
-    this.tanH = th;
-    // Avance mínimo con el que el fondo cubre toda la pantalla.
     const cubre = Math.min(this.lienzo.alto / 2 / tv, this.lienzo.ancho / 2 / th);
-    this.avanceMin = Math.max(0, 1 - cubre / this.L);
-    this.avanceMax = 0.45;
+    this.avanceMin = 0;
+    this.avanceMax = THREE.MathUtils.clamp(1 - (cubre / this.L) * 0.9, 0.12, 0.35);
   }
 
   actualizar(dt) {
@@ -170,11 +169,10 @@ export class Diorama {
     this.plano.material.opacity = this.opacidadPlano;
     this.plano.visible = this.opacidadPlano > 0.001;
 
-    // Posición del ojo: avanza hacia el lienzo y se asoma dentro de lo que permiten los bordes.
-    const dist = this.L * (1 - this.avance);
-    // Además del borde, un tope: asomarse mucho deja ver los rellenos detrás de las figuras.
-    const margenX = Math.min(this.L * 0.08, Math.max(0, this.lienzo.ancho / 2 - dist * this.tanH) * 0.92);
-    const margenY = Math.min(this.L * 0.05, Math.max(0, this.lienzo.alto / 2 - dist * this.tanV) * 0.92);
+    // Posición del ojo: avanza hacia el lienzo y se asoma un poco a los lados. Con tope: asomarse
+    // mucho deja ver los rellenos detrás de las figuras.
+    const margenX = this.L * 0.07;
+    const margenY = this.L * 0.04;
     this.camara.position.set(this.desplazamiento.x * margenX, this.desplazamiento.y * margenY, -this.L * this.avance);
 
     for (const m of this.motas) m.material.uniforms.tiempo.value = this.tiempo;

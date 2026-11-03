@@ -45,7 +45,9 @@ const CUADROS = {
       { nombre: 'concha', archivo: 'concha', profundidad: 0.19 },
       { nombre: 'venus', archivo: 'venus', profundidad: 0.23 },
       { nombre: 'vientos', archivo: 'vientos', profundidad: 0.27 },
-      { nombre: 'espadanas', archivo: 'espadanas', profundidad: 0.34 },
+      // Las espadañas traen un halo semitransparente que, al separarse, se ve como una mancha
+      // clara: van pintadas sobre el fondo, en su sitio.
+      { nombre: 'espadanas', archivo: 'espadanas', alFondo: true },
     ],
   },
   juicio: {
@@ -272,7 +274,7 @@ async function venus(dir, cfg) {
   const { width: W, height: H } = await sharp(path.join(O, 'real/plate.jpg')).metadata();
   const manifiesto = { ancho: W, alto: H, capas: [] };
   const fondo = await leerRGB(path.join(O, 'real/plate.jpg'), W, H);
-  manifiesto.capas.push({ nombre: 'fondo', archivos: await guardar(dir, 'fondo', fondo, null, W, H), caja: [0, 0, 1, 1], profundidad: 0 });
+  const capas = [];
   for (const capa of cfg.capas) {
     const [cx, cy, cw, ch] = cajas[capa.archivo];
     const w = Math.round(cw * W);
@@ -292,6 +294,17 @@ async function venus(dir, cfg) {
         for (let c = 0; c < 3; c++) rgbTotal[o * 3 + c] = data[s * 4 + c];
       }
     }
+    if (capa.alFondo) {
+      for (let i = 0; i < W * H; i++) {
+        const a = alfaTotal[i] / 255;
+        if (a > 0) for (let c = 0; c < 3; c++) fondo[i * 3 + c] = fondo[i * 3 + c] * (1 - a) + rgbTotal[i * 3 + c] * a;
+      }
+      continue;
+    }
+    capas.push({ capa, rgbTotal, alfaTotal });
+  }
+  manifiesto.capas.push({ nombre: 'fondo', archivos: await guardar(dir, 'fondo', fondo, null, W, H), caja: [0, 0, 1, 1], profundidad: 0 });
+  for (const { capa, rgbTotal, alfaTotal } of capas) {
     const { archivos, caja } = await guardarCapa(dir, capa.nombre, rgbTotal, alfaTotal, W, H);
     manifiesto.capas.push({ nombre: capa.nombre, archivos, caja, profundidad: capa.profundidad });
   }

@@ -85,20 +85,6 @@
     0.74751
    ],
    "profundidad": 0.27
-  },
-  {
-   "nombre": "espadanas",
-   "archivos": {
-    "alta": "espadanas-alta.webp",
-    "media": "espadanas-media.webp"
-   },
-   "caja": [
-    0,
-    0.75083,
-    0.17682,
-    0.24917
-   ],
-   "profundidad": 0.34
   }
  ],
  "mar": "mar-media.webp"
