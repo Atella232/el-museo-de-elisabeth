@@ -81,8 +81,13 @@ export class Diorama {
       return plano;
     });
 
+    // La textura del cuadro es la del museo, preparada para las UV de glTF (sin voltear): se le da
+    // la vuelta a las UV del plano para que no salga boca abajo.
+    const geoPlano = new THREE.PlaneGeometry(ancho, alto);
+    const uv = geoPlano.attributes.uv;
+    for (let i = 0; i < uv.count; i++) uv.setY(i, 1 - uv.getY(i));
     this.plano = new THREE.Mesh(
-      new THREE.PlaneGeometry(ancho, alto),
+      geoPlano,
       new THREE.MeshBasicMaterial({ map: cuadroPlano, transparent: true, depthTest: false, depthWrite: false, toneMapped: false }),
     );
     this.plano.position.z = -distancia;
