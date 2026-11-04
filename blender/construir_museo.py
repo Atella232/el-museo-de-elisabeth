@@ -1,9 +1,12 @@
-"""Construye el pasillo del museo a partir de data/layout.json y data/obras.json.
+"""Construye una sala del museo a partir de su planta (data/plantas/<sala>.json) y de
+data/obras.json y data/salas.json.
 
-Genera build/museo.blend (geometría, materiales, cuadros, focos y luz de luna) y
-build/escena.json (lo que la web necesita saber: obras, focos, colisiones, cámaras...).
+Cada sala es una nave con bóveda de cañón: las puertas de entrada en y = 0, el fondo en
+y = largo. Genera build/salas/<sala>/museo.blend (geometría, materiales, cuadros, esculturas,
+focos y luz de luna) y build/salas/<sala>/escena.json (lo que la web necesita saber: obras,
+focos, colisiones, puertas a otras salas, cámaras...).
 
-Uso: Blender --background --python blender/construir_museo.py
+Uso: SALA=dioses Blender --background --python blender/construir_museo.py
 """
 import json
 import math
@@ -21,8 +24,10 @@ import comun  # noqa: E402
 import texturas  # noqa: E402
 from comun import Constructor, Marco  # noqa: E402
 
-L = comun.leer_json('layout.json')
+L = comun.planta()
 OBRAS = {o['id']: o for o in comun.leer_json('obras.json')}
+SALAS = {s['id']: s for s in comun.leer_json('salas.json')['salas']}
+SALA = SALAS.get(comun.SALA, {})
 
 NAVE = L['nave']
 X = NAVE['ancho'] / 2
@@ -31,20 +36,37 @@ Z_ZOC = NAVE['zocalo']
 Z_ENT = NAVE['entablamento']['base']
 Z_IMP = NAVE['imposta']
 R = X  # radio de la bóveda
+DZ = Z_ENT - 5.6  # el entablamento se diseñó para una base a 5,6 m; en salas más altas sube entero
+# Puertas: las de la calle (cerradas, solo en el vestíbulo) y los pasos a otras salas, cada uno
+# con un pasillo corto en penumbra que acaba en unas puertas de bronce.
+VANOS = L.get('vanos') or [{'pared': 'puertas', 'pos': 0, 'ancho': L['puertas']['ancho'],
+                            'alto': L['puertas']['alto'], 'tipo': 'calle'}]
+FONDO_PASILLO = 2.2
+RV_TERMAL = min(2.5, 0.714 * R)  # radio de la ventana termal del fondo
 PIL = L['pilastras']
 COLOR_FOCO = (1.0, 0.80, 0.60)
 COLOR_LUNA = (0.55, 0.66, 1.0)
 
 # Paredes: sistema local con u hacia la derecha de quien mira y d hacia la sala.
+# `pos` es la y de las paredes laterales y la x de las de los extremos.
 PAREDES = {
     'izquierda': lambda pos: Marco((-X, pos, 0), (0, 1, 0), (1, 0, 0)),
     'derecha': lambda pos: Marco((X, pos, 0), (0, -1, 0), (-1, 0, 0)),
     'fondo': lambda pos: Marco((pos, LARGO, 0), (1, 0, 0), (0, -1, 0)),
     'puertas': lambda pos: Marco((pos, 0, 0), (-1, 0, 0), (0, 1, 0)),
 }
+# Signo de u respecto a `pos` en el sistema de cada pared colocado en pos = 0.
+SIGNO_U = {'izquierda': 1, 'derecha': -1, 'fondo': 1, 'puertas': -1}
+
+
+def posicion(cfg):
+    """Posición a lo largo de su pared de una obra, hornacina o vano de la planta."""
+    if 'pos' in cfg:
+        return cfg['pos']
+    return cfg['x'] if cfg['pared'] in ('fondo', 'puertas') else cfg['y']
 
 M = {}  # materiales
-escena = {'obras': [], 'focos': [], 'obstaculos': [], 'cartelas': {}}
+escena = {'sala': comun.SALA, 'obras': [], 'focos': [], 'obstaculos': [], 'cartelas': {}, 'pasos': []}
 
 
 # ------------------------------------------------------------------ materiales
@@ -56,6 +78,13 @@ def materiales():
     M['greca'] = comun.material('greca', imagen=t['greca'], rugosidad=0.1)
     M['yeso'] = comun.material('yeso', imagen=t['yeso'], normal=yeso_n, rugosidad=0.88, especular=0.3)
     M['pompeyano'] = comun.material('pompeyano', color='#7a2c22', normal=yeso_n, rugosidad=0.85, especular=0.3)
+    # Cada sala tiene su color de pared (data/salas.json); la bóveda sigue siendo de yeso.
+    color = SALA.get('pared')
+    if color and color.lower() != '#c9b292':
+        M['pared'] = comun.material(f'pared_{comun.SALA}', color=color, normal=yeso_n, rugosidad=0.88, especular=0.3)
+        REP[M['pared'].name] = 2.0
+    else:
+        M['pared'] = M['yeso']
     M['piedra'] = comun.material('piedra', imagen=t['piedra'], rugosidad=0.6, especular=0.4)
     M['zocalo'] = comun.material('zocalo', imagen=t['marmol_zocalo'], rugosidad=0.18)
     M['oro'] = comun.material('oro', imagen=t['oro'], metalico=1.0, rugosidad=0.3)
@@ -71,6 +100,9 @@ def materiales():
     M['hierro'] = comun.material('hierro', color='#1b1b1c', rugosidad=0.5, especular=0.5)
     M['terracota'] = comun.material('terracota', imagen=t['terracota'], rugosidad=0.55)
     M['vaciado'] = comun.material('vaciado', color='#e6dfd2', rugosidad=0.7, especular=0.35)
+    M['marmol'] = comun.material('marmol_escultura', color='#ece6db', rugosidad=0.45, especular=0.45)
+    M['bronce_escultura'] = comun.material('bronce_escultura', color='#5a4128', rugosidad=0.5, especular=0.5)
+    M['panel'] = comun.material('panel', color='#efe9dc', rugosidad=0.85, especular=0.25)
     M['terciopelo'] = comun.material('terciopelo', color='#5b0f15', rugosidad=0.95, especular=0.2)
     M['cartela'] = comun.material('cartelas', color='#e9e3d6', rugosidad=0.8, especular=0.3)
     M['luna'] = comun.material('luna', color='#05070d', rugosidad=0.1, emision='#1c2b52', fuerza_emision=0.3)
@@ -246,10 +278,10 @@ def pilastra(c, mk, alto=Z_ENT, ancho=PIL['ancho'], saliente=PIL['saliente']):
         voluta(c, mk, s * 0.4 * kw, 5.33 * kz, 0.11 * kw, 0, 0.27 * kd, s)
 
 
-PERFIL_ENTABLAMENTO = [  # (d hacia la sala, z)
+PERFIL_ENTABLAMENTO = [(d, z + DZ) for d, z in [  # (d hacia la sala, z)
     (0.0, 5.6), (0.2, 5.6), (0.2, 5.72), (0.22, 5.72), (0.22, 5.88), (0.18, 5.88), (0.18, 6.2),
     (0.24, 6.2), (0.28, 6.25), (0.28, 6.34), (0.54, 6.34), (0.54, 6.44), (0.5, 6.5), (0.0, 6.5),
-]
+]]
 
 
 def perfil_extruido(c, mk, largo, perfil, mat, inglete=(True, True)):
@@ -269,7 +301,7 @@ def denticulos(c, mk, largo):
     n = int((largo - 0.6) / paso)
     u = (largo - n * paso) / 2
     for _ in range(n):
-        c.caja_local(mk, u, u + w, 0.28, 0.33, 6.25, 6.34, M['piedra'])
+        c.caja_local(mk, u, u + w, 0.28, 0.33, 6.25 + DZ, 6.34 + DZ, M['piedra'])
         u += paso
 
 
@@ -330,6 +362,195 @@ def hornacina(c, mk, uc, h, piezas):
 
 
 TRIANGULOS_ESCULTURA = 60000
+TRIANGULOS_EXENTA = 120000
+CARPETA_ESCANEOS = os.path.join(comun.RAIZ, 'tools', 'cache', 'esculturas')
+
+
+def cargar_escaneo(oid, triangulos):
+    """Importa el escaneo 3D de una obra como una sola malla sin materiales, reducida a
+    `triangulos`, y devuelve el objeto y sus vértices (numpy, en metros del archivo).
+    Puede ser un GLB de Scan the World (<id>.glb) o uno o varios STL del SMK (<id>.stl,
+    <id>-2.stl…), que se unen tal como vienen."""
+    antes = set(bpy.data.objects)
+    glb = os.path.join(CARPETA_ESCANEOS, f'{oid}.glb')
+    if os.path.exists(glb):
+        bpy.ops.import_scene.gltf(filepath=glb)
+    else:
+        for f in sorted(os.listdir(CARPETA_ESCANEOS)):
+            if f == f'{oid}.stl' or (f.startswith(f'{oid}-') and f.endswith('.stl')):
+                bpy.ops.wm.stl_import(filepath=os.path.join(CARPETA_ESCANEOS, f))
+    nuevos = [o for o in bpy.data.objects if o not in antes]
+    mallas = [o for o in nuevos if o.type == 'MESH']
+    bpy.ops.object.select_all(action='DESELECT')
+    for o in mallas:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = mallas[0]
+    bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+    for o in nuevos:
+        if o.type != 'MESH':
+            bpy.data.objects.remove(o)
+    if len(mallas) > 1:
+        bpy.ops.object.join()
+    ob = bpy.context.view_layer.objects.active
+    ob.name = f'escultura_{oid}'
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    caras = sum(len(p.vertices) - 2 for p in ob.data.polygons)
+    if caras > triangulos:
+        reducir = ob.modifiers.new('reducir', 'DECIMATE')
+        reducir.ratio = triangulos / caras
+        bpy.ops.object.modifier_apply(modifier=reducir.name)
+    malla = ob.data
+    for capa in list(malla.color_attributes):
+        malla.color_attributes.remove(capa)
+    v = np.empty(len(malla.vertices) * 3, np.float32)
+    malla.vertices.foreach_get('co', v)
+    return ob, v.reshape(-1, 3).astype(np.float64)
+
+
+def material_escultura(meta):
+    tecnica = meta['tecnica'].lower()
+    if meta.get('reproduccion') == 'vaciado':
+        return M['vaciado']
+    return M['bronce_escultura'] if 'bronce' in tecnica else M['marmol']
+
+
+def girar(v, grados, tumbar=0):
+    """Gira los vértices alrededor de z (`grados`) y, antes, alrededor de x (`tumbar`), para
+    corregir escaneos que no miran hacia -Y con z hacia arriba."""
+    if tumbar:
+        a = math.radians(tumbar)
+        y, z = v[:, 1].copy(), v[:, 2].copy()
+        v[:, 1], v[:, 2] = y * math.cos(a) - z * math.sin(a), y * math.sin(a) + z * math.cos(a)
+    if grados:
+        a = math.radians(grados)
+        x, y = v[:, 0].copy(), v[:, 1].copy()
+        v[:, 0], v[:, 1] = x * math.cos(a) - y * math.sin(a), x * math.sin(a) + y * math.cos(a)
+    return v
+
+
+def fijar_malla(ob, pos, mat):
+    malla = ob.data
+    malla.vertices.foreach_set('co', pos.astype(np.float32).ravel())
+    ob.matrix_world = Matrix.Identity(4)
+    malla.polygons.foreach_set('use_smooth', np.ones(len(malla.polygons), bool))
+    malla.update()
+    malla.materials.clear()
+    malla.materials.append(mat)
+    ob[comun.PROP_LIGHTMAP] = 'esculturas'
+
+
+def colocar_exenta(cfg, piezas):
+    """Escultura exenta sobre una peana de piedra en el centro de la sala, de cara a `mira`
+    (vector en planta). El escaneo, una vez corregido con `giro`/`tumbar`, mira hacia -Y."""
+    oid = cfg['escultura']
+    meta = OBRAS[oid]
+    alto = cfg.get('alto') or meta['medidas']['alto'] / 100
+    peana = cfg.get('peana', 0.6)
+    ob, v = cargar_escaneo(oid, cfg.get('triangulos', TRIANGULOS_EXENTA))
+    v = girar(v, cfg.get('giro', 0), cfg.get('tumbar', 0))
+    mira = Vector((*cfg.get('mira', (0, -1)), 0)).normalized()
+    v = girar(v, math.degrees(math.atan2(mira.y, mira.x)) + 90)
+    s = alto / (v[:, 2].max() - v[:, 2].min())
+    v = (v - [0, 0, v[:, 2].min()]) * s
+    v[:, :2] -= (v[:, :2].min(axis=0) + v[:, :2].max(axis=0)) / 2
+    cx, cy = cfg['x'], cfg['y']
+    pos = v + [cx, cy, peana]
+    fijar_malla(ob, pos, material_escultura(meta))
+
+    # Peana: zócalo, dado y losa, un poco mayores que la planta de la escultura
+    (x0, y0), (x1, y1) = v[:, :2].min(axis=0) + [cx, cy] - 0.12, v[:, :2].max(axis=0) + [cx, cy] + 0.12
+    piezas.caja_mundo((x0 - 0.04, y0 - 0.04, 0), (x1 + 0.04, y1 + 0.04, 0.08), M['piedra'])
+    piezas.caja_mundo((x0, y0, 0.08), (x1, y1, peana - 0.06), M['zocalo'])
+    piezas.caja_mundo((x0 - 0.03, y0 - 0.03, peana - 0.06), (x1 + 0.03, y1 + 0.03, peana), M['piedra'])
+    escena['obstaculos'].append([round(x0 - 0.25, 3), round(-(y1 + 0.25), 3), round(x1 + 0.25, 3), round(-(y0 - 0.25), 3)])
+
+    # Cartela en la cara delantera de la peana
+    medio = abs((y1 - y0) * mira.y) / 2 + abs((x1 - x0) * mira.x) / 2  # media profundidad según `mira`
+    frente_peana = Vector((cx, cy, 0)) + mira * (medio + 0.001)
+    derecha = Vector((-mira.y, mira.x, 0))
+    indice = len(escena['cartelas'])
+    escena['cartelas'][oid] = indice
+    cartela(piezas, Marco(frente_peana, derecha, mira), 0, max(0.3, peana - 0.22), indice)
+
+    prof = float(np.abs(v[:, :2] @ np.array([mira.x, mira.y])).max())
+    ancho = float(np.abs(v[:, :2] @ np.array([derecha.x, derecha.y])).max()) * 2
+    escena['obras'].append({
+        'id': oid,
+        'tipo': 'escultura',
+        'centro': comun.a_three(Vector((cx, cy, peana + alto / 2)) + mira * prof),
+        'normal': comun.a_three(mira),
+        'ancho': round(ancho + 0.3, 3),
+        'alto': round(alto + peana + 0.1, 3),
+        'marco': None,
+        'exenta': True,
+    })
+    focos_exenta(Vector((cx, cy, peana + alto * 0.65)), mira)
+
+
+def focos_exenta(objetivo, mira):
+    """Luz principal desde el carril que queda delante y a un lado; relleno desde el otro."""
+    c = L['carriles']
+    z = c['z'] - 0.14
+    frente = objetivo + mira * 2.4
+    lado = 1 if mira.x >= 0 else -1
+    for s, ang, intens in ((lado, 20, 1.6), (-lado, 26, 0.45)):
+        y = min(max(frente.y, c['y0'] + 0.3), c['y1'] - 0.3)
+        anadir_foco((s * c['x'], y, z), objetivo, ang, intens)
+
+
+def colgar_relieve(cfg, piezas):
+    """Vaciado de un relieve (escaneo) colgado en una pared, como un cuadro sin marco. El
+    escaneo, corregido con `giro`/`tumbar`, debe mirar hacia -Y con la parte de arriba en +z."""
+    oid = cfg['id']
+    meta = OBRAS[oid]
+    alto = cfg['expuesto']['alto']
+    mk = PAREDES[cfg['pared']](posicion(cfg))
+    ob, v = cargar_escaneo(oid, cfg.get('triangulos', TRIANGULOS_EXENTA))
+    v = girar(v, cfg.get('giro', 0), cfg.get('tumbar', 0))
+    s = alto / (v[:, 2].max() - v[:, 2].min())
+    v = v * s
+    v -= [(v[:, 0].min() + v[:, 0].max()) / 2, v[:, 1].max(), v[:, 2].min()]  # el dorso en d = 0
+    ancho = float(v[:, 0].max() - v[:, 0].min())
+    z_base = cfg.get('z', 1.0)
+    pos = (np.outer(v[:, 0], mk.u) + np.outer(-v[:, 1] + 0.02, mk.d) + np.outer(v[:, 2] + z_base, mk.z) + np.array(mk.o))
+    fijar_malla(ob, pos, material_escultura(meta))
+    zc = z_base + alto / 2
+    indice = len(escena['cartelas'])
+    escena['cartelas'][oid] = indice
+    cartela(piezas, mk, ancho / 2 + 0.42, 1.42, indice)
+    escena['obras'].append({
+        'id': oid,
+        'tipo': 'relieve',
+        'centro': comun.a_three(mk.p(0, float(-v[:, 1].min()) + 0.02, zc)),
+        'normal': comun.a_three(mk.d),
+        'ancho': round(ancho, 3),
+        'alto': round(alto, 3),
+        'marco': None,
+    })
+    focos_obra(mk, cfg, ancho, zc)
+
+
+PANEL = (1.3, 1.8)  # ancho y alto del panel con el texto de la sala
+
+
+def panel_sala(cfg):
+    """Panel junto a la entrada con el título, la pregunta y el texto de la sala. La web dibuja
+    el texto (data/salas.json); aquí solo va la placa, que recibe la luz horneada."""
+    mk = PAREDES[cfg['pared']](posicion(cfg))
+    w, h = PANEL
+    zc = cfg.get('z', 1.85)
+    c = Constructor([M['panel']])
+    c.caja_local(mk, -w / 2, w / 2, 0, 0.02, zc - h / 2, zc + h / 2, M['panel'])
+    frente = Constructor([M['panel']])
+    frente.cara([mk.p(-w / 2, 0.0205, zc - h / 2), mk.p(w / 2, 0.0205, zc - h / 2),
+                 mk.p(w / 2, 0.0205, zc + h / 2), mk.p(-w / 2, 0.0205, zc + h / 2)],
+                M['panel'], uvs=[(0, 0), (1, 0), (1, 1), (0, 1)], hacia=mk.d)
+    c.objeto('panel_canto', lightmap='piezas')
+    frente.objeto('panel', lightmap='piezas')
+    escena['panel'] = {'centro': comun.a_three(mk.p(0, 0.021, zc)), 'normal': comun.a_three(mk.d), 'ancho': w, 'alto': h}
+    escena['obras'].append({'id': f'sala-{comun.SALA}', 'tipo': 'panel', 'centro': escena['panel']['centro'],
+                            'normal': escena['panel']['normal'], 'ancho': w + 0.2, 'alto': h + 0.2, 'marco': None})
+    focos_obra(mk, {'pared': cfg['pared']}, w, zc)
 
 
 def colocar_escultura(mk, uc, h, piezas):
@@ -474,7 +695,7 @@ def lunetos(c):
         c.cara(tri, M['yeso'], hacia=mk.d)
     # Fondo: ventana termal con dos parteluces
     mk = PAREDES['fondo'](0)
-    rv, marco, prof = 2.5, 0.16, 0.3
+    rv, marco, prof = RV_TERMAL, 0.16, 0.3
     for k in range(n):
         a0, a1 = math.pi * k / n, math.pi * (k + 1) / n
 
@@ -495,7 +716,7 @@ def lunetos(c):
 
 def vidrio_termal(c):
     mk = PAREDES['fondo'](0)
-    rv, prof = 2.5, 0.3
+    rv, prof = RV_TERMAL, 0.3
     n = 32
     for k in range(n):
         a0, a1 = math.pi * k / n, math.pi * (k + 1) / n
@@ -504,51 +725,69 @@ def vidrio_termal(c):
 
 
 def muros(piezas):
-    c = constructor('yeso', 'zocalo', 'piedra', 'pompeyano')
-    hornacinas = {}
-    for h in L['hornacinas']:
-        hornacinas.setdefault(h['pared'], []).append(h)
-
-    for lado in ('izquierda', 'derecha'):
-        mk = PAREDES[lado](0)
-        signo = 1 if lado == 'izquierda' else -1  # u = y en la izquierda, u = -y en la derecha
-        huecos = []
-        for h in hornacinas.get(lado, []):
-            hk = hornacina(c, mk, signo * h['y'], h, piezas)
+    mats = ['yeso', 'zocalo', 'piedra', 'pompeyano'] + ([] if M['pared'] is M['yeso'] else [M['pared']])
+    c = constructor(*mats)
+    for pared in ('izquierda', 'derecha', 'puertas', 'fondo'):
+        mk = PAREDES[pared](0)
+        s = SIGNO_U[pared]
+        lateral = pared in ('izquierda', 'derecha')
+        u0, u1 = sorted((0, s * LARGO)) if lateral else (-X, X)
+        huecos, vanos = [], []
+        for h in L['hornacinas']:
+            if h['pared'] != pared:
+                continue
+            uc = s * posicion(h)
+            hk = hornacina(c, mk, uc, h, piezas)
             huecos.append(hk)
-            escena['obstaculos'].append(rect_plano(mk, signo * h['y'] - 0.4, signo * h['y'] + 0.4, -0.5, max(0.05, hk['frente'] + 0.05)))
-        u0, u1 = sorted((0, signo * LARGO))
-        pared_con_huecos(c, mk, u0, u1, Z_ZOC, Z_ENT, huecos, M['yeso'])
-        zocalo(c, mk, u0, u1)
-        for y in PIL['y']:
-            pilastra(c, PAREDES[lado](y))
-            escena['obstaculos'].append(rect_plano(PAREDES[lado](y), -0.47, 0.47, 0, 0.3))
-
-    # Pared de las puertas
-    mk = PAREDES['puertas'](0)
-    pa, pz = L['puertas']['ancho'] / 2, L['puertas']['alto']
-    pared_con_huecos(c, mk, -X, X, Z_ZOC, Z_ENT, [{'u0': -pa, 'u1': pa, 'z0': 0, 'z1': pz}], M['yeso'])
-    pared_con_huecos(c, mk, -X, X, 0, Z_ZOC, [{'u0': -pa, 'u1': pa, 'z0': 0, 'z1': pz}], M['yeso'])
-    zocalo(c, mk, -X, X, huecos=[(-pa - 0.3, pa + 0.3)])
-    puertas(c, mk, pa, pz)
-
-    # Pared del fondo
-    mk = PAREDES['fondo'](0)
-    pared_con_huecos(c, mk, -X, X, Z_ZOC, Z_ENT, [], M['yeso'])
-    zocalo(c, mk, -X, X)
+            escena['obstaculos'].append(rect_plano(mk, uc - 0.4, uc + 0.4, -0.5, max(0.05, hk['frente'] + 0.05)))
+        for v in VANOS:
+            if v['pared'] != pared:
+                continue
+            uc, pa = s * posicion(v), v['ancho'] / 2
+            huecos.append({'u0': uc - pa, 'u1': uc + pa, 'z0': 0, 'z1': v['alto']})
+            vanos.append((uc, pa, v))
+        pared_con_huecos(c, mk, u0, u1, Z_ZOC, Z_ENT, huecos, M['pared'])
+        if vanos:
+            pared_con_huecos(c, mk, u0, u1, 0, Z_ZOC, [h for h in huecos if h['z0'] == 0], M['pared'])
+        zocalo(c, mk, u0, u1, huecos=[(uc - pa - 0.3, uc + pa + 0.3) for uc, pa, _ in vanos])
+        for uc, pa, v in vanos:
+            puertas(c, Marco(mk.p(uc, 0, 0), mk.u, mk.d), pa, v['alto'], v)
+        if lateral:
+            for y in PIL['y']:
+                pilastra(c, PAREDES[pared](y))
+                escena['obstaculos'].append(rect_plano(PAREDES[pared](y), -0.47, 0.47, 0, 0.3))
     entablamento(c)
     lunetos(c)
     return c.objeto('muros', lightmap='muros')
 
 
-def puertas(c, mk, pa, pz):
-    """Jambas, dintel y frontón de las puertas (piedra); las hojas de bronce van aparte."""
-    prof = 0.35
-    # mochetas del vano
+def puertas(c, mk, pa, pz, vano):
+    """Jambas, dintel y frontón de una puerta (piedra); las hojas de bronce van aparte.
+    Las de la calle quedan en el grosor del muro. Las que llevan a otra sala abren un pasillo
+    corto en penumbra, al fondo del cual están las hojas cerradas: al entrar en él se pasa
+    a la otra sala."""
+    prof = 0.35 if vano.get('tipo') == 'calle' else FONDO_PASILLO
+    # mochetas del vano (o paredes del pasillo), techo y suelo
     c.cara([mk.p(-pa, 0, 0), mk.p(-pa, -prof, 0), mk.p(-pa, -prof, pz), mk.p(-pa, 0, pz)], M['yeso'], hacia=mk.u)
     c.cara([mk.p(pa, 0, 0), mk.p(pa, -prof, 0), mk.p(pa, -prof, pz), mk.p(pa, 0, pz)], M['yeso'], hacia=-mk.u)
     c.cara([mk.p(-pa, 0, pz), mk.p(pa, 0, pz), mk.p(pa, -prof, pz), mk.p(-pa, -prof, pz)], M['yeso'], hacia=-mk.z)
     c.cara([mk.p(-pa, 0, 0), mk.p(pa, 0, 0), mk.p(pa, -prof, 0), mk.p(-pa, -prof, 0)], M['piedra'], hacia=mk.z)
+    if vano.get('tipo') != 'calle':
+        c.caja_local(mk, -pa, pa, -prof, -prof + 0.002, 0, pz, M['yeso'])  # lo que queda tras las hojas
+        hojas.append((mk, pa, pz, -prof + 0.004))
+        destino = vano.get('destino')
+        if destino:
+            escena['pasos'].append({
+                'destino': destino,
+                # Se adentra 0,8 m en la sala para que, al restarle el radio del visitante, se toque con la nave
+                'zona': rect_plano(mk, -pa + 0.1, pa - 0.1, -prof + 0.15, 0.8),
+                'disparo': rect_plano(mk, -pa, pa, -prof, -0.8),
+                'llegada': {'posicion': comun.a_three(mk.p(0, 1.3, 1.65)), 'yaw': yaw_hacia(mk.d)},
+            })
+            if vano.get('rotulo'):
+                rotulo_destino(mk, pa, pz, destino)
+    else:
+        hojas.append((mk, pa, pz, -0.35))
     # marco (jambas + dintel) y cornisa
     w = 0.26
     c.caja_local(mk, -pa - w, -pa, 0, 0.07, 0, pz + w, M['piedra'])
@@ -558,19 +797,37 @@ def puertas(c, mk, pa, pz):
     c.caja_local(mk, -pa - w - 0.15, pa + w + 0.15, 0, 0.24, pz + w + 0.28, pz + w + 0.4, M['piedra'])
 
 
+hojas = []  # (marco del vano, medio ancho, alto, d de la cara trasera) de cada par de hojas
+
+
 def hojas_puerta():
-    mk = PAREDES['puertas'](0)
-    pa, pz = L['puertas']['ancho'] / 2, L['puertas']['alto']
     c = constructor('bronce', 'laton')
-    d0 = -0.35
-    for s in (-1, 1):
-        a, b = (-pa, -0.005) if s < 0 else (0.005, pa)
-        c.caja_local(mk, a, b, d0, d0 + 0.06, 0, pz, M['bronce'])
-        # cuarterones en relieve
-        for z0, z1 in ((0.35, 1.7), (1.95, 3.85)):
-            c.caja_local(mk, a + 0.16, b - 0.16, d0 + 0.06, d0 + 0.09, z0, z1, M['bronce'])
-        c.caja_local(mk, (b - 0.12) if s < 0 else (a + 0.06), (b - 0.06) if s < 0 else (a + 0.12), d0 + 0.06, d0 + 0.12, 1.75, 1.95, M['laton'])
+    for mk, pa, pz, d0 in hojas:
+        kz = pz / 4.2
+        for s in (-1, 1):
+            a, b = (-pa, -0.005) if s < 0 else (0.005, pa)
+            c.caja_local(mk, a, b, d0, d0 + 0.06, 0, pz, M['bronce'])
+            # cuarterones en relieve
+            for z0, z1 in ((0.35, 1.7), (1.95, 3.85)):
+                c.caja_local(mk, a + 0.16, b - 0.16, d0 + 0.06, d0 + 0.09, z0 * kz, z1 * kz, M['bronce'])
+            c.caja_local(mk, (b - 0.12) if s < 0 else (a + 0.06), (b - 0.06) if s < 0 else (a + 0.12), d0 + 0.06, d0 + 0.12, 1.75, 1.95, M['laton'])
     return c.objeto('puertas')
+
+
+ROMANOS = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
+
+
+def yaw_hacia(d):
+    """Giro de la cámara de la web (0 = mirar hacia el fondo de la sala) para mirar en la dirección d."""
+    return round(math.atan2(-d.x, d.y), 4)
+
+
+def rotulo_destino(mk, pa, pz, destino):
+    """Nombre de la sala a la que lleva la puerta, en letras doradas sobre la cornisa."""
+    s = SALAS[destino]
+    cadena = (f"SALA {ROMANOS[s['numero']]} · {s['titulo']}" if s['numero'] else s['titulo']).upper()
+    tamano = min(0.22, (2 * pa + 2.6) / (0.62 * len(cadena)))
+    texto(cadena, mk.p(0, 0.02, pz + 0.66 + 0.22 + tamano * 0.4), mk, tamano, M['oro'], 'letras')
 
 
 def rect_plano(mk, u0, u1, d0, d1):
@@ -781,9 +1038,13 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
     alto = cfg.get('expuesto', {}).get('alto') or meta['medidas']['alto'] / 100
     ancho = alto * aspecto
     dorado = cfg['marco'] == 'dorado'
-    mk = PAREDES[cfg['pared']](cfg['x'] if cfg['pared'] == 'fondo' else cfg['y'])
+    foto = cfg['marco'] == 'foto'  # fotografía de una escultura o un monumento: marco fino, sin paspartú
+    mk = PAREDES[cfg['pared']](posicion(cfg))
     if dorado:
         g = 0.1 + 0.03 * alto
+        exterior_w, exterior_h = ancho + 2 * g, alto + 2 * g
+    elif foto:
+        g = 0.025
         exterior_w, exterior_h = ancho + 2 * g, alto + 2 * g
     else:
         g, mat_l, mat_b = 0.03, 0.12, 0.15
@@ -791,11 +1052,11 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
         exterior_h = alto + mat_l + mat_b + 2 * g
     z_base = 1.2 if cfg.get('edicula') else 1.12
     zc_ext = max(1.58, z_base + exterior_h / 2)
-    zc = zc_ext if dorado else zc_ext + (mat_b - mat_l) / 2
+    zc = zc_ext if dorado or foto else zc_ext + (mat_b - mat_l) / 2
 
     # Lienzo (o lámina): UV completas, normal hacia la sala
     mat_lienzo = comun.material(f'lienzo_{oid}', imagen=img, rugosidad=0.55 if dorado else 0.85, especular=0.35)
-    d_lienzo = 0.035 if dorado else 0.008
+    d_lienzo = 0.035 if dorado else 0.02 if foto else 0.008
     extra = 0.006 if dorado else 0.0
     q = [mk.p(-ancho / 2 - extra, d_lienzo, zc - alto / 2 - extra), mk.p(ancho / 2 + extra, d_lienzo, zc - alto / 2 - extra),
          mk.p(ancho / 2 + extra, d_lienzo, zc + alto / 2 + extra), mk.p(-ancho / 2 - extra, d_lienzo, zc + alto / 2 + extra)]
@@ -809,6 +1070,8 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
         h = 0.07 + 0.012 * alto
         marco_perfil(marcos, mk, 0, zc, ancho, alto, PERFIL_ORO, g, h, M['oro_marco'])
         cuentas(oros, mk, 0, zc, ancho, alto, 0.12 * g, 0.8 * h + 0.004, 0.0075, M['oro'])
+    elif foto:
+        marco_perfil(piezas, mk, 0, zc, ancho, alto, [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0)], g, 0.03, M['negro'])
     else:
         # paspartú con bisel blanco y marco negro fino
         wl, wb = mat_l, mat_b
@@ -828,8 +1091,9 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
         zc_m = zc_ext
         marco_perfil(piezas, mk, uc0, zc_m, exterior_w - 2 * g, exterior_h - 2 * g, perfil_negro, g, hm, M['negro'])
 
-    # Cartela a la derecha de la obra
-    u_cartela = exterior_w / 2 + 0.42 if not cfg.get('edicula') else 2.75
+    # Cartela a la derecha de la obra (o a la izquierda, si la planta lo pide)
+    lado = -1 if cfg.get('cartela') == 'izquierda' else 1
+    u_cartela = lado * (exterior_w / 2 + 0.42) if not cfg.get('edicula') else 2.75
     indice = len(escena['cartelas'])
     escena['cartelas'][oid] = indice
     cartela(piezas, mk, u_cartela, 1.42, indice)
@@ -848,7 +1112,7 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
 
 
 CARTELA = (0.3, 0.19)
-ATLAS_CARTELAS = (4, 3)
+ATLAS_CARTELAS = (4, 4)
 
 
 def cartela(c, mk, uc, zc, indice):
@@ -943,10 +1207,10 @@ def potencia_para(angulo):
 
 def focos_obra(mk, cfg, ancho_ext, zc):
     x_carril, z_carril = L['carriles']['x'], L['carriles']['z']
-    if cfg['pared'] == 'fondo':
+    if cfg['pared'] in ('fondo', 'puertas'):
         objetivo_c = mk.p(0, 0, zc)
         for s in (-1, 1):
-            pos = Vector((s * x_carril, LARGO - 3.6, z_carril - 0.14))
+            pos = Vector((s * x_carril, LARGO - 3.6 if cfg['pared'] == 'fondo' else 3.6, z_carril - 0.14))
             obj = objetivo_c + mk.u * (s * ancho_ext * 0.22)
             anadir_foco(pos, obj, 44, 1.25)
         return
@@ -1050,15 +1314,22 @@ def luces_luna():
     bpy.context.scene.collection.objects.link(ob)
     ob.location = (0, LARGO + 0.2, Z_IMP + 1.0)
     ob.rotation_euler = (math.radians(-90), 0, 0)  # mira hacia -Y (al interior)
-    # Las puertas reciben un par de focos tenues
-    for s in (-1, 1):
-        anadir_foco((s * L['carriles']['x'], L['carriles']['y0'] + 0.3, L['carriles']['z'] - 0.14), (s * 0.8, 0, 2.6), 46, 0.3)
+    # Cada puerta recibe un par de focos tenues desde el carril más cercano (o desde el de
+    # enfrente, si está en una pared lateral)
+    c = L['carriles']
+    for mk, *_ in hojas:
+        for s in (-1, 1):
+            obj = mk.p(s * 0.8, 0, 2.6)
+            if abs(mk.d.y) > 0.5:
+                pos = (math.copysign(c['x'], obj.x), min(max(obj.y, c['y0'] + 0.3), c['y1'] - 0.3), c['z'] - 0.14)
+            else:
+                pos = (-math.copysign(c['x'], obj.x), obj.y, c['z'] - 0.14)
+            anadir_foco(pos, obj, 46, 0.3)
 
 
 # ------------------------------------------------------------------ mobiliario
 
-def banco(piezas):
-    b = L['banco']
+def banco(piezas, b):
     x, y, lx, ly, h = b['x'], b['y'], b['fondo'] / 2, b['largo'] / 2, b['alto']
     piezas.caja_mundo((x - lx, y - ly, h - 0.06), (x + lx, y + ly, h), M['madera'])
     for s in (-1, 1):
@@ -1097,8 +1368,9 @@ def catenaria(laton):
 
 
 def cartel_salida(emisivos, letras_obj):
-    mk = PAREDES['puertas'](0)
-    z = L['puertas']['alto'] + 0.26 + 0.4 + 0.3
+    calle = next(v for v in VANOS if v.get('tipo') == 'calle')
+    mk = PAREDES[calle['pared']](posicion(calle))
+    z = calle['alto'] + 0.26 + 0.4 + 0.3
     emisivos.caja_local(mk, -0.24, 0.24, 0, 0.04, z, z + 0.16, M['salida'])
     texto('SALIDA', mk.p(0, 0.041, z + 0.08), mk, 0.075, M['salida_texto'], letras_obj, extrusion=0.002, espaciado=1.05)
 
@@ -1135,7 +1407,7 @@ def camaras():
         ob.data.sensor_height = 24
         ob.data.lens = 12 / math.tan(math.radians(30))
         escena['camaras'][nombre] = {'posicion': comun.a_three(pos), 'mira': comun.a_three(cfg['mira']), 'fov': 60}
-    bpy.context.scene.camera = bpy.data.objects['cam_entrada']
+    bpy.context.scene.camera = bpy.data.objects.get('cam_entrada') or bpy.data.objects[f"cam_{next(iter(L['camaras']))}"]
 
 
 def main():
@@ -1156,16 +1428,27 @@ def main():
     muros_obj = muros(piezas)
     boveda()
     for cfg in L['obras']:
-        colgar_obra(cfg, lienzos, oros, piezas, marcos)
+        if OBRAS[cfg['id']].get('tipo') == 'relieve':
+            colgar_relieve(cfg, piezas)
+        else:
+            colgar_obra(cfg, lienzos, oros, piezas, marcos)
+    for cfg in L.get('exentas', []):
+        colocar_exenta(cfg, piezas)
+    if L.get('panel'):
+        panel_sala(L['panel'])
     letras = constructor('oro')
     edicula_c = constructor('piedra', 'yeso')
-    edicula(edicula_c, 'letras')
+    if any(cfg.get('edicula') for cfg in L['obras']):
+        edicula(edicula_c, 'letras')
     luces_luna()
     carriles(piezas)
     crear_focos(piezas, lentes)
-    banco(piezas)
-    catenaria(laton)
-    cartel_salida(emisivos, 'salida')
+    for b in L.get('bancos') or ([L['banco']] if 'banco' in L else []):
+        banco(piezas, b)
+    if 'catenaria' in L:
+        catenaria(laton)
+    if any(v.get('tipo') == 'calle' for v in VANOS):
+        cartel_salida(emisivos, 'salida')
     vidrio_termal(emisivos)
     for (a, b) in vidrios:
         emisivos.cara([(a[0], a[1], a[2]), (b[0], a[1], a[2]), (b[0], b[1], a[2]), (a[0], b[1], a[2])], M['luna'], hacia=(0, 0, -1))
@@ -1175,7 +1458,8 @@ def main():
         'letras': letras.objeto('letras'),
         'salida': emisivos.objeto('emisivos'),
     }
-    edicula_c.objeto('edicula', lightmap='muros')
+    if edicula_c.bm.faces:
+        edicula_c.objeto('edicula', lightmap='muros')
     oros.objeto('cuentas_doradas')
     marcos.objeto('marcos_dorados', lightmap='marcos')
     laton.objeto('laton')
@@ -1189,8 +1473,10 @@ def main():
         bpy.data.objects[nombre].visible_shadow = False
 
     camaras()
-    escena['inicio'] = {'posicion': comun.a_three((L['inicio']['x'], L['inicio']['y'], 1.65)), 'yaw': 0}
+    escena['inicio'] = {'posicion': comun.a_three((L['inicio']['x'], L['inicio']['y'], 1.65)), 'yaw': L['inicio'].get('yaw', 0)}
     escena['limites'] = {'xmin': -X, 'xmax': X, 'zmin': -LARGO, 'zmax': 0}
+    # Zonas por las que se puede andar: la nave y el pasillo de cada puerta a otra sala
+    escena['zonas'] = [[-X, -LARGO, X, 0]] + [p['zona'] for p in escena['pasos']]
     escena['cartelasAtlas'] = {'columnas': ATLAS_CARTELAS[0], 'filas': ATLAS_CARTELAS[1], 'aspecto': CARTELA[0] / CARTELA[1]}
     with open(comun.ruta_build('escena.json'), 'w', encoding='utf-8') as f:
         json.dump(escena, f, ensure_ascii=False, indent=1)

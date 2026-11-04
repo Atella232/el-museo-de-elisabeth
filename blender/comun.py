@@ -14,8 +14,11 @@ from mathutils import Vector
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATOS = os.path.join(RAIZ, 'data')
-BUILD = os.path.join(RAIZ, 'build')
 PUBLICO = os.path.join(RAIZ, 'web', 'public')
+# Cada sala se construye, se hornea y se exporta por separado (SALA=dioses sh blender/todo.sh).
+# Su planta está en data/plantas/<sala>.json y todo lo que genera va a build/salas/<sala>/.
+SALA = os.environ.get('SALA', 'dioses')
+BUILD = os.path.join(RAIZ, 'build', 'salas', SALA)
 
 # Grupos de lightmap: cada objeto lleva la propiedad "lightmap" con uno de estos nombres
 # (o ninguna si no se hornea, como los metales y las piezas emisivas).
@@ -25,6 +28,10 @@ PROP_LIGHTMAP = 'lightmap'
 def leer_json(nombre):
     with open(os.path.join(DATOS, nombre), encoding='utf-8') as f:
         return json.load(f)
+
+
+def planta():
+    return leer_json(os.path.join('plantas', f'{SALA}.json'))
 
 
 def opciones():

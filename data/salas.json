@@ -1,0 +1,112 @@
+{
+  "_nota": "Textos de Elisabeth tal cual (no se reescriben). «paso» es el texto que aparece al cruzar la puerta de salida; la última sala no tiene paso, sino la pregunta final. «pared» es el color del yeso de cada sala (provisional, se ajusta al verla).",
+
+  "recorrido": [
+    "El recorrido de las siete salas propone un viaje desde los mitos griegos hasta la historia de Roma. Primero conocemos a los dioses; después, a quienes se enfrentan a ellos, sufren sus decisiones o reciben su ayuda. La caída de Troya marca el paso hacia los relatos fundacionales de Roma y, finalmente, hacia las imágenes del poder romano."
+  ],
+
+  "salas": [
+    {
+      "id": "vestibulo",
+      "numero": 0,
+      "titulo": "Vestíbulo",
+      "pregunta": null,
+      "texto": [],
+      "paso": null,
+      "obras": ["ulises", "flaxman-sirenas", "eco", "flaxman-hector", "antinoo", "hera"],
+      "pared": "#c9b292"
+    },
+    {
+      "id": "dioses",
+      "numero": 1,
+      "titulo": "El poder de los dioses",
+      "pregunta": "¿Cómo gobiernan los dioses y qué sentimientos los mueven?",
+      "texto": [
+        "La visita comienza con el miedo de Saturno a perder el poder. A partir de ahí, las obras presentan un mundo divino atravesado por conflictos, deseos, rivalidades y celebraciones. Vulcano, Baco, Venus, las Gracias y Júpiter muestran distintas caras de ese universo.",
+        "La sala permite reconocer a las principales divinidades por sus atributos y comprender que los dioses clásicos tienen comportamientos y emociones cercanos a los humanos. El juicio de Paris introduce, además, una decisión cuyas consecuencias reaparecerán en la sala de Troya."
+      ],
+      "paso": "Los deseos de los dioses afectan a la vida de los seres humanos y provocan encuentros, persecuciones y transformaciones.",
+      "obras": ["saturno", "vulcano", "baco-caravaggio", "juicio", "venus", "gracias", "jupiter-tetis"],
+      "pared": "#c9b292"
+    },
+    {
+      "id": "deseo",
+      "numero": 2,
+      "titulo": "Deseo y metamorfosis",
+      "pregunta": "¿Quién decide lo que sucede en un encuentro entre un dios y un ser humano?",
+      "texto": [
+        "Las historias de Dánae, Dafne, Aracne, Ariadna, Europa y Atalanta permiten explorar distintas relaciones entre deseo, poder y capacidad de elección. La transformación puede servir como disfraz divino, como castigo o como salida ante una persecución.",
+        "El recorrido invita a observar los gestos, las distancias y las miradas: quién actúa, quién se resiste y qué momento ha elegido representar el artista. También permite descubrir que los personajes femeninos tienen historias y respuestas diferentes."
+      ],
+      "paso": "Algunas de estas historias dan origen a nuevos protagonistas. Dánae es la madre de Perseo, y Ariadna conecta con la aventura de Teseo.",
+      "obras": ["danae", "apolo-dafne", "hilanderas", "baco", "europa", "hipomenes-atalanta"],
+      "pared": "#5f6b4e"
+    },
+    {
+      "id": "heroes",
+      "numero": 3,
+      "titulo": "Héroes y límites humanos",
+      "pregunta": "¿Qué convierte a alguien en héroe y hasta dónde puede llegar?",
+      "texto": [
+        "Perseo, Teseo, Hércules y Aquiles presentan distintas formas de heroísmo. Sus relatos combinan fuerza, inteligencia, ayuda divina y colaboración. Frente a ellos, Ícaro introduce la fragilidad humana y las consecuencias de sobrepasar los límites.",
+        "Las obras permiten comparar la victoria con el fracaso y preguntarse qué lugar ocupan los monstruos y los enemigos en la construcción de un héroe. La escena de Aquiles añade otra cuestión: la tensión entre la identidad personal y el destino que otros esperan de él."
+      ],
+      "paso": "Hércules y Cerbero nos conducen hasta una frontera que incluso los héroes encuentran difícil de atravesar: la entrada al mundo de los muertos.",
+      "obras": ["perseo", "icaro", "hercules-cerbero", "teseo-minotauro", "hercules-hidra", "aquiles"],
+      "pared": "#8a5a3c"
+    },
+    {
+      "id": "inframundo",
+      "numero": 4,
+      "titulo": "Las puertas del inframundo",
+      "pregunta": "¿Es posible regresar del mundo de los muertos?",
+      "texto": [
+        "Proserpina, Caronte, Orfeo, Eurídice y Psique acompañan al visitante por distintas formas de imaginar el más allá. El recorrido comienza con el descenso, continúa con el paso de las almas y termina con los intentos de regreso.",
+        "Aquí se comparan las creencias antiguas con sus reinterpretaciones posteriores. El sarcófago de Proserpina permite observar el uso funerario de un mito en época romana; Patinir muestra cómo elementos clásicos se incorporan a una visión cristiana del más allá. Las dos versiones de Orfeo y Eurídice permiten reconstruir distintos momentos de una misma historia."
+      ],
+      "paso": "De la pérdida individual pasamos a una pérdida colectiva: la destrucción de Troya y la búsqueda de un nuevo hogar.",
+      "obras": ["proserpina", "caronte", "orfeo-rubens", "estigia", "psique", "orfeo-poussin", "sarcofago-proserpina"],
+      "pared": "#33394a"
+    },
+    {
+      "id": "troya",
+      "numero": 5,
+      "titulo": "Troya: destrucción, exilio y destino",
+      "pregunta": "¿Qué conservamos cuando debemos abandonar nuestro hogar?",
+      "texto": [
+        "Esta sala sigue una secuencia narrativa. Laocoonte anuncia la tragedia de Troya; las obras de Bernini y Barocci muestran la huida de Eneas con su familia; Delos representa una etapa del viaje. Después, Cartago ofrece una posibilidad de acogida y una nueva relación con Dido.",
+        "El recorrido presenta a Dido como fundadora y gobernante antes de mostrar su encuentro con Eneas y su muerte. Así, el alumnado puede comprender el conflicto desde distintas perspectivas y reflexionar sobre el exilio, el cuidado familiar, la hospitalidad y el coste personal del deber."
+      ],
+      "paso": "El viaje de Eneas conduce hacia Italia y hacia la tradición mítica de la que surgirán, generaciones después, Rómulo y Remo.",
+      "obras": ["laocoonte", "eneas-bernini", "eneas-barocci", "eneas-delos", "dido-cartago", "dido-eneas", "dido-muerte"],
+      "pared": "#9a7b4f"
+    },
+    {
+      "id": "roma-nace",
+      "numero": 6,
+      "titulo": "Roma nace: mito y conflicto",
+      "pregunta": "¿Qué historias cuenta una ciudad para explicar sus orígenes?",
+      "texto": [
+        "La loba y los gemelos abren el relato fundacional de Roma. A continuación, las obras sobre las sabinas forman una secuencia: el rapto, el enfrentamiento y la intervención de las mujeres para detener la lucha.",
+        "El juramento de los Horacios amplía el recorrido hacia los conflictos de la Roma monárquica y plantea la tensión entre los vínculos familiares y las obligaciones hacia la ciudad. La sala invita a distinguir entre tradición legendaria, información histórica y aportaciones de los artistas."
+      ],
+      "paso": "Los relatos de los orígenes establecen valores e identidades que los gobernantes posteriores utilizarán para justificar su autoridad.",
+      "obras": ["loba", "romulo-remo", "sabinas-poussin", "hersilia", "sabinas-david", "horacios"],
+      "pared": "#7a2c22"
+    },
+    {
+      "id": "roma-poder",
+      "numero": 7,
+      "titulo": "Roma: la lucha por el poder",
+      "pregunta": "¿Cómo construyen las imágenes la autoridad de un gobernante?",
+      "texto": [
+        "La muerte de César abre la sala con la violencia política de los últimos años de la República. Augusto introduce la consolidación del poder imperial: su estatua y el Ara Pacis presentan una imagen de autoridad, continuidad religiosa y paz.",
+        "Los relieves del arco de Tito y de la columna de Trajano muestran cómo las conquistas se convierten en relatos públicos de victoria. La estatua ecuestre de Marco Aurelio permite cerrar el recorrido comparando distintas formas de representar al emperador."
+      ],
+      "paso": null,
+      "final": "La pregunta final devuelve la mirada al visitante: ¿quién encarga estas imágenes, qué quiere que recordemos y qué voces quedan fuera de ellas?",
+      "obras": ["cesar", "augusto", "ara-pacis", "trajano", "marco-aurelio", "arco-tito"],
+      "pared": "#6b5a5e"
+    }
+  ]
+}

@@ -1,12 +1,22 @@
 [
   {
     "id": "ulises",
-    "vivo": { "caja": [0.0636, -0.00065, 0.87281, 1.00255] },
+    "vivo": {
+      "caja": [
+        0.0636,
+        -0.00065,
+        0.87281,
+        1.00255
+      ]
+    },
     "titulo": "Ulises y las sirenas",
     "autor": "John William Waterhouse",
     "fecha": "1891",
     "tecnica": "Óleo sobre lienzo",
-    "medidas": { "alto": 100.6, "ancho": 202.0 },
+    "medidas": {
+      "alto": 100.6,
+      "ancho": 202.0
+    },
     "museo": "National Gallery of Victoria, Melbourne",
     "commons": "File:John William Waterhouse - Ulysses and the Sirens - Google Art Project.jpg",
     "mito": "En el canto XII de la Odisea, la hechicera Circe advierte a Ulises: quien escucha el canto de las sirenas olvida el regreso a casa. Ulises tapa con cera los oídos de sus remeros y se hace atar al mástil para poder oírlas sin perderse.",
@@ -15,7 +25,14 @@
   },
   {
     "id": "flaxman-sirenas",
-    "vivo": { "caja": [-0.08794, 0.07724, 1.17525, 0.84552] },
+    "vivo": {
+      "caja": [
+        -0.08794,
+        0.07724,
+        1.17525,
+        0.84552
+      ]
+    },
     "titulo": "Las sirenas",
     "autor": "John Flaxman",
     "fecha": "Composición de 1793",
@@ -28,27 +45,23 @@
     "youtubeId": null
   },
   {
-    "id": "baco",
-    "vivo": { "caja": [0.04779, 0.00025, 0.90505, 0.99951] },
-    "titulo": "Baco y Ariadna",
-    "autor": "Tiziano",
-    "fecha": "1520–1523",
-    "tecnica": "Óleo sobre lienzo",
-    "medidas": { "alto": 176.5, "ancho": 191.0 },
-    "museo": "National Gallery, Londres",
-    "commons": "File:Titian - Bacchus and Ariadne - Google Art Project.jpg",
-    "mito": "Ariadna ayudó a Teseo a salir del laberinto del Minotauro, pero él la abandonó dormida en la isla de Naxos. Al despertar, mientras ve alejarse su barco, llega Baco con su cortejo, se enamora de ella al instante y le promete convertir su corona en estrellas.",
-    "texto": "Tiziano lo pintó para el gabinete privado de Alfonso d'Este, duque de Ferrara. Baco salta de su carro, tirado por dos guepardos, en el instante en que ve a Ariadna; detrás le sigue un cortejo ruidoso de sátiros y ménades. Arriba a la izquierda brilla la corona de Ariadna ya convertida en constelación, y el cielo está pintado con azul ultramar, el pigmento más caro de su tiempo.",
-    "youtubeId": null
-  },
-  {
     "id": "eco",
-    "vivo": { "caja": [0.00856, 0.00586, 0.98288, 0.98703] },
+    "vivo": {
+      "caja": [
+        0.00856,
+        0.00586,
+        0.98288,
+        0.98703
+      ]
+    },
     "titulo": "Eco y Narciso",
     "autor": "John William Waterhouse",
     "fecha": "1903",
     "tecnica": "Óleo sobre lienzo",
-    "medidas": { "alto": 109.2, "ancho": 189.2 },
+    "medidas": {
+      "alto": 109.2,
+      "ancho": 189.2
+    },
     "museo": "Walker Art Gallery, Liverpool",
     "commons": "File:John William Waterhouse - Echo and Narcissus - Google Art Project.jpg",
     "mito": "La ninfa Eco, castigada por Juno, solo puede repetir las últimas palabras que oye. Se enamora del bello Narciso, que la rechaza; ella se consume hasta quedar reducida a su voz. Narciso, castigado a su vez, se enamora de su propio reflejo en un estanque y muere contemplándolo. En su lugar nace una flor: el narciso.",
@@ -57,47 +70,27 @@
   },
   {
     "id": "flaxman-hector",
-    "vivo": { "caja": [-0.27575, -0.11316, 1.55048, 1.2257] },
+    "vivo": {
+      "caja": [
+        -0.27575,
+        -0.11316,
+        1.55048,
+        1.2257
+      ]
+    },
     "titulo": "Héctor reprende a Paris",
     "autor": "John Flaxman",
     "fecha": "Dibujo de 1793, grabado en 1795",
     "tecnica": "Grabado a línea de Tommaso Piroli",
-    "medidas": { "alto": 18.2, "ancho": 25.2 },
+    "medidas": {
+      "alto": 18.2,
+      "ancho": 25.2
+    },
     "museo": "Ilustraciones para la Ilíada de Homero",
     "commons": "File:(10) Flaxman Ilias 1795, Zeichnung 1793, 182 x 252 mm.jpg",
     "mito": "En el canto VI de la Ilíada, mientras los troyanos mueren defendiendo la ciudad, Héctor encuentra a su hermano Paris en casa, junto a Helena, ocupado en pulir sus armas. Le reprocha que se esconda de una guerra que él mismo provocó.",
-    "texto": "Es la consecuencia del cuadro que tiene enfrente: el premio que Venus prometió a Paris fue Helena, y por ella estalló la guerra de Troya. Flaxman resume la escena en tres figuras de línea pura: Helena sentada, Paris de pie y Héctor con su lanza.",
+    "texto": "Es la consecuencia de El juicio de Paris, que cuelga en la sala siguiente: el premio que Venus prometió a Paris fue Helena, y por ella estalló la guerra de Troya. Flaxman resume la escena en tres figuras de línea pura: Helena sentada, Paris de pie y Héctor con su lanza.",
     "youtubeId": null
-  },
-  {
-    "id": "juicio",
-    "vivo": { "caja": [0.0445, -0.00352, 0.91099, 1.00705] },
-    "diorama": true,
-    "titulo": "El juicio de Paris",
-    "autor": "Pedro Pablo Rubens",
-    "fecha": "1638–1639",
-    "tecnica": "Óleo sobre lienzo",
-    "medidas": { "alto": 199.0, "ancho": 381.0 },
-    "museo": "Museo Nacional del Prado, Madrid",
-    "commons": "File:Peter Paul Rubens 115.jpg",
-    "mito": "En la boda de Peleo y Tetis, la Discordia arroja una manzana de oro «para la más bella». Juno, Minerva y Venus se la disputan, y Júpiter encarga al pastor troyano Paris que decida. Juno le ofrece poder, Minerva sabiduría y victoria, y Venus el amor de la mujer más hermosa del mundo, Helena. Paris elige a Venus, y su elección desencadena la guerra de Troya.",
-    "texto": "Es una de las últimas obras de Rubens, pintada para Felipe IV. Mercurio, de pie, sostiene en alto la manzana mientras Paris, sentado y con la mano en la barbilla, duda; las tres diosas se muestran a su juicio, con las armas de Minerva en el suelo y Cupido junto a Venus, mientras un amorcillo desciende para coronar a la vencedora. Según una carta del cardenal-infante don Fernando, la Venus del centro se parecía mucho a Helena Fourment, la esposa del pintor.",
-    "youtubeId": "iTShc11E_Nc"
-  },
-  {
-    "id": "venus",
-    "vivo": { "caja": [-0.21952, -0.11203, 1.43904, 1.22407] },
-    "diorama": true,
-    "titulo": "El nacimiento de Venus",
-    "autor": "Sandro Botticelli",
-    "fecha": "c. 1484–1486",
-    "tecnica": "Temple sobre lienzo",
-    "medidas": { "alto": 172.5, "ancho": 278.9 },
-    "museo": "Galería de los Uffizi, Florencia",
-    "commons": "File:Sandro Botticelli - La nascita di Venere - Google Art Project - edited.jpg",
-    "mito": "Según la Teogonía de Hesíodo, Venus nació de la espuma del mar ya adulta. Aquí llega a la orilla sobre una concha, empujada por el soplo de Céfiro, el viento del oeste, abrazado a una ninfa. En la orilla la espera una de las Horas, diosa de las estaciones, con un manto bordado de flores para cubrirla.",
-    "texto": "Botticelli lo pintó en Florencia, en el círculo de los Médici, y Giorgio Vasari lo vio en el siglo XVI en la villa medicea de Castello. Fue uno de los primeros desnudos femeninos de gran tamaño desde la Antigüedad. Las rosas que caen alrededor de la diosa recuerdan la leyenda de que nacieron con ella.",
-    "youtubeId": "P-w8XyF7fI4"
   },
   {
     "id": "antinoo",
@@ -106,11 +99,14 @@
     "autor": "Escultor romano anónimo",
     "fecha": "Siglo II d. C. (original)",
     "tecnica": "Vaciado en yeso, siglo XIX",
-    "medidas": { "alto": 97, "ancho": null },
+    "medidas": {
+      "alto": 97,
+      "ancho": null
+    },
     "museo": "Colección Real de Vaciados, SMK, Copenhague",
     "commons": "File:Ubekendt, Buste fra statue af Antinoos som Dionysos, med efeukrans med druer, , KAS1513, Statens Museum for Kunst, 3D model.stl",
     "mito": "Antínoo era un joven griego de Bitinia, el favorito del emperador Adriano. En el año 130 se ahogó en el Nilo, y Adriano, desolado, lo convirtió en dios: fundó una ciudad con su nombre y llenó el imperio de estatuas suyas, a menudo con los rasgos de Dioniso. Dioniso, el Baco de los romanos, es el dios del vino y del éxtasis; en la isla de Naxos encontró a Ariadna, abandonada por Teseo, y la hizo su esposa.",
-    "texto": "Este busto reproduce en yeso la parte superior de una estatua de Antínoo. La corona de hiedra con racimos de uvas lo identifica con Dioniso, y la cabeza inclinada y la mirada baja son las de casi todos sus retratos, que mezclan belleza y melancolía. Parte del pelo y de la corona no son antiguos, sino restauraciones posteriores. El Statens Museum for Kunst de Copenhague escaneó en 3D el vaciado y liberó el modelo. Enfrente cuelga el Baco de Tiziano: el mismo dios, pintado unos mil cuatrocientos años después.",
+    "texto": "Este busto reproduce en yeso la parte superior de una estatua de Antínoo. La corona de hiedra con racimos de uvas lo identifica con Dioniso, y la cabeza inclinada y la mirada baja son las de casi todos sus retratos, que mezclan belleza y melancolía. Parte del pelo y de la corona no son antiguos, sino restauraciones posteriores. El Statens Museum for Kunst de Copenhague escaneó en 3D el vaciado y liberó el modelo. En la Sala II cuelga el Baco y Ariadna de Tiziano: el mismo dios, pintado unos mil cuatrocientos años después.",
     "youtubeId": null
   },
   {
@@ -125,6 +121,800 @@
     "commons": "File:Ubekendt, Hoved fra statuen Hera Barberini, , KAS622, Statens Museum for Kunst, 3D model.stl",
     "mito": "Hera, la Juno de los romanos, reina de los dioses y esposa de Zeus, castigó a la ninfa Eco: Eco la entretenía con largas charlas mientras las amantes de Zeus escapaban. Desde entonces solo pudo repetir las últimas palabras que oía, y por eso nunca pudo declarar su amor a Narciso. Hera es también una de las tres diosas del juicio de Paris.",
     "texto": "La estatua de la que procede esta cabeza, la llamada Hera Barberini, se encontró en Roma, en la colina del Viminal, y hoy está en el Museo Pío-Clementino del Vaticano. Es una copia romana de una estatua griega del siglo V a. C. El vaciado pertenece a la Colección Real de Vaciados de Copenhague, que lo escaneó en 3D y liberó el modelo. Desde su hornacina mira hacia Eco, la ninfa a la que condenó a repetir.",
+    "youtubeId": null
+  },
+  {
+    "id": "saturno",
+    "titulo": "Saturno devorando a su hijo",
+    "autor": "Francisco de Goya",
+    "fecha": "1820–1823",
+    "tecnica": "Óleo sobre revoco trasladado a lienzo",
+    "medidas": {
+      "alto": 143.5,
+      "ancho": 81.4
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Francisco de Goya, Saturno devorando a su hijo (1819-1823).jpg",
+    "mito": "Saturno, el Crono de los griegos, gobernaba el mundo después de haber derrocado a su padre, Urano. Un oráculo le anunció que uno de sus hijos le quitaría el poder, y para evitarlo los fue devorando a medida que nacían. Su esposa Rea salvó al menor, Júpiter, dándole a tragar una piedra envuelta en pañales. Júpiter creció a escondidas y cumplió la profecía.",
+    "texto": "Goya lo pintó directamente sobre la pared del comedor de su casa, la Quinta del Sordo, a las afueras de Madrid. Forma parte de las llamadas Pinturas negras, que nunca pensó enseñar en público; después de su muerte se arrancaron de los muros, se pasaron a lienzo y acabaron en el Prado. Saturno es aquí un gigante enloquecido que muerde un cuerpo ya sin cabeza: el miedo a perder el poder convertido en monstruo.",
+    "youtubeId": null
+  },
+  {
+    "id": "vulcano",
+    "titulo": "La fragua de Vulcano",
+    "autor": "Diego Velázquez",
+    "fecha": "1630",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 223,
+      "ancho": 290
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Velázquez - La Fragua de Vulcano (Museo del Prado, 1630).jpg",
+    "mito": "Vulcano, dios del fuego y herrero de los dioses, estaba casado con Venus. Apolo, el dios del sol, que todo lo ve, descubre que Venus lo engaña con Marte, el dios de la guerra, y baja a la fragua para contárselo. Según Ovidio, Vulcano forjó después una red invisible con la que atrapó a los amantes y los expuso a la burla de todos los dioses.",
+    "texto": "Velázquez lo pintó en Roma, durante su primer viaje a Italia. Elige el instante exacto de la noticia: Apolo, coronado de laurel y rodeado de luz, habla, y Vulcano y sus ayudantes se quedan inmóviles, con la boca abierta. Los dioses parecen trabajadores de un taller cualquiera, y la armadura a medio forjar, las herramientas y la jarra de la chimenea están pintadas con el cuidado de un bodegón.",
+    "youtubeId": null
+  },
+  {
+    "id": "baco-caravaggio",
+    "titulo": "Baco",
+    "autor": "Caravaggio",
+    "fecha": "c. 1596–1597",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 95,
+      "ancho": 85
+    },
+    "museo": "Galería de los Uffizi, Florencia",
+    "commons": "File:Bacchus-Caravaggio (1598).jpg",
+    "mito": "Baco, el Dioniso de los griegos, es el dios del vino, de la fiesta y del éxtasis. Hijo de Júpiter y de la mortal Sémele, recorrió el mundo enseñando a cultivar la vid, acompañado de un cortejo de sátiros y ménades. Los romanos celebraban en su honor las bacanales, unas fiestas tan desenfrenadas que el Senado llegó a prohibirlas.",
+    "texto": "Caravaggio pintó a un muchacho de carne y hueso disfrazado de dios: tiene las mejillas encendidas y las uñas sucias, y nos ofrece una copa de vino como si nos invitara a la fiesta. La fruta del primer plano ya empieza a estropearse, un recordatorio de que el placer dura poco. En una restauración se descubrió, reflejado en la jarra de vino, un diminuto autorretrato del pintor.",
+    "youtubeId": null
+  },
+  {
+    "id": "juicio",
+    "vivo": {
+      "caja": [
+        0.0445,
+        -0.00352,
+        0.91099,
+        1.00705
+      ]
+    },
+    "diorama": true,
+    "titulo": "El juicio de Paris",
+    "autor": "Pedro Pablo Rubens",
+    "fecha": "1638–1639",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 199.0,
+      "ancho": 381.0
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Peter Paul Rubens 115.jpg",
+    "mito": "En la boda de Peleo y Tetis, la Discordia arroja una manzana de oro «para la más bella». Juno, Minerva y Venus se la disputan, y Júpiter encarga al pastor troyano Paris que decida. Juno le ofrece poder, Minerva sabiduría y victoria, y Venus el amor de la mujer más hermosa del mundo, Helena. Paris elige a Venus, y su elección desencadena la guerra de Troya.",
+    "texto": "Es una de las últimas obras de Rubens, pintada para Felipe IV. Mercurio, de pie, sostiene en alto la manzana mientras Paris, sentado y con la mano en la barbilla, duda; las tres diosas se muestran a su juicio, con las armas de Minerva en el suelo y Cupido junto a Venus, mientras un amorcillo desciende para coronar a la vencedora. Según una carta del cardenal-infante don Fernando, la Venus del centro se parecía mucho a Helena Fourment, la esposa del pintor.",
+    "youtubeId": "iTShc11E_Nc"
+  },
+  {
+    "id": "venus",
+    "vivo": {
+      "caja": [
+        -0.21952,
+        -0.11203,
+        1.43904,
+        1.22407
+      ]
+    },
+    "diorama": true,
+    "titulo": "El nacimiento de Venus",
+    "autor": "Sandro Botticelli",
+    "fecha": "c. 1484–1486",
+    "tecnica": "Temple sobre lienzo",
+    "medidas": {
+      "alto": 172.5,
+      "ancho": 278.9
+    },
+    "museo": "Galería de los Uffizi, Florencia",
+    "commons": "File:Sandro Botticelli - La nascita di Venere - Google Art Project - edited.jpg",
+    "mito": "Según la Teogonía de Hesíodo, Venus nació de la espuma del mar ya adulta. Aquí llega a la orilla sobre una concha, empujada por el soplo de Céfiro, el viento del oeste, abrazado a una ninfa. En la orilla la espera una de las Horas, diosa de las estaciones, con un manto bordado de flores para cubrirla.",
+    "texto": "Botticelli lo pintó en Florencia, en el círculo de los Médici, y Giorgio Vasari lo vio en el siglo XVI en la villa medicea de Castello. Fue uno de los primeros desnudos femeninos de gran tamaño desde la Antigüedad. Las rosas que caen alrededor de la diosa recuerdan la leyenda de que nacieron con ella.",
+    "youtubeId": "P-w8XyF7fI4"
+  },
+  {
+    "id": "gracias",
+    "titulo": "Las tres Gracias",
+    "autor": "Pedro Pablo Rubens",
+    "fecha": "c. 1630–1635",
+    "tecnica": "Óleo sobre tabla",
+    "medidas": {
+      "alto": 220.5,
+      "ancho": 182
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:The Three Graces, by Peter Paul Rubens, from Prado in Google Earth.jpg",
+    "mito": "Las Gracias eran tres hermanas, hijas de Júpiter: Eufrósine, la alegría; Talía, la abundancia, y Aglaya, el esplendor. Acompañaban a Venus y repartían entre dioses y mortales la belleza, la armonía y el placer de vivir. Por eso se las representa casi siempre juntas, enlazadas como en una danza.",
+    "texto": "Rubens lo pintó para sí mismo y lo conservó hasta su muerte; después lo compró Felipe IV. Las tres figuras se miran y se tocan formando un círculo, bajo una guirnalda de flores, junto a una fuente con un Cupido. La Gracia de la izquierda tiene los rasgos de Helena Fourment, su segunda esposa, la misma que se reconoce en la Venus de El juicio de Paris.",
+    "youtubeId": null
+  },
+  {
+    "id": "jupiter-tetis",
+    "titulo": "Júpiter y Tetis",
+    "autor": "Jean-Auguste-Dominique Ingres",
+    "fecha": "1811",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 327,
+      "ancho": 260
+    },
+    "museo": "Museo Granet, Aix-en-Provence",
+    "commons": "File:Jupiter and Thetis (Ingres).jpg",
+    "mito": "Al comienzo de la Ilíada, la ninfa del mar Tetis sube al Olimpo para suplicar a Júpiter por su hijo Aquiles, al que el rey Agamenón ha ofendido. Se arrodilla, le abraza las rodillas y le toca la barba, el gesto de los suplicantes en la Antigüedad. Júpiter accede: los griegos perderán batallas hasta que devuelvan el honor a Aquiles.",
+    "texto": "Ingres lo pintó en Roma con treinta y un años, como último trabajo para la Academia de Francia, y no gustó: los críticos se burlaron del cuello alargado y del brazo imposible de Tetis. Hoy se admira precisamente por eso. Júpiter, inmóvil como una estatua sobre las nubes y con su águila al lado, domina el cuadro; en el borde izquierdo asoma Juno, su esposa, que espía la escena.",
+    "youtubeId": null
+  },
+  {
+    "id": "danae",
+    "titulo": "Dánae recibiendo la lluvia de oro",
+    "autor": "Tiziano",
+    "fecha": "c. 1560–1565",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 129.8,
+      "ancho": 181.2
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Tizian - Danae receiving the Golden Rain - Prado.jpg",
+    "mito": "El rey Acrisio de Argos supo por un oráculo que moriría a manos de su nieto, así que encerró a su hija Dánae en una torre de bronce para que nunca tuviera hijos. Júpiter, enamorado de ella, entró en la torre convertido en lluvia de oro, y de aquel encuentro nació Perseo. Acrisio arrojó al mar a la madre y al niño dentro de un arcón, pero los dos sobrevivieron.",
+    "texto": "Tiziano y su taller pintaron varias versiones de esta escena, una de las más pedidas de su tiempo; esta lleva siglos en la colección real española. Dánae se abandona sobre el lecho mientras una criada vieja abre el delantal para recoger las monedas que caen del cielo: el dios llega en forma de oro, y la anciana solo ve dinero. El relato no cuenta qué quería Dánae: el dios entra en su encierro sin preguntar.",
+    "youtubeId": null
+  },
+  {
+    "id": "apolo-dafne",
+    "tipo": "escultura",
+    "titulo": "Apolo y Dafne",
+    "autor": "Gian Lorenzo Bernini",
+    "fecha": "1622–1625",
+    "tecnica": "Mármol de Carrara",
+    "medidas": {
+      "alto": 243,
+      "ancho": null
+    },
+    "museo": "Galería Borghese, Roma",
+    "commons": "File:Apollo and Daphne (Bernini).jpg",
+    "fuente3d": {
+      "zenodo": 21689297,
+      "archivo": "5c0c2e3ab7c51c32c9ed9ad59cd4684a.glb",
+      "licencia": "CC BY-NC-SA 4.0",
+      "credito": "Scan the World (MyMiniFactory)"
+    },
+    "mito": "Cupido, ofendido por Apolo, le disparó una flecha de oro que lo enamoró de la ninfa Dafne, y a ella una de plomo que le hizo rechazar el amor. Apolo la persiguió por el bosque y, cuando estaba a punto de alcanzarla, Dafne suplicó ayuda a su padre, el dios del río Peneo, que la transformó en laurel. Desde entonces el laurel es el árbol de Apolo.",
+    "texto": "Bernini tenía unos veinticinco años cuando lo esculpió para el cardenal Scipione Borghese. Atrapa el instante de la metamorfosis: los dedos de Dafne ya son hojas, sus pies echan raíces y la corteza le sube por las piernas justo cuando Apolo la toca. Hay que rodear la escultura para entender la historia, que se descubre poco a poco, como en el relato de Ovidio. El modelo 3D es un escaneo del original hecho por Scan the World.",
+    "youtubeId": null
+  },
+  {
+    "id": "hilanderas",
+    "titulo": "Las hilanderas o la fábula de Aracne",
+    "autor": "Diego Velázquez",
+    "fecha": "c. 1655–1660",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 220,
+      "ancho": 289
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Velázquez - La Fábula de Aracne o Las Hilanderas (Museo del Prado, 1657-58).jpg",
+    "mito": "Aracne, una joven de Lidia, tejía tan bien que se atrevió a decir que superaba a Minerva, la diosa de las artes. La diosa la retó a un concurso. Aracne tejió un tapiz con los engaños amorosos de los dioses, entre ellos el rapto de Europa, y su obra era perfecta. Minerva, furiosa, rompió el tapiz y la convirtió en araña, condenada a tejer para siempre.",
+    "texto": "Durante mucho tiempo se pensó que era una simple escena de un taller de tapices de Madrid. Pero al fondo, en una sala iluminada, Minerva con su casco se enfrenta a Aracne delante de un tapiz que copia El rapto de Europa de Tiziano, el cuadro que cuelga en esta misma sala. Velázquez convierte el mito en una reflexión sobre el arte y el talento. El lienzo se amplió con añadidos en el siglo XVIII.",
+    "youtubeId": null
+  },
+  {
+    "id": "baco",
+    "vivo": {
+      "caja": [
+        0.04779,
+        0.00025,
+        0.90505,
+        0.99951
+      ]
+    },
+    "titulo": "Baco y Ariadna",
+    "autor": "Tiziano",
+    "fecha": "1520–1523",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 176.5,
+      "ancho": 191.0
+    },
+    "museo": "National Gallery, Londres",
+    "commons": "File:Titian - Bacchus and Ariadne - Google Art Project.jpg",
+    "mito": "Ariadna ayudó a Teseo a salir del laberinto del Minotauro, pero él la abandonó dormida en la isla de Naxos. Al despertar, mientras ve alejarse su barco, llega Baco con su cortejo, se enamora de ella al instante y le promete convertir su corona en estrellas.",
+    "texto": "Tiziano lo pintó para el gabinete privado de Alfonso d'Este, duque de Ferrara. Baco salta de su carro, tirado por dos guepardos, en el instante en que ve a Ariadna; detrás le sigue un cortejo ruidoso de sátiros y ménades. Arriba a la izquierda brilla la corona de Ariadna ya convertida en constelación, y el cielo está pintado con azul ultramar, el pigmento más caro de su tiempo.",
+    "youtubeId": null
+  },
+  {
+    "id": "europa",
+    "titulo": "El rapto de Europa",
+    "autor": "Tiziano",
+    "fecha": "1560–1562",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 178,
+      "ancho": 205
+    },
+    "museo": "Museo Isabella Stewart Gardner, Boston",
+    "commons": "File:Titian - Rape of Europa - Google Art Project.jpg",
+    "mito": "Júpiter se enamoró de Europa, una princesa fenicia que jugaba con sus amigas a la orilla del mar. Para acercarse a ella se transformó en un toro blanco y manso. Cuando Europa, confiada, se subió a su lomo, el toro se lanzó al agua y la llevó a nado hasta Creta. Allí nacieron sus hijos, entre ellos Minos, el rey del laberinto.",
+    "texto": "Es la última de las «poesías», los cuadros mitológicos que Tiziano pintó para Felipe II, y estuvo en Madrid hasta el siglo XVIII; Velázquez lo citó en Las hilanderas y Rubens lo copió. Tiziano no muestra el juego amable, sino el miedo: Europa, tumbada de espaldas sobre el toro, se agarra a un cuerno mientras sus compañeras la llaman desde la orilla lejana.",
+    "youtubeId": null
+  },
+  {
+    "id": "hipomenes-atalanta",
+    "titulo": "Hipómenes y Atalanta",
+    "autor": "Guido Reni",
+    "fecha": "c. 1618–1619",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 206,
+      "ancho": 297
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Hipómenes y Atalanta (Reni)FXD.jpg",
+    "mito": "Atalanta, la cazadora más rápida de Grecia, no quería casarse. Puso una condición a sus pretendientes: solo se casaría con quien la venciera en una carrera, y los que perdieran morirían. Hipómenes pidió ayuda a Venus, que le dio tres manzanas de oro. Durante la carrera las fue dejando caer; Atalanta se detuvo a recogerlas y perdió.",
+    "texto": "Reni convierte la carrera en una danza: los dos cuerpos, casi desnudos, forman una gran X sobre un fondo oscuro y vacío. Atalanta se agacha a recoger una manzana de oro mientras Hipómenes, que ya ha lanzado la suya, se aleja con un gesto que parece rechazarla. El cuadro deja abierta una pregunta: ¿pierde Atalanta por codicia, por curiosidad o porque quiere perder?",
+    "youtubeId": null
+  },
+  {
+    "id": "perseo",
+    "tipo": "foto",
+    "titulo": "Perseo con la cabeza de Medusa",
+    "autor": "Benvenuto Cellini",
+    "fecha": "1545–1554",
+    "tecnica": "Bronce",
+    "medidas": {
+      "alto": 320,
+      "ancho": null
+    },
+    "museo": "Loggia dei Lanzi, Florencia",
+    "commons": "File:Perseus with the Head of Medusa (Perseo con la testa di Medusa), Loggia dei Lanzi, Florence (26072265963).jpg",
+    "mito": "Perseo, el hijo de Dánae y Júpiter, recibió el encargo de traer la cabeza de Medusa, una gorgona con serpientes por cabello cuya mirada convertía en piedra a quien la miraba. Minerva y Mercurio le ayudaron con un escudo pulido como un espejo, unas sandalias aladas y una hoz. Perseo la decapitó sin mirarla de frente, guiándose por su reflejo.",
+    "texto": "Cosme I de Médici lo encargó a Cellini para la plaza de la Señoría de Florencia, cerca del David de Miguel Ángel: un mensaje de poder dirigido a sus enemigos. Fundirlo fue una hazaña; Cellini cuenta en su autobiografía que, cuando el bronce empezaba a enfriarse antes de tiempo, echó al horno todos sus platos y cacharros de estaño. Perseo pisa el cuerpo de Medusa y alza su cabeza. Aquí se muestra una fotografía del original.",
+    "youtubeId": null
+  },
+  {
+    "id": "icaro",
+    "titulo": "Paisaje con la caída de Ícaro",
+    "autor": "Entorno de Pieter Bruegel el Viejo",
+    "fecha": "c. 1560",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 73.5,
+      "ancho": 112
+    },
+    "museo": "Museos Reales de Bellas Artes de Bélgica, Bruselas",
+    "commons": "File:Pieter Bruegel the Elder - Landscape with the Fall of Icarus - Brussels, Royal Museums of Fine Arts of Belgium - Google Arts & Culture.jpg",
+    "mito": "Dédalo, el arquitecto del laberinto de Creta, quedó atrapado en la isla con su hijo Ícaro. Para escapar fabricó unas alas de plumas pegadas con cera. Advirtió a Ícaro que no volara muy bajo, porque el mar mojaría las plumas, ni muy alto, porque el sol derretiría la cera. Ícaro, entusiasmado, subió demasiado y cayó al mar.",
+    "texto": "Lo más sorprendente es lo poco que se ve la tragedia: Ícaro es solo un par de piernas que se hunden en el agua, abajo a la derecha. El campesino sigue arando, el pastor mira al cielo y el barco continúa su ruta; nadie se entera. Durante mucho tiempo se atribuyó a Bruegel, pero hoy se cree que es una copia antigua de un original suyo perdido.",
+    "youtubeId": null
+  },
+  {
+    "id": "hercules-cerbero",
+    "titulo": "Hércules y el Cancerbero",
+    "autor": "Francisco de Zurbarán",
+    "fecha": "1634",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 132,
+      "ancho": 151
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Hércules y el Cancerbero, por Zurbarán.jpg",
+    "mito": "Hércules, hijo de Júpiter y de una mortal, tuvo que cumplir doce trabajos imposibles para expiar un crimen que cometió en un ataque de locura enviado por Juno. El último y más difícil fue bajar al inframundo y traer a Cerbero, el perro de tres cabezas que guarda la puerta del reino de los muertos. Lo consiguió sin armas, solo con la fuerza de sus brazos.",
+    "texto": "Zurbarán pintó una serie de diez cuadros de Hércules para el Salón de Reinos del palacio del Buen Retiro, en Madrid, donde Felipe IV mostraba su poder. Hércules se consideraba un antepasado mítico de los reyes de España, y sus victorias eran una imagen de las del monarca. Zurbarán lo pinta como un hombre robusto y real, casi un campesino, que alza la maza contra el monstruo de tres cabezas junto a la boca en llamas del inframundo.",
+    "youtubeId": null
+  },
+  {
+    "id": "teseo-minotauro",
+    "tipo": "foto",
+    "titulo": "Teseo y el Minotauro",
+    "autor": "Antonio Canova",
+    "fecha": "1781–1783",
+    "tecnica": "Mármol",
+    "medidas": {
+      "alto": 145.4,
+      "ancho": 158.7
+    },
+    "museo": "Victoria and Albert Museum, Londres",
+    "commons": "File:Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg",
+    "mito": "Cada nueve años, Atenas debía enviar a Creta catorce jóvenes para que el Minotauro, un monstruo mitad hombre y mitad toro, los devorara en el laberinto. El príncipe Teseo se ofreció voluntario. Ariadna, hija del rey Minos, se enamoró de él y le dio un ovillo de hilo; Teseo mató al Minotauro y, siguiendo el hilo, encontró la salida.",
+    "texto": "Fue la primera gran obra de Canova en Roma. En lugar de la lucha, muestra lo que viene después: Teseo, sereno, descansa sentado sobre el cuerpo del Minotauro. La calma después de la violencia era una idea nueva, que anunciaba el neoclasicismo. El héroe no vence solo: sin el hilo de Ariadna, a la que vimos abandonada en Naxos en la sala anterior, no habría salido del laberinto. Aquí se muestra una fotografía del original.",
+    "youtubeId": null
+  },
+  {
+    "id": "hercules-hidra",
+    "titulo": "Hércules lucha con la hidra de Lerna",
+    "autor": "Francisco de Zurbarán",
+    "fecha": "1634",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 133,
+      "ancho": 167
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Hércules lucha con la hidra de Lerna, por Zurbarán.jpg",
+    "mito": "El segundo trabajo de Hércules fue matar a la hidra de Lerna, una serpiente de agua con muchas cabezas: cada vez que le cortaba una, le nacían dos. Solo lo consiguió con la ayuda de su sobrino Yolao, que iba quemando cada cuello cortado con una antorcha para que no volviera a crecer. Después Hércules mojó sus flechas en la sangre venenosa del monstruo.",
+    "texto": "Pertenece a la misma serie que Hércules y el Cancerbero, pintada para el Salón de Reinos. Hércules levanta la maza contra la serpiente de muchas cabezas mientras, a la derecha, su sobrino Yolao espera con la antorcha encendida. Este trabajo enseña que la fuerza no basta: la victoria llega gracias a la inteligencia y a la colaboración.",
+    "youtubeId": null
+  },
+  {
+    "id": "aquiles",
+    "titulo": "Aquiles descubierto por Ulises y Diomedes",
+    "autor": "Pedro Pablo Rubens y Anton van Dyck",
+    "fecha": "c. 1617–1618",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 248.5,
+      "ancho": 269.5
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Aquiles descubierto entre las hijas de Licomedes, por Rubens.jpg",
+    "mito": "Tetis sabía que su hijo Aquiles moriría si iba a la guerra de Troya, así que lo escondió vestido de muchacha entre las hijas del rey Licomedes, en la isla de Esciros. Ulises y Diomedes llegaron disfrazados de mercaderes y ofrecieron a las jóvenes joyas y telas y, escondidas entre ellas, unas armas. Solo una «muchacha» cogió la espada: así descubrieron a Aquiles.",
+    "texto": "Rubens diseñó la composición y dejó buena parte de la pintura a su joven ayudante Anton van Dyck, como era habitual en su taller. Aquiles empuña la espada con el vestido todavía puesto, mientras las hijas de Licomedes se asustan y los dos griegos lo observan satisfechos. La escena plantea una pregunta: ¿se puede escapar del destino que los demás esperan de uno?",
+    "youtubeId": null
+  },
+  {
+    "id": "proserpina",
+    "tipo": "foto",
+    "titulo": "El rapto de Proserpina",
+    "autor": "Gian Lorenzo Bernini",
+    "fecha": "1621–1622",
+    "tecnica": "Mármol",
+    "medidas": {
+      "alto": 255,
+      "ancho": null
+    },
+    "museo": "Galería Borghese, Roma",
+    "commons": "File:The Rape of Proserpina (Rome).jpg",
+    "mito": "Plutón, dios del inframundo, vio a Proserpina, hija de Ceres, recogiendo flores en un prado de Sicilia y se la llevó por la fuerza en su carro al reino de los muertos. Ceres, desesperada, dejó de hacer crecer las cosechas. Júpiter impuso un acuerdo: Proserpina pasaría una parte del año con su madre y la otra bajo tierra. Así explicaban los antiguos las estaciones.",
+    "texto": "Bernini lo esculpió con veintitrés años. Lo más famoso es la mano de Plutón hundiéndose en el muslo de Proserpina: el mármol parece carne blanda. Ella le empuja la cara y llora, y a sus pies Cerbero, el perro de tres cabezas, guarda la entrada del inframundo. Es una escena de violencia, y Bernini no la suaviza. Aquí se muestra una fotografía del original.",
+    "youtubeId": null
+  },
+  {
+    "id": "caronte",
+    "titulo": "La barca de Caronte",
+    "autor": "José Benlliure y Gil",
+    "fecha": "1919",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 103,
+      "ancho": 176
+    },
+    "museo": "Museo de Bellas Artes de Valencia",
+    "commons": "File:La barca de Caront, Josep Benlliure Gil, Museu de Belles Arts de València.jpg",
+    "mito": "Para los griegos, las almas de los muertos tenían que cruzar la laguna Estigia para llegar al reino de Hades. El barquero Caronte las llevaba en su barca a cambio de una moneda, el óbolo, que los familiares colocaban en la boca del difunto. Las almas que no podían pagar vagaban cien años por la orilla.",
+    "texto": "José Benlliure, pintor valenciano que vivió muchos años en Roma, lo pintó ya mayor. Caronte conduce su barca cargada de almas a través de aguas oscuras. Es una de sus obras más cercanas al simbolismo, la corriente de finales del siglo XIX que usaba los mitos para hablar de la muerte, el sueño y el misterio.",
+    "youtubeId": null
+  },
+  {
+    "id": "orfeo-rubens",
+    "titulo": "Orfeo y Eurídice",
+    "autor": "Pedro Pablo Rubens",
+    "fecha": "1636–1638",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 196.5,
+      "ancho": 247.5
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Orpheus and Eurydice by Peter Paul Rubens.jpg",
+    "mito": "Orfeo cantaba tan bien que conmovía a los animales y a las piedras. Cuando su esposa Eurídice murió, bajó al inframundo y con su música convenció a Plutón y a Proserpina para que se la devolvieran. Solo le pusieron una condición: no podía mirarla hasta haber salido a la luz. Ya casi fuera, Orfeo se volvió, y la perdió para siempre.",
+    "texto": "Rubens lo pintó para la Torre de la Parada, el pabellón de caza de Felipe IV cerca de Madrid, decorado con escenas de las Metamorfosis de Ovidio. Muestra el momento de la partida: Orfeo, con su lira, conduce a Eurídice hacia la salida mientras Plutón y Proserpina, sentados en su trono, los dejan marchar. El desenlace queda fuera del cuadro, pero todos lo conocemos. En esta misma sala, Poussin pinta otro momento de la historia.",
+    "youtubeId": null
+  },
+  {
+    "id": "estigia",
+    "titulo": "El paso de la laguna Estigia",
+    "autor": "Joachim Patinir",
+    "fecha": "1520–1524",
+    "tecnica": "Óleo sobre tabla",
+    "medidas": {
+      "alto": 64,
+      "ancho": 103
+    },
+    "museo": "Museo Nacional del Prado, Madrid",
+    "commons": "File:Crossing the River Styx.jpg",
+    "mito": "En el mito griego, Caronte conducía en su barca las almas de los muertos a través de la laguna Estigia. En la otra orilla esperaba Cerbero, el perro de tres cabezas, que dejaba entrar a todos pero no dejaba salir a nadie. Los cristianos de la Edad Media y del Renacimiento conservaron estas imágenes y las mezclaron con sus propias ideas sobre el más allá.",
+    "texto": "Patinir, uno de los primeros pintores que dio todo el protagonismo al paisaje, divide el cuadro en dos. A la izquierda, un paraíso luminoso con ángeles; a la derecha, la entrada sombría del infierno, vigilada por Cerbero. En el centro, Caronte rema llevando un alma que mira hacia el infierno, aunque un ángel le señala el otro camino. El cuadro perteneció a Felipe II.",
+    "youtubeId": null
+  },
+  {
+    "id": "psique",
+    "tipo": "escultura",
+    "titulo": "Psique reanimada por el beso del Amor",
+    "autor": "Antonio Canova",
+    "fecha": "1787–1793",
+    "tecnica": "Mármol",
+    "medidas": {
+      "alto": 155,
+      "ancho": 168
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:Psyché ranimée par le baiser de l'Amour, Louvre.jpg",
+    "fuente3d": {
+      "zenodo": 21377727,
+      "archivo": "b9abe2c2580e57432965f98693ebfd32.glb",
+      "licencia": "CC BY-NC-SA 4.0",
+      "credito": "Scan the World (MyMiniFactory)"
+    },
+    "mito": "Psique, una mortal tan bella que despertaba la envidia de Venus, se casó en secreto con Cupido, el Amor, con la condición de no ver nunca su rostro. Al desobedecer lo perdió, y Venus le impuso pruebas terribles. En la última tenía que traer del inframundo una caja con la belleza de Proserpina. Psique la abrió por curiosidad y cayó en un sueño de muerte, del que Cupido la despertó con un beso.",
+    "texto": "Canova la esculpió en Roma por encargo de un coronel escocés; después pasó a Joachim Murat, cuñado de Napoleón, y de él al Louvre. Las alas de Cupido y los brazos de Psique, que se alzan para abrazarlo, forman una gran X, y en el centro los labios están a punto de tocarse. Es una de las pocas historias de esta sala con regreso: el amor vence a la muerte. El modelo 3D es un escaneo del original hecho por Scan the World.",
+    "youtubeId": null
+  },
+  {
+    "id": "orfeo-poussin",
+    "titulo": "Paisaje con Orfeo y Eurídice",
+    "autor": "Nicolas Poussin",
+    "fecha": "c. 1650–1653",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 124,
+      "ancho": 200
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:Orphée et Eurydice - Nicolas Poussin - Musée du Louvre Peintures INV 7307.jpg",
+    "mito": "La historia de Orfeo y Eurídice empieza con una boda. Pero, según Ovidio, poco después Eurídice paseaba por un prado cuando una serpiente le mordió el talón y la mató. Su muerte es lo que lleva a Orfeo a bajar al reino de los muertos para intentar recuperarla.",
+    "texto": "Poussin pinta el instante anterior a la tragedia en un paisaje sereno junto a un río, con una fortaleza al fondo de la que sale humo. Orfeo toca la lira para un grupo de ninfas; Eurídice, que acaba de ver la serpiente, retrocede asustada. Junto al cuadro de Rubens, muestra otro momento de la misma historia: entre los dos se puede reconstruir el relato.",
+    "youtubeId": null
+  },
+  {
+    "id": "sarcofago-proserpina",
+    "tipo": "foto",
+    "titulo": "Sarcófago de Proserpina",
+    "autor": "Taller romano",
+    "fecha": "c. 200–225 d. C.",
+    "tecnica": "Mármol de Carrara",
+    "medidas": null,
+    "museo": "Tesoro de la catedral de Aquisgrán",
+    "commons": "File:Proserpina-Sarkophag mit dem Relief Raub der Proserpina. Domschatzkammer Aachen.jpg",
+    "mito": "Para los romanos, el rapto de Proserpina era también una imagen de la muerte: igual que Plutón se llevó a la joven al inframundo, la muerte se lleva a los vivos. Pero Proserpina regresaba cada primavera junto a su madre, y por eso el mito ofrecía también una esperanza de renacer.",
+    "texto": "En el relieve se ve a Ceres con antorchas buscando a su hija, a Plutón raptando a Proserpina en su carro y a los caballos lanzados hacia el inframundo. Se talló en Roma en el siglo III y, según la tradición, en él fue enterrado Carlomagno en Aquisgrán en el año 814: un mito pagano al servicio de un emperador cristiano. Aquí se muestra una fotografía.",
+    "youtubeId": null
+  },
+  {
+    "id": "laocoonte",
+    "tipo": "escultura",
+    "titulo": "Laocoonte y sus hijos",
+    "autor": "Agesandro, Atenodoro y Polidoro de Rodas",
+    "fecha": "Siglo I a. C. – siglo I d. C.",
+    "tecnica": "Mármol",
+    "medidas": {
+      "alto": 208,
+      "ancho": 163
+    },
+    "museo": "Museos Vaticanos, Ciudad del Vaticano",
+    "commons": "File:Ubekendt, Laokoon og hans to sønner dræbes af slanger, , KAS385, Statens Museum for Kunst, 3D model.stl",
+    "reproduccion": "vaciado",
+    "mito": "Durante la guerra de Troya, los griegos fingieron retirarse y dejaron en la playa un enorme caballo de madera. El sacerdote troyano Laocoonte advirtió a los suyos: «Temo a los griegos incluso cuando traen regalos», y clavó una lanza en el caballo. Entonces dos serpientes gigantes salieron del mar y lo estrangularon junto a sus dos hijos. Los troyanos lo tomaron como un castigo de los dioses y metieron el caballo en la ciudad.",
+    "texto": "El grupo apareció en 1506 enterrado en una viña de Roma, y Miguel Ángel fue a verlo ese mismo día. Plinio el Viejo ya lo había alabado como la mejor obra de arte de su tiempo, y el dolor del padre, que lucha con todo el cuerpo, se convirtió en un modelo para los artistas. Le faltaba el brazo derecho y se le añadió uno estirado hacia arriba; en 1906 apareció el original, doblado hacia la cabeza, que se colocó en 1957. Este vaciado en yeso del SMK de Copenhague conserva la restauración antigua.",
+    "youtubeId": null
+  },
+  {
+    "id": "eneas-bernini",
+    "tipo": "foto",
+    "titulo": "Eneas, Anquises y Ascanio",
+    "autor": "Gian Lorenzo Bernini",
+    "fecha": "1618–1619",
+    "tecnica": "Mármol",
+    "medidas": {
+      "alto": 220,
+      "ancho": null
+    },
+    "museo": "Galería Borghese, Roma",
+    "commons": "File:Aeneas, Anchises, and Ascanius by Bernini, 1618-1620, marble, view 1 - Galleria Borghese - Rome, Italy - DSC04797.jpg",
+    "mito": "La noche en que cayó Troya, el príncipe Eneas, hijo de Venus, huyó de la ciudad en llamas. Cargó a hombros a su anciano padre, Anquises, que llevaba en las manos las estatuillas de los dioses de la familia, y llevó de la mano a su hijo Ascanio. Su esposa, Creúsa, se perdió en la confusión de la huida.",
+    "texto": "Es una de las primeras grandes obras de Bernini, que la esculpió con unos veinte años para el cardenal Scipione Borghese, probablemente con la ayuda de su padre, Pietro. Las tres generaciones se apilan como una columna: el cuerpo viejo y flaco de Anquises, el musculoso de Eneas y el blando del niño, que lleva el fuego sagrado del hogar. Es la imagen de lo que se salva cuando todo se pierde. Aquí se muestra una fotografía del original.",
+    "youtubeId": null
+  },
+  {
+    "id": "eneas-barocci",
+    "titulo": "La huida de Eneas de Troya",
+    "autor": "Federico Barocci",
+    "fecha": "1598",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 179,
+      "ancho": 253
+    },
+    "museo": "Galería Borghese, Roma",
+    "commons": "File:Barocci - La fuga di Enea da Troia, 1598, 068.jpg",
+    "mito": "En la Eneida de Virgilio, el propio Eneas cuenta su huida: «Ven, padre, súbete a mis hombros; yo te llevaré y no me pesará la carga». Detrás quedaban las llamas de Troya; delante empezaba un viaje de muchos años en busca de una nueva patria que los dioses le habían prometido en Italia.",
+    "texto": "Barocci pinta la huida a la salida de una ciudad en llamas, con edificios clásicos al fondo. Eneas carga con Anquises, el pequeño Ascanio corre a su lado y Creúsa, la esposa, los sigue un paso atrás, a punto de perderse. Barocci pintó una primera versión para el emperador Rodolfo II, hoy perdida; esta la hizo para el cardenal Scipione Borghese.",
+    "youtubeId": null
+  },
+  {
+    "id": "eneas-delos",
+    "titulo": "Paisaje con Eneas en Delos",
+    "autor": "Claudio de Lorena",
+    "fecha": "1672",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 100,
+      "ancho": 134
+    },
+    "museo": "National Gallery, Londres",
+    "commons": "File:Claude Lorrain 002.jpg",
+    "mito": "En su viaje, Eneas llegó con su padre y su hijo a Delos, la isla sagrada de Apolo. Allí los recibió el rey Anio, que era a la vez sacerdote del dios. El oráculo les dio un consejo misterioso: «Buscad a vuestra antigua madre». Anquises lo interpretó mal, y los troyanos navegaron hasta Creta antes de comprender que su destino era Italia, la tierra de sus antepasados.",
+    "texto": "Claudio de Lorena, un pintor francés que vivió casi toda su vida en Roma, convirtió la Antigüedad en paisajes de luz dorada. El rey Anio enseña la isla a Eneas, Anquises y Ascanio; al fondo se alza un templo inspirado en el Panteón de Roma. Es un momento de pausa y de acogida en medio del exilio.",
+    "youtubeId": null
+  },
+  {
+    "id": "dido-cartago",
+    "titulo": "Dido construye Cartago",
+    "autor": "Joseph Mallord William Turner",
+    "fecha": "1815",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 155.5,
+      "ancho": 232
+    },
+    "museo": "National Gallery, Londres",
+    "commons": "File:Turner - Dido.jpg",
+    "mito": "Dido era una princesa de Tiro, en Fenicia. Cuando su hermano, el rey, asesinó a su esposo para quedarse con su fortuna, ella huyó por mar con sus seguidores hasta la costa de África. Allí pidió al rey del lugar tanta tierra como pudiera abarcar una piel de buey; la cortó en tiras finísimas y rodeó con ellas una colina entera. Así fundó Cartago.",
+    "texto": "Turner presenta a Dido como fundadora y gobernante: a la izquierda, dirige las obras de su nueva ciudad, que crece junto a un puerto bañado por el sol. Es un cuadro sobre el nacimiento de un imperio. Turner le dio tanta importancia que lo legó a la nación británica con una condición: que se colgara junto a un cuadro de Claudio de Lorena, su gran modelo. En esta sala también está junto a uno.",
+    "youtubeId": null
+  },
+  {
+    "id": "dido-eneas",
+    "titulo": "Dido recibe a Eneas y a Cupido disfrazado de Ascanio",
+    "autor": "Francesco Solimena",
+    "fecha": "c. 1720",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 207,
+      "ancho": 310
+    },
+    "museo": "National Gallery, Londres",
+    "commons": "File:Francesco Solimena - Dido Receiving Aeneas and Cupid Disguised as Ascanius - WGA21623.jpg",
+    "mito": "Una tormenta arrojó las naves de Eneas a las costas de Cartago, y la reina Dido acogió a los troyanos. Venus, la madre de Eneas, quiso asegurarse de que Dido lo protegiera: mandó a Cupido que tomara la forma del pequeño Ascanio y, mientras la reina lo abrazaba en el banquete, le encendió el corazón de amor por Eneas.",
+    "texto": "Solimena, el gran pintor de la Nápoles de su tiempo, organiza la escena como un espectáculo de corte, con la reina en su trono recibiendo a los recién llegados. El espectador sabe lo que Dido ignora: el niño es el dios del amor, y la hospitalidad de la reina terminará en tragedia.",
+    "youtubeId": null
+  },
+  {
+    "id": "dido-muerte",
+    "titulo": "La muerte de Dido",
+    "autor": "Pedro Pablo Rubens",
+    "fecha": "c. 1635–1638",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 183,
+      "ancho": 117
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:Petrus paulus rubens, morte di didone, 1635-38 ca..JPG",
+    "licencia": "CC BY 3.0, foto de Sailko",
+    "mito": "Dido y Eneas se amaron en Cartago, pero los dioses recordaron a Eneas que su destino estaba en Italia, y partió en secreto. Dido, abandonada, mandó levantar una pira con las armas y los regalos de su amante y, mientras las naves troyanas se alejaban, se clavó la espada de Eneas. Antes de morir maldijo a los troyanos: entre Cartago y Roma no habría nunca paz.",
+    "texto": "Rubens la pinta sola, en el instante en que la espada entra en su pecho, con la mirada vuelta hacia el cielo. Es el coste personal del deber: Eneas cumple su destino de fundar un pueblo, y Dido paga el precio. Su maldición anuncia las guerras entre Roma y Cartago, que llegarían siglos después.",
+    "youtubeId": null,
+    "recorte": [
+      0.15,
+      0.088,
+      0.852,
+      0.912
+    ]
+  },
+  {
+    "id": "loba",
+    "tipo": "escultura",
+    "titulo": "Loba capitolina",
+    "autor": "Autor desconocido; los gemelos, finales del siglo XV",
+    "fecha": "Fecha discutida",
+    "tecnica": "Bronce",
+    "medidas": {
+      "alto": 75,
+      "ancho": 114
+    },
+    "museo": "Museos Capitolinos, Roma",
+    "commons": "File:Lupa Capitolina, Rome.jpg",
+    "fuente3d": {
+      "zenodo": 21170922,
+      "archivo": "f43c1e36a0f3f9eae9527d55bbb7bf15.glb",
+      "licencia": "CC BY-NC-SA 4.0",
+      "credito": "Scan the World (MyMiniFactory)"
+    },
+    "mito": "Rea Silvia, hija del rey de Alba Longa, tuvo dos gemelos del dios Marte: Rómulo y Remo. Su tío Amulio, que había usurpado el trono, mandó arrojar a los niños al río Tíber. La cesta en la que iban quedó varada en la orilla, y una loba los encontró y los amamantó hasta que el pastor Fáustulo los recogió y los crió.",
+    "texto": "La loba es uno de los símbolos de Roma desde hace siglos. Durante mucho tiempo se creyó una obra etrusca del siglo V a. C., pero estudios recientes, como un análisis de radiocarbono de 2008, apuntan a que podría ser medieval, de los siglos XI o XII; la fecha sigue discutida. Lo que es seguro es que los gemelos se añadieron a finales del siglo XV, para convertirla en la loba de Rómulo y Remo. El modelo 3D es un escaneo de Scan the World.",
+    "youtubeId": null
+  },
+  {
+    "id": "romulo-remo",
+    "titulo": "Rómulo y Remo",
+    "autor": "Pedro Pablo Rubens",
+    "fecha": "c. 1615–1616",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 213,
+      "ancho": 212
+    },
+    "museo": "Museos Capitolinos, Roma",
+    "commons": "File:Romulus and Remus by Peter Paul Rubens.jpg",
+    "mito": "Los gemelos crecieron como pastores sin saber quiénes eran. Ya adultos, descubrieron su origen, devolvieron el trono de Alba Longa a su abuelo Numitor y decidieron fundar una ciudad propia en el lugar donde la loba los había salvado. Discutieron sobre quién debía gobernarla, y Rómulo mató a Remo. La ciudad tomó su nombre: Roma.",
+    "texto": "Rubens pinta el momento en que el pastor Fáustulo descubre a los niños junto a la loba, a orillas del Tíber. El dios del río, recostado, y una ninfa asisten a la escena, y un pájaro carpintero, otro animal de Marte, les trae comida. Rubens lo pintó en Amberes, años después de vivir en Italia; hoy cuelga en los Museos Capitolinos, cerca de la loba de bronce.",
+    "youtubeId": null
+  },
+  {
+    "id": "sabinas-poussin",
+    "titulo": "El rapto de las sabinas",
+    "autor": "Nicolas Poussin",
+    "fecha": "1637–1638",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 159,
+      "ancho": 206
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:L'Enlèvement des Sabines - Nicolas Poussin - Musée du Louvre Peintures INV 7290 ; MR 2335.jpg",
+    "mito": "Roma era entonces una ciudad de hombres, y los pueblos vecinos no querían casar a sus hijas con ellos. Rómulo organizó unas fiestas en honor del dios Neptuno e invitó a los sabinos con sus familias. En mitad de la celebración, a una señal suya, los romanos se lanzaron sobre las jóvenes sabinas y se las llevaron por la fuerza.",
+    "texto": "Poussin lo pinta como un escenario de teatro, entre templos y palacios. A la izquierda, en lo alto de una escalinata, Rómulo da la señal levantando su manto, y abajo estalla el caos; las figuras se retuercen como esculturas antiguas. Es el primer acto de una historia en tres partes que continúa en esta sala: el rapto, la guerra y la paz que imponen las propias mujeres.",
+    "youtubeId": null
+  },
+  {
+    "id": "hersilia",
+    "titulo": "Hersilia separando a Rómulo y Tacio",
+    "autor": "Guercino",
+    "fecha": "1645",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 253,
+      "ancho": 267
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:Guercino - Hersilie séparant Romulus et Tatius, 1645, INV 85 ; MR 266.jpg",
+    "mito": "Años después del rapto, los sabinos, mandados por su rey Tito Tacio, atacaron Roma para vengarse. La batalla se libraba en el valle del Foro cuando las sabinas, ya esposas de romanos y madres de sus hijos, se lanzaron entre los dos ejércitos y les suplicaron que no las dejaran viudas ni huérfanas. Hersilia, la esposa de Rómulo, iba al frente de las mujeres.",
+    "texto": "Guercino reduce la batalla a tres figuras de tamaño natural. Hersilia, en el centro, se interpone entre Rómulo y Tito Tacio, y el gesto de sus brazos detiene las espadas. Es el momento central de la historia, entre el rapto que pinta Poussin y la reconciliación que pinta David.",
+    "youtubeId": null
+  },
+  {
+    "id": "sabinas-david",
+    "titulo": "Las sabinas",
+    "autor": "Jacques-Louis David",
+    "fecha": "1799",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 385,
+      "ancho": 522
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:The Intervention of the Sabine Women - David (Louvre INV 3691).jpg",
+    "mito": "La intervención de las sabinas acabó con la guerra: Rómulo y Tito Tacio hicieron las paces y unieron sus pueblos, y durante un tiempo gobernaron juntos. Roma pasó a ser una ciudad de romanos y sabinos. Los romanos contaban esta historia como el origen de la convivencia entre pueblos distintos dentro de la ciudad.",
+    "texto": "David empezó a pensar este cuadro en la cárcel, tras los años sangrientos de la Revolución francesa, como una llamada a la reconciliación entre franceses. Hersilia, vestida de blanco y con los brazos abiertos, se interpone entre Rómulo y Tacio; a sus pies, madres y niños. David pintó a los guerreros desnudos, como en las estatuas griegas, y cobró entrada por ver el cuadro, algo casi inédito entonces.",
+    "youtubeId": null
+  },
+  {
+    "id": "horacios",
+    "titulo": "El juramento de los Horacios",
+    "autor": "Jacques-Louis David",
+    "fecha": "1784",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 330,
+      "ancho": 425
+    },
+    "museo": "Museo del Louvre, París",
+    "commons": "File:Le Serment des Horaces - Jacques-Louis David - Musée du Louvre Peintures INV 3692 ; MR 1432.jpg",
+    "mito": "En tiempos del rey Tulo Hostilio, Roma y su vecina Alba Longa decidieron resolver su guerra con un combate entre tres campeones de cada ciudad: los hermanos Horacios por Roma y los Curiacios por Alba. Pero las dos familias estaban unidas: una hermana de los Horacios estaba prometida a uno de los Curiacios. Solo sobrevivió un Horacio, y Roma ganó.",
+    "texto": "David inventó esta escena, que no aparece en los textos antiguos: los tres hermanos juran ante su padre, que alza sus espadas, vencer o morir por Roma. A la derecha, las mujeres de la familia se derrumban, porque cualquier resultado les traerá la muerte de alguien querido. La rigidez de los hombres frente al abatimiento de las mujeres resume la tensión entre la familia y la patria. Se convirtió en un emblema del neoclasicismo.",
+    "youtubeId": null
+  },
+  {
+    "id": "cesar",
+    "titulo": "La muerte de César",
+    "autor": "Vincenzo Camuccini",
+    "fecha": "1798–1806",
+    "tecnica": "Óleo sobre lienzo",
+    "medidas": {
+      "alto": 400,
+      "ancho": 707
+    },
+    "museo": "Museo de Capodimonte, Nápoles",
+    "commons": "File:Vincenzo Camuccini - La morte di Cesare.jpg",
+    "encabezado": "La historia",
+    "mito": "Julio César, tras vencer en la guerra civil, se había hecho nombrar dictador perpetuo, y muchos senadores temían que quisiera convertirse en rey. El 15 de marzo del año 44 a. C., los idus de marzo, un grupo de conjurados encabezado por Bruto y Casio lo apuñaló veintitrés veces en plena sesión del Senado, a los pies de la estatua de su antiguo rival, Pompeyo.",
+    "texto": "Camuccini, el pintor neoclásico más importante de la Roma de su tiempo, trabajó en este cuadro durante años y destruyó una primera versión que no le convencía. Lo concibe como una tragedia teatral: César, en el centro, se cubre con la toga mientras los conjurados lo rodean con los puñales en alto. El asesinato no salvó la República: abrió otra guerra civil de la que saldría el primer emperador, Augusto.",
+    "youtubeId": null
+  },
+  {
+    "id": "augusto",
+    "tipo": "foto",
+    "titulo": "Augusto de Prima Porta",
+    "autor": "Escultor romano desconocido",
+    "fecha": "Principios del siglo I d. C.",
+    "tecnica": "Mármol",
+    "medidas": {
+      "alto": 204,
+      "ancho": null
+    },
+    "museo": "Museos Vaticanos, Ciudad del Vaticano",
+    "commons": "File:Augustus of Prima Porta.jpg",
+    "encabezado": "La historia",
+    "mito": "Octavio, sobrino nieto y heredero de César, venció a Marco Antonio y a Cleopatra y puso fin a las guerras civiles. En el año 27 a. C. el Senado le dio el título de Augusto, «el venerable». Gobernó más de cuarenta años como primer emperador, aunque siempre presentó su poder como una restauración de la República.",
+    "texto": "La estatua apareció en 1863 en la villa de su esposa, Livia, en Prima Porta, a las afueras de Roma. Augusto alza el brazo como un general que habla a sus tropas, pero va descalzo, como los dioses y los héroes. A sus pies, un pequeño Cupido sobre un delfín recuerda que su familia decía descender de Venus, a través de Eneas. En la coraza, un parto devuelve las insignias militares que Roma había perdido: un acuerdo diplomático convertido en propaganda. Aquí se muestra una fotografía del original.",
+    "youtubeId": null
+  },
+  {
+    "id": "ara-pacis",
+    "tipo": "relieve",
+    "titulo": "Ara Pacis de Augusto",
+    "autor": "Escultores romanos",
+    "fecha": "13–9 a. C.",
+    "tecnica": "Mármol",
+    "medidas": null,
+    "museo": "Museo del Ara Pacis, Roma",
+    "commons": "File:Ara Pacis (SW).jpg",
+    "reproduccion": "vaciado",
+    "fuente3d": {
+      "zenodo": 21376655,
+      "archivo": "5680c2cde5f4f1762a3e5da9a25ca964.glb",
+      "licencia": "CC BY-NC-SA 4.0",
+      "credito": "Scan the World (MyMiniFactory)"
+    },
+    "encabezado": "La historia",
+    "mito": "Al volver de sus campañas en Hispania y la Galia, Augusto proclamó una nueva era de paz. En el año 13 a. C. el Senado decidió levantar un altar dedicado a la Paz Augusta en el Campo de Marte, a las afueras de Roma, y se consagró en el año 9 a. C. Allí se celebraba cada año un sacrificio.",
+    "texto": "Un recinto de mármol cubierto de relieves rodea el altar. En los lados largos desfila una procesión con Augusto, su familia, sacerdotes y magistrados; es una de las primeras veces que el arte romano retrata a personas reales, incluidos niños que se agarran a la ropa de los mayores. El mensaje es claro: la paz se debe a Augusto y a su familia. En 1938 Mussolini lo hizo reconstruir con los fragmentos encontrados, para su propia propaganda. Aquí se muestra un vaciado de un fragmento del muro sur.",
+    "youtubeId": null
+  },
+  {
+    "id": "trajano",
+    "tipo": "relieve",
+    "titulo": "Columna de Trajano",
+    "autor": "Escultores romanos",
+    "fecha": "107–113 d. C.",
+    "tecnica": "Mármol",
+    "medidas": null,
+    "museo": "Foro de Trajano, Roma",
+    "commons": "File:Trajan column (Rome) September 2015-2.jpg",
+    "reproduccion": "vaciado",
+    "fuente3d": {
+      "zenodo": 21162339,
+      "archivo": "633b68e4981c5a5f5f09de94b32a70f4.glb",
+      "licencia": "CC BY-NC-SA 4.0",
+      "credito": "Scan the World (MyMiniFactory)"
+    },
+    "encabezado": "La historia",
+    "mito": "Entre los años 101 y 106, el emperador Trajano conquistó la Dacia, en la actual Rumanía, en dos guerras contra el rey Decébalo. El oro de la Dacia pagó un nuevo foro en Roma, y en él se alzó una columna de unos treinta metros para celebrar la victoria. A su muerte, las cenizas de Trajano se depositaron en su base.",
+    "texto": "Un relieve en espiral de unos doscientos metros sube por la columna y cuenta las campañas casi como una película: los soldados construyen campamentos, cruzan el Danubio y combaten, y Trajano aparece unas sesenta veces. Los dacios, los vencidos, también están ahí, pero vistos por los vencedores. Aquí se muestra un vaciado de una parte del relieve.",
+    "youtubeId": null
+  },
+  {
+    "id": "marco-aurelio",
+    "tipo": "foto",
+    "titulo": "Estatua ecuestre de Marco Aurelio",
+    "autor": "Autor desconocido",
+    "fecha": "c. 175 d. C.",
+    "tecnica": "Bronce dorado",
+    "medidas": {
+      "alto": 424,
+      "ancho": null
+    },
+    "museo": "Museos Capitolinos, Roma",
+    "commons": "File:Rome Capitoline Marcus Aurelius statue original.jpg",
+    "encabezado": "La historia",
+    "mito": "Marco Aurelio gobernó entre los años 161 y 180 y pasó gran parte de su reinado en campaña contra los pueblos germanos del Danubio. Era también filósofo: en el campamento escribió en griego unas reflexiones personales, las Meditaciones, en las que se exige a sí mismo calma, justicia y sentido del deber.",
+    "texto": "Es la única gran estatua ecuestre de bronce que se conserva de la Antigua Roma. Se salvó de ser fundida porque en la Edad Media se creyó que representaba a Constantino, el primer emperador cristiano. En 1538 se trasladó a la plaza del Capitolio, que Miguel Ángel diseñó a su alrededor; hoy el original se protege dentro del museo y en la plaza hay una copia. El emperador extiende el brazo en un gesto de clemencia. Aquí se muestra una fotografía del original.",
+    "youtubeId": null
+  },
+  {
+    "id": "arco-tito",
+    "tipo": "foto",
+    "titulo": "Relieves del arco de Tito",
+    "autor": "Escultores romanos",
+    "fecha": "c. 81–82 d. C.",
+    "tecnica": "Mármol",
+    "medidas": null,
+    "museo": "Foro Romano, Roma",
+    "commons": "File:Spoils from Jerusalem - Arch of Titus - Rome 2008.jpg",
+    "encabezado": "La historia",
+    "mito": "En el año 70, el ejército romano, al mando de Tito, hijo del emperador Vespasiano, tomó Jerusalén tras un largo asedio y destruyó su templo. En Roma se celebró después un desfile triunfal en el que se exhibieron los tesoros saqueados y los prisioneros. Tras la muerte de Tito, en el año 81, su hermano Domiciano le dedicó un arco junto a la vía Sacra.",
+    "texto": "Dentro del paso del arco hay dos grandes relieves. Uno muestra a Tito en su carro de triunfo, coronado por la Victoria; el otro, a los soldados cargando el botín del templo de Jerusalén, con el gran candelabro de siete brazos, la menorá. Para Roma era una celebración; para el pueblo judío, el recuerdo de una derrota y un exilio. La misma imagen cuenta dos historias muy distintas. Aquí se muestra una fotografía.",
     "youtubeId": null
   }
 ]

@@ -21,6 +21,7 @@ export class Hud extends EventTarget {
       <p class="musica-aviso" aria-live="polite"></p>
       <p class="nota" aria-live="polite"></p>
       <div class="esquina">
+        <button class="boton-icono" data-accion="salas" aria-label="Las salas" title="Las salas">${ICONO_SALAS}</button>
         ${pantalla ? `<button class="boton-icono" data-accion="pantalla" aria-label="Pantalla completa" title="Pantalla completa${movil ? '' : ' (Tab)'}">${ICONO_AMPLIAR}</button>` : ''}
         <button class="boton-icono" data-accion="sonido" aria-label="Silenciar">${ICONO_SONIDO}</button>
       </div>
@@ -101,6 +102,7 @@ export class Hud extends EventTarget {
   }
 }
 
+const ICONO_SALAS = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const ICONO_SONIDO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>';
 const ICONO_AMPLIAR = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICONO_REDUCIR = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';

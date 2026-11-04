@@ -22,11 +22,12 @@ export function capturarEntorno(renderer, escena3d, posicion, { resolucion = 256
   for (const m of mallasMetal) m.visible = true;
 
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const entorno = pmrem.fromCubemap(objetivo.texture).texture;
+  // Se devuelve el render target entero (no solo su textura) para poder liberarlo al salir de la sala.
+  const entorno = pmrem.fromCubemap(objetivo.texture);
   pmrem.dispose();
   objetivo.dispose();
   for (const m of metales) {
-    m.envMap = entorno;
+    m.envMap = entorno.texture;
     m.envMapIntensity = intensidad;
     m.needsUpdate = true;
   }

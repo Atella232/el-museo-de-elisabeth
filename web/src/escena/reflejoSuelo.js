@@ -65,6 +65,10 @@ export class ReflejoSuelo {
     material.needsUpdate = true;
   }
 
+  liberar() {
+    this.objetivo.dispose();
+  }
+
   ajustarTamano(ancho, alto) {
     const pr = this.renderer.getPixelRatio();
     this.objetivo.setSize(Math.max(1, Math.round(ancho * pr * this.resolucion)), Math.max(1, Math.round(alto * pr * this.resolucion)));

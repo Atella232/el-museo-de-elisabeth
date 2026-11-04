@@ -1,10 +1,27 @@
-// Colisiones en planta (plano XZ de Three.js): el visitante es un círculo que no puede
-// salir de los límites del pasillo ni entrar en los obstáculos (rectángulos [x0, z0, x1, z1]).
+// Colisiones en planta (plano XZ de Three.js): el visitante es un círculo que no puede salir de
+// las zonas por las que se anda (la nave y el pasillo de cada puerta, rectángulos [x0, z0, x1, z1]
+// que se tocan) ni entrar en los obstáculos (rectángulos con el mismo formato).
 const limitar = (v, a, b) => Math.min(Math.max(v, a), b);
 
-export function resolverColision(pos, radio, { limites, obstaculos = [] }) {
-  pos.x = limitar(pos.x, limites.xmin + radio, limites.xmax - radio);
-  pos.z = limitar(pos.z, limites.zmin + radio, limites.zmax - radio);
+export function resolverColision(pos, radio, { limites, zonas, obstaculos = [] }) {
+  // Si el centro no cabe en ninguna zona (encogida por el radio), se lleva al punto más cercano.
+  const areas = zonas ?? [[limites.xmin, limites.zmin, limites.xmax, limites.zmax]];
+  let mejorX = pos.x;
+  let mejorZ = pos.z;
+  let mejor = Infinity;
+  for (const [x0, z0, x1, z1] of areas) {
+    const cx = limitar(pos.x, x0 + radio, x1 - radio);
+    const cz = limitar(pos.z, z0 + radio, z1 - radio);
+    const d2 = (pos.x - cx) ** 2 + (pos.z - cz) ** 2;
+    if (d2 < mejor) {
+      mejor = d2;
+      mejorX = cx;
+      mejorZ = cz;
+      if (d2 === 0) break;
+    }
+  }
+  pos.x = mejorX;
+  pos.z = mejorZ;
   for (let iter = 0; iter < 2; iter++) {
     for (const [x0, z0, x1, z1] of obstaculos) {
       const cx = limitar(pos.x, x0, x1);
@@ -28,4 +45,9 @@ export function resolverColision(pos, radio, { limites, obstaculos = [] }) {
     }
   }
   return pos;
+}
+
+// El paso a otra sala cuyo rectángulo de disparo pisa el visitante, si lo hay.
+export function pasoPisado(pos, pasos = []) {
+  return pasos.find(({ disparo: [x0, z0, x1, z1] }) => pos.x > x0 && pos.x < x1 && pos.z > z0 && pos.z < z1) ?? null;
 }

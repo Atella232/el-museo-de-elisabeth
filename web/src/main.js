@@ -6,8 +6,10 @@ import '@fontsource/cormorant-garamond/500-italic.css';
 import '@fontsource/cormorant-garamond/600.css';
 import './estilos.css';
 import datosObras from '@datos/obras.json';
+import datosSalas from '@datos/salas.json';
 import { calidad, debug, parametro } from './calidad.js';
-import { cargarMuseo } from './escena/cargarMuseo.js';
+import { cargarSala, salaDisponible, precargarSala } from './escena/cargarSala.js';
+import { pintarPanel } from './escena/panel.js';
 import { ReflejoSuelo } from './escena/reflejoSuelo.js';
 import { capturarEntorno } from './escena/entorno.js';
 import { crearHaces, CAPA_AIRE } from './escena/hacesLuz.js';
@@ -18,11 +20,13 @@ import { CuadrosVivos } from './escena/vivos.js';
 import { ControlesEscritorio } from './controles/escritorio.js';
 import { ControlesTactiles } from './controles/tactil.js';
 import { Contemplar } from './controles/contemplar.js';
-import { resolverColision } from './controles/colisiones.js';
+import { resolverColision, pasoPisado } from './controles/colisiones.js';
 import { Portada } from './ui/portada.js';
 import { Hud } from './ui/hud.js';
 import { Ficha } from './ui/ficha.js';
 import { Video } from './ui/video.js';
+import { Transicion, ROMANOS } from './ui/transicion.js';
+import { IndiceSalas } from './ui/salas.js';
 import { Ambiente } from './audio/ambiente.js';
 import { Diorama } from './cuadro/diorama.js';
 import { UiCuadro } from './ui/cuadro.js';
@@ -38,6 +42,7 @@ const ESPERA_VIVO = 3; // segundos mirando un cuadro hasta que empieza a moverse
 
 const BASE = import.meta.env.BASE_URL;
 const obras = Object.fromEntries(datosObras.map((o) => [o.id, o]));
+const salas = Object.fromEntries(datosSalas.salas.map((s) => [s.id, s]));
 const ui = document.querySelector('#ui');
 const lienzo = document.querySelector('#lienzo');
 const camFija = parametro('cam'); // modo de captura: cámara fija, sin interfaz
@@ -57,38 +62,77 @@ escena3d.background = new THREE.Color(0x000000);
 const camara = new THREE.PerspectiveCamera(movil ? 70 : 62, 1, 0.05, 80);
 camara.layers.enable(CAPA_AIRE);
 
-const { modelo, escena, mallasPorGrupo, texturasObras } = await cargarMuseo({
-  renderer,
-  calidad,
-  alProgreso: (f) => portada?.progreso(f * 0.92),
-});
-escena3d.add(modelo);
-await pintarCartelas(modelo, escena, obras, renderer);
-const vivos = new CuadrosVivos(modelo, obras, { calidad });
-const listaMusica = await fetch(`${BASE}musica/lista.json`).then((r) => (r.ok ? r.json() : []), () => []);
-const medio = (escena.limites.zmin + escena.limites.zmax) / 2;
-capturarEntorno(renderer, escena3d, new THREE.Vector3(0, 2.2, medio), { intensidad: 1.25 });
-
-escena3d.add(crearHaces(escena.focos));
-const polvo = calidad.particulas > 0 ? crearPolvo(escena.focos, { porFoco: Math.round(220 * calidad.particulas), pixelRatio: calidad.pixelRatio }) : null;
-if (polvo) escena3d.add(polvo);
-
-const reflejo = calidad.reflejo > 0 && mallasPorGrupo.suelo
-  ? new ReflejoSuelo(renderer, mallasPorGrupo.suelo, { resolucion: calidad.reflejo })
-  : null;
+// --- Salas: solo hay una cargada a la vez. `sala` guarda todo lo suyo (modelo, escena exportada
+// de Blender, cuadros vivos, reflejo, haces, polvo, zonas para contemplar) para soltarlo al salir.
+let sala = null;
 const post = calidad.postproceso ? crearPostproceso(renderer, escena3d, camara) : null;
 
-// --- Cámara inicial
-const fija = escena.camaras?.[camFija];
-if (fija) {
-  camara.position.fromArray(fija.posicion);
-  camara.lookAt(new THREE.Vector3().fromArray(fija.mira));
-  camara.fov = fija.fov ?? camara.fov;
-} else {
-  camara.position.fromArray(escena.inicio.posicion);
-  camara.position.y = ALTURA_OJOS;
-  camara.rotation.set(-0.04, escena.inicio.yaw ?? 0, 0, 'YXZ');
+async function montarSala(id, { desde = null, alProgreso } = {}) {
+  const s = await cargarSala(id, { renderer, calidad, alProgreso });
+  escena3d.add(s.modelo);
+  await pintarCartelas(s.modelo, s.escena, obras, renderer);
+  await pintarPanel(s.modelo, salas[id], datosSalas, renderer);
+  s.vivos = new CuadrosVivos(s.modelo, obras, { calidad });
+  const medio = (s.escena.limites.zmin + s.escena.limites.zmax) / 2;
+  s.entorno = capturarEntorno(renderer, escena3d, new THREE.Vector3(0, 2.2, medio), { intensidad: 1.25 });
+  s.haces = crearHaces(s.escena.focos);
+  escena3d.add(s.haces);
+  s.polvo = calidad.particulas > 0 ? crearPolvo(s.escena.focos, { porFoco: Math.round(220 * calidad.particulas), pixelRatio: calidad.pixelRatio }) : null;
+  if (s.polvo) escena3d.add(s.polvo);
+  s.reflejo = calidad.reflejo > 0 && s.mallasPorGrupo.suelo
+    ? new ReflejoSuelo(renderer, s.mallasPorGrupo.suelo, { resolucion: calidad.reflejo })
+    : null;
+  s.contemplar = new Contemplar(camara, s.escena.obras);
+  s.contemplar.aplicarVista(innerWidth, innerHeight);
+  s.reflejo?.ajustarTamano(innerWidth, innerHeight);
+  sala = s;
+
+  // Se llega por la puerta que viene de la sala anterior (o, si se salta desde el índice, por la
+  // entrada de la sala).
+  const fija = s.escena.camaras?.[camFija];
+  if (fija) {
+    camara.position.fromArray(fija.posicion);
+    camara.lookAt(new THREE.Vector3().fromArray(fija.mira));
+    camara.fov = fija.fov ?? camara.fov;
+  } else {
+    const llegada = (desde && s.escena.pasos?.find((p) => p.destino === desde)?.llegada) || s.escena.inicio;
+    camara.position.fromArray(llegada.posicion);
+    camara.position.y = ALTURA_OJOS;
+    camara.rotation.set(-0.04, llegada.yaw ?? 0, 0, 'YXZ');
+  }
+  const url = new URL(location.href);
+  url.searchParams.set('sala', id);
+  history.replaceState(null, '', url);
+
+  // En el ordenador, la sala siguiente se va descargando en segundo plano (solo a la caché).
+  const siguiente = s.escena.pasos?.find((p) => salas[p.destino]?.numero > salas[id].numero)?.destino;
+  if (siguiente && !movil && !navigator.connection?.saveData) {
+    setTimeout(() => {
+      if (sala === s) salaDisponible(siguiente).then((si) => si && sala === s && precargarSala(siguiente, calidad));
+    }, 15000);
+  }
 }
+
+function desmontarSala() {
+  if (!sala) return;
+  sala.vivos.liberar();
+  sala.reflejo?.liberar();
+  sala.entorno?.dispose();
+  for (const o of [sala.haces, sala.polvo]) {
+    if (!o) continue;
+    o.removeFromParent();
+    o.traverse((x) => {
+      x.geometry?.dispose();
+      x.material?.dispose?.();
+    });
+  }
+  sala.liberar();
+  sala = null;
+}
+
+const salaInicial = salas[parametro('sala')] ? parametro('sala') : 'vestibulo';
+const listaMusica = fetch(`${BASE}musica/lista.json`).then((r) => (r.ok ? r.json() : []), () => []);
+await montarSala(salaInicial, { alProgreso: (f) => portada?.progreso(f * 0.92) });
 
 // --- Interfaz y controles
 const hud = new Hud(ui, {
@@ -98,6 +142,8 @@ const hud = new Hud(ui, {
 });
 const ficha = new Ficha(ui);
 const video = new Video(ui);
+const transicion = new Transicion(ui, { movil });
+const indice = new IndiceSalas(ui, datosSalas.salas);
 const ambiente = new Ambiente();
 const diorama = new Diorama(renderer, { calidad });
 const uiCuadro = new UiCuadro(ui, { movil });
@@ -115,13 +161,12 @@ const congelar = () => new Promise((resolver) => { capturaPendiente = resolver; 
 function desvanecer() {
   requestAnimationFrame(() => requestAnimationFrame(() => fundido.classList.remove('visible')));
 }
-const contemplar = new Contemplar(camara, escena.obras);
 const escritorio = movil ? null : new ControlesEscritorio(camara, document.body, lienzo);
 const tactil = movil ? new ControlesTactiles(camara, lienzo, ui) : null;
 tactil?.mostrar(false);
 if (camFija) hud.el.hidden = true;
 
-let estado = 'portada'; // portada · paseo · pausa · transicion · contemplar · cuadro
+let estado = 'portada'; // portada · paseo · pausa · indice · transicion · contemplar · cuadro
 let obraActual = null;
 let apuntada = null;
 
@@ -150,11 +195,94 @@ async function abrirObra(obra) {
     escritorio.desbloquear();
   }
   const opciones = colocarFicha(obra);
-  ficha.mostrar(obras[obra.id]);
-  vivos.enfocar(obra.id, ESPERA_VIVO);
-  await contemplar.acercarse(obra, opciones);
+  if (obra.tipo === 'panel') ficha.mostrarSala(salas[sala.id], datosSalas);
+  else ficha.mostrar(obras[obra.id]);
+  sala.vivos.enfocar(obra.id, ESPERA_VIVO);
+  await sala.contemplar.acercarse(obra, opciones);
   estado = 'contemplar';
 }
+
+// El título que se ve al apuntar a una obra (o al panel de la sala).
+function rotulo(o) {
+  if (!o) return null;
+  if (o.tipo !== 'panel') return obras[o.id];
+  const s = salas[sala.id];
+  return { titulo: s.numero ? `Sala ${ROMANOS[s.numero]}. ${s.titulo}` : 'El recorrido de las siete salas' };
+}
+
+// --- Cambio de sala
+// Al pisar el fondo del pasillo de una puerta: fundido a negro con el texto de paso, se suelta
+// la sala, se carga la otra y se entra por la puerta que viene de la anterior.
+async function cruzarPuerta(paso) {
+  estado = 'transicion';
+  if (!(await salaDisponible(paso.destino))) {
+    const s = salas[paso.destino];
+    hud.nota(`La <b>${s.numero ? `Sala ${ROMANOS[s.numero]}` : s.titulo}</b> todavía se está montando. Vuelve pronto.`, 6);
+    const p = sala.escena.pasos.find((x) => x === paso);
+    camara.position.fromArray(p.llegada.posicion);
+    camara.position.y = ALTURA_OJOS;
+    estado = 'paseo';
+    return;
+  }
+  await cambiarDeSala(paso.destino, { porPuerta: true });
+}
+
+async function cambiarDeSala(destino, { porPuerta = false } = {}) {
+  const origen = salas[sala.id];
+  const nueva = salas[destino];
+  estado = 'transicion';
+  hud.paseo(false);
+  tactil?.mostrar(false);
+  if (tactil) tactil.activo = false;
+  if (escritorio) escritorio.activo = false;
+  const adelante = porPuerta && nueva.numero > origen.numero;
+  const final = porPuerta && nueva.id === 'vestibulo' && origen.final ? origen.final : null;
+  await transicion.cubrir({ destino: nueva, paso: adelante ? origen.paso : null, final });
+  desmontarSala();
+  await montarSala(destino, { desde: porPuerta ? origen.id : null, alProgreso: (f) => transicion.progreso(f) });
+  apuntada = null;
+  await transicion.descubrir();
+  entrarEnPaseo();
+}
+
+function abrirIndice() {
+  if (estado !== 'paseo' && estado !== 'pausa') return;
+  estado = 'indice';
+  hud.paseo(false);
+  hud.mostrarPausa(false);
+  tactil?.mostrar(false);
+  if (tactil) tactil.activo = false;
+  if (escritorio) {
+    escritorio.activo = false;
+    escritorio.desbloquear();
+  }
+  Promise.all(datosSalas.salas.map(async (s) => [s.id, await salaDisponible(s.id)]))
+    .then((r) => indice.mostrar(sala.id, new Set(r.filter(([, si]) => si).map(([id]) => id))));
+}
+
+function cerrarIndice() {
+  if (estado !== 'indice') return;
+  indice.ocultar();
+  if (escritorio?.capturaPosible) {
+    estado = 'pausa';
+    hud.mostrarPausa(true);
+  } else {
+    entrarEnPaseo();
+  }
+}
+
+indice.addEventListener('cerrar', () => cerrarIndice());
+indice.addEventListener('ir', (e) => {
+  indice.ocultar();
+  if (e.detail === sala.id) {
+    estado = 'pausa';
+    cerrarIndice();
+    return;
+  }
+  estado = 'paseo';
+  cambiarDeSala(e.detail);
+});
+hud.addEventListener('salas', () => abrirIndice());
 
 // Dónde va la ficha y qué fracción de la pantalla ocupa; el cuadro se encuadra en el resto. En
 // una pantalla ancha, a la derecha. En el móvil y en ventanas estrechas, debajo del cuadro: en
@@ -169,7 +297,7 @@ function colocarFicha(obra) {
   } else if (w > h) {
     opciones = { lado: 'abajo', hueco: 0.4, margen: 0.86 };
   } else {
-    const o = contemplar.porId[obra.id];
+    const o = sala.contemplar.porId[obra.id];
     const libre = THREE.MathUtils.clamp((w * (o.alto / o.ancho) + 90) / h, 0.3, 0.55);
     opciones = { lado: 'abajo', hueco: 1 - libre, margen: 0.9 };
   }
@@ -184,10 +312,10 @@ async function entrarEnCuadro() {
   if (estado !== 'contemplar' || !o?.diorama) return;
   estado = 'transicion';
   ficha.cargando(true);
-  const textura = texturasObras[o.id];
+  const textura = sala.texturasObras[o.id];
   const alto = o.medidas.alto / 100;
   const ancho = alto * (textura.image.width / textura.image.height);
-  const pose = contemplar.poseLienzo(obraActual, ancho, alto);
+  const pose = sala.contemplar.poseLienzo(obraActual, ancho, alto);
   try {
     await diorama.cargar(o.id);
   } catch (e) {
@@ -197,8 +325,8 @@ async function entrarEnCuadro() {
     return;
   }
   ficha.ocultar();
-  vivos.enfocar(null);
-  await contemplar.ir(pose, 1.4);
+  sala.vivos.enfocar(null);
+  await sala.contemplar.ir(pose, 1.4);
   await congelar();
   await diorama.preparar(o.id, { ancho, alto, distancia: pose.dist, fov: camara.fov, aspecto: camara.aspect, cuadroPlano: textura });
   datosCuadro = await diorama.cargar(o.id);
@@ -223,7 +351,7 @@ async function salirDelCuadro() {
   desvanecer();
   const opciones = colocarFicha(obraActual);
   ficha.mostrar(obras[obraActual.id]);
-  await contemplar.ir(contemplar.poseFrente(obraActual, opciones), 1.2);
+  await sala.contemplar.ir(sala.contemplar.poseFrente(obraActual, opciones), 1.2);
   estado = 'contemplar';
 }
 
@@ -231,10 +359,10 @@ async function volverAlPaseo({ gesto = false } = {}) {
   if (estado !== 'contemplar') return;
   estado = 'transicion';
   ficha.ocultar();
-  vivos.enfocar(null);
+  sala.vivos.enfocar(null);
   if (video.abierto) video.cerrar();
   if (escritorio && gesto) escritorio.bloquear();
-  await contemplar.volver();
+  await sala.contemplar.volver();
   obraActual = null;
   apuntada = null; // para que el cuadro al que se vuelve a mirar se anime otra vez
   // Si se volvió con Esc, el navegador no deja recuperar la captura del ratón (Esc no cuenta
@@ -299,10 +427,10 @@ escritorio?.addEventListener('bloqueo', () => {
   if (estado === 'pausa') entrarEnPaseo();
 });
 escritorio?.addEventListener('clic', (e) => {
-  if (estado === 'paseo') abrirObra(contemplar.apuntada(e.detail));
+  if (estado === 'paseo') abrirObra(sala.contemplar.apuntada(e.detail));
 });
 document.addEventListener('mousedown', (e) => {
-  if (estado === 'paseo' && escritorio?.bloqueado && e.button === 0) abrirObra(contemplar.apuntada());
+  if (estado === 'paseo' && escritorio?.bloqueado && e.button === 0) abrirObra(sala.contemplar.apuntada());
 });
 addEventListener('keydown', (e) => {
   // Tab pone y quita la pantalla completa (en vez de saltar entre botones).
@@ -313,7 +441,7 @@ addEventListener('keydown', (e) => {
   // E abre el cuadro al que se mira y, con la ficha abierta, vuelve al pasillo recuperando la
   // captura del ratón (una tecla normal sí cuenta como gesto del visitante, Esc no).
   if (e.code === 'KeyE' && !e.repeat) {
-    if (estado === 'paseo') abrirObra(contemplar.apuntada());
+    if (estado === 'paseo') abrirObra(sala.contemplar.apuntada());
     else if (estado === 'contemplar') volverAlPaseo({ gesto: true });
   }
   if (estado === 'cuadro' && visita.activa) {
@@ -324,18 +452,19 @@ addEventListener('keydown', (e) => {
     }
   }
   if (e.code === 'Escape') {
-    if (video.abierto) video.cerrar();
+    if (indice.abierto) cerrarIndice();
+    else if (video.abierto) video.cerrar();
     else if (estado === 'cuadro') salirDelCuadro();
     else if (estado === 'contemplar') volverAlPaseo();
   }
 });
 tactil?.addEventListener('toque', (e) => {
-  if (estado === 'paseo') abrirObra(contemplar.apuntada(e.detail));
+  if (estado === 'paseo') abrirObra(sala.contemplar.apuntada(e.detail));
 });
 // Cada toque sirve de gesto para que el móvil deje moverse al cuadro vivo (después del de los
 // mandos táctiles, que es el que abre el cuadro tocado).
-addEventListener('touchend', () => vivos.desbloquear(), { passive: true });
-addEventListener('click', () => vivos.desbloquear());
+addEventListener('touchend', () => sala?.vivos.desbloquear(), { passive: true });
+addEventListener('click', () => sala?.vivos.desbloquear());
 
 // --- Tamaño
 function ajustar() {
@@ -344,13 +473,13 @@ function ajustar() {
   renderer.setSize(w, h, false);
   lienzo.style.width = `${w}px`;
   lienzo.style.height = `${h}px`;
-  contemplar.aplicarVista(w, h);
+  sala?.contemplar.aplicarVista(w, h);
   diorama.ajustarTamano(w, h);
-  reflejo?.ajustarTamano(w, h);
+  sala?.reflejo?.ajustarTamano(w, h);
   post?.ajustarTamano(w, h);
   // Al girar el móvil o entrar y salir de la pantalla completa, se recoloca lo que hay abierto.
   if (estado === 'contemplar' && obraActual) {
-    contemplar.ir(contemplar.poseFrente(obraActual, colocarFicha(obraActual)), 0.35);
+    sala.contemplar.ir(sala.contemplar.poseFrente(obraActual, colocarFicha(obraActual)), 0.35);
   }
   if (estado === 'cuadro' && visita.activa) {
     diorama.reservar(uiCuadro.reserva());
@@ -373,6 +502,8 @@ renderer.setAnimationLoop((ahora) => {
   const dt = Math.min(reloj.getDelta(), 0.1);
   const t = reloj.getElapsed();
   renderer.info.reset();
+  if (!sala) return; // entre una sala y la siguiente
+  const { contemplar, vivos, reflejo, polvo } = sala;
   if (contemplar.activo) {
     contemplar.actualizar(dt);
     contemplar.aplicarVista(innerWidth, innerHeight);
@@ -383,7 +514,7 @@ renderer.setAnimationLoop((ahora) => {
     antes.copy(camara.position);
     if (paso.lengthSq() > 0) {
       camara.position.add(paso);
-      resolverColision(camara.position, RADIO_VISITANTE, escena);
+      resolverColision(camara.position, RADIO_VISITANTE, sala.escena);
       const recorrido = Math.hypot(camara.position.x - antes.x, camara.position.z - antes.z);
       const anterior = Math.floor(fasePaso / Math.PI);
       fasePaso += (recorrido / PASO) * Math.PI;
@@ -396,10 +527,12 @@ renderer.setAnimationLoop((ahora) => {
     // moverse; si deja de mirarlo, se para. En el móvil no hay mira ni aviso: basta con tocarlo.
     const o = contemplar.apuntada();
     if (o?.id !== apuntada?.id) {
-      if (!movil) hud.apuntando(o ? obras[o.id] : null);
+      if (!movil) hud.apuntando(rotulo(o));
       vivos.enfocar(o?.id ?? null, ESPERA_VIVO);
     }
     apuntada = o;
+    const puerta = pasoPisado(camara.position, sala.escena.pasos);
+    if (puerta) cruzarPuerta(puerta);
   }
 
   vivos.actualizar(dt);
@@ -429,7 +562,7 @@ renderer.setAnimationLoop((ahora) => {
       const i = renderer.info.render;
       const p = camara.position;
       hud.datos(`${Math.round(fpsMarcos / fpsTiempo)} fps · ${i.calls} llamadas · ${(i.triangles / 1000).toFixed(0)}k triángulos\n` +
-        `calidad ${calidad.nivel} · pos ${p.x.toFixed(2)} ${p.y.toFixed(2)} ${p.z.toFixed(2)} · ${estado} · ${vivos.diagnostico}`);
+        `${sala.id} · calidad ${calidad.nivel} · pos ${p.x.toFixed(2)} ${p.y.toFixed(2)} ${p.z.toFixed(2)} · ${estado} · ${vivos.diagnostico}`);
       fpsMarcos = 0;
       fpsTiempo = 0;
     }
@@ -441,7 +574,7 @@ if (portada) {
   await portada.lista();
   ambiente.iniciar();
   ambiente.alEmpezarPieza = (pieza) => hud.musica(pieza);
-  ambiente.iniciarMusica(listaMusica, BASE);
+  ambiente.iniciarMusica(await listaMusica, BASE);
   escritorio?.bloquear();
   portada.ocultar();
   entrarEnPaseo();
@@ -449,11 +582,13 @@ if (portada) {
 
 if (debug) {
   window.__museo = {
-    THREE, renderer, escena3d, camara, escena, contemplar, video, obras, ambiente, diorama, vivos,
+    THREE, renderer, escena3d, camara, video, obras, salas, ambiente, diorama,
+    sala: () => sala,
     estado: () => estado,
+    irASala: (id) => cambiarDeSala(id),
     contemplarObra: (id) => {
       estado = 'paseo';
-      return abrirObra(contemplar.porId[id]);
+      return abrirObra(sala.contemplar.porId[id]);
     },
     volver: () => volverAlPaseo(),
     entrarEnCuadro: () => entrarEnCuadro(),

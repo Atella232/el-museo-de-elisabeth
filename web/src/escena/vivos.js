@@ -17,7 +17,7 @@ export class CuadrosVivos {
   constructor(modelo, obras, { calidad }) {
     this.calidad = calidad;
     this.porId = {};
-    const vacia = new THREE.DataTexture(new Uint8Array(4), 1, 1);
+    const vacia = (this.vacia = new THREE.DataTexture(new Uint8Array(4), 1, 1));
     vacia.needsUpdate = true;
     modelo.traverse((obj) => {
       const id = obj.userData.obra;
@@ -139,6 +139,22 @@ export class CuadrosVivos {
     }, () => {
       v.desbloqueado = false;
     });
+  }
+
+  // Al salir de la sala: se paran y se sueltan los vídeos y sus texturas.
+  liberar() {
+    for (const v of Object.values(this.porId)) {
+      if (v.video) {
+        v.video.pause();
+        v.video.removeAttribute('src');
+        v.video.load();
+      }
+      v.textura?.dispose();
+    }
+    this.vacia.dispose();
+    this.porId = {};
+    this.actual = null;
+    this.contenedor.remove();
   }
 
   // Para la línea de ?debug.

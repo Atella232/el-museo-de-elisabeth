@@ -1,0 +1,52 @@
+{
+  "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
+  "_nota": "Sala I: el pasillo de la primera demo. Se recorre en U, en el orden de Elisabeth: la pared izquierda hacia el fondo, la Venus en el ábside y la pared derecha de vuelta hasta la puerta de la Sala II.",
+
+  "nave": {
+    "ancho": 7.0,
+    "largo": 33.6,
+    "zocalo": 1.0,
+    "entablamento": { "base": 5.6 },
+    "imposta": 6.5
+  },
+
+  "pilastras": { "y": [4.0, 11.0, 18.0, 25.0, 32.0], "ancho": 0.8, "saliente": 0.22 },
+
+  "suelo": { "baldosa": 0.7, "cenefa": 0.35 },
+
+  "boveda": { "filasCasetones": 4, "lucernario": { "ancho": 1.2, "largo": 3.2 } },
+
+  "carriles": { "x": 1.3, "z": 6.2, "y0": 1.8, "y1": 32.8 },
+
+  "vanos": [
+    { "pared": "puertas", "pos": 0.0,  "ancho": 2.4, "alto": 4.2, "destino": "vestibulo", "rotulo": true },
+    { "pared": "derecha", "pos": 14.5, "ancho": 2.4, "alto": 4.2, "destino": "deseo", "rotulo": true }
+  ],
+
+  "inicio": { "x": 0.0, "y": 1.3 },
+
+  "panel": { "pared": "izquierda", "pos": 2.0 },
+
+  "obras": [
+    { "id": "saturno",         "pared": "izquierda", "y": 7.5,  "marco": "dorado" },
+    { "id": "vulcano",         "pared": "izquierda", "y": 14.5, "marco": "dorado" },
+    { "id": "baco-caravaggio", "pared": "izquierda", "y": 21.5, "marco": "dorado" },
+    { "id": "juicio",          "pared": "izquierda", "y": 28.5, "marco": "dorado" },
+    { "id": "venus",           "pared": "fondo",     "x": 0.0,  "marco": "dorado", "edicula": true },
+    { "id": "gracias",         "pared": "derecha",   "y": 28.5, "marco": "dorado" },
+    { "id": "jupiter-tetis",   "pared": "derecha",   "y": 21.5, "marco": "dorado" }
+  ],
+
+  "hornacinas": [],
+
+  "bancos": [{ "x": 0.0, "y": 21.5, "largo": 2.2, "fondo": 0.55, "alto": 0.45 }],
+
+  "inscripcion": "MVSEVM ELISABETHAE",
+
+  "camaras": {
+    "entrada": { "x": 0.0,  "y": 2.4,  "z": 1.65, "mira": [0.0, 33.6, 3.2] },
+    "mitad":   { "x": -0.6, "y": 16.0, "z": 1.65, "mira": [3.5, 21.5, 2.4] },
+    "juicio":  { "x": 1.2,  "y": 28.5, "z": 1.65, "mira": [-3.5, 28.5, 2.1] },
+    "fondo":   { "x": 0.0,  "y": 25.6, "z": 1.65, "mira": [0.0, 33.6, 3.0] }
+  }
+}

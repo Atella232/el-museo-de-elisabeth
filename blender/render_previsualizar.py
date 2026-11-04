@@ -1,7 +1,7 @@
-"""Renders rápidos de control desde las cámaras de data/layout.json.
+"""Renders rápidos de control desde las cámaras de la planta de una sala (data/plantas/<sala>.json).
 
-Uso: Blender --background build/museo.blend --python blender/render_previsualizar.py -- [muestras] [prefijo]
-Deja las imágenes en build/renders/<prefijo>_<cámara>.png
+Uso: SALA=dioses Blender --background build/salas/dioses/museo.blend --python blender/render_previsualizar.py -- [muestras] [prefijo]
+Deja las imágenes en build/salas/<sala>/renders/<prefijo>_<cámara>.png
 """
 import os
 import sys
