@@ -25,7 +25,7 @@ export class UiCuadro extends EventTarget {
       <p class="cuadro-titulo"><span>Dentro de</span>${escapar(obra.titulo)}</p>
       <div class="cuadro-botones">
         ${visita ? '<button class="boton boton-oro" data-accion="visita">▶ Visita guiada</button>' : ''}
-        <button class="boton cuadro-salir" data-accion="salir">Salir del cuadro${teclas('Esc')}</button>
+        <button class="boton cuadro-salir" data-accion="salir"><span class="largo">Salir del cuadro</span><span class="corto">Salir</span>${teclas('Esc')}</button>
       </div>
       <p class="cuadro-ayuda">${ayuda}</p>
       <div class="cuadro-visita" hidden>
@@ -35,9 +35,9 @@ export class UiCuadro extends EventTarget {
           <button class="boton-icono" data-accion="pausa" aria-label="Pausa">❚❚</button>
           <button class="boton-icono" data-accion="siguiente" aria-label="Parada siguiente">›</button>
           <span class="cuadro-contador"></span>
-          <button class="boton boton-sutil" data-accion="terminar">Terminar visita</button>
+          <button class="boton boton-sutil cuadro-terminar" data-accion="terminar" aria-label="Terminar visita"><span class="largo">Terminar visita</span><span class="corto">✕</span></button>
+          ${this.movil ? '' : '<span class="cuadro-teclas"><kbd>←</kbd> <kbd>→</kbd> parada · <kbd>espacio</kbd> pausa</span>'}
         </div>
-        ${this.movil ? '' : '<p class="cuadro-teclas"><kbd>←</kbd> <kbd>→</kbd> para cambiar de parada · <kbd>espacio</kbd> para pausar</p>'}
       </div>`;
     this.visitaEl = this.el.querySelector('.cuadro-visita');
     this.el.hidden = false;
@@ -46,10 +46,30 @@ export class UiCuadro extends EventTarget {
     this.temporizador = setTimeout(() => this.el.querySelector('.cuadro-ayuda')?.classList.add('oculta'), 7000);
   }
 
-  // Durante la visita se esconden la ayuda y el botón de empezarla, y aparecen los subtítulos.
-  visita(activa) {
+  // Durante la visita se esconden la ayuda y el botón de empezarla, y aparecen los subtítulos
+  // (`textos`, los de todas las paradas, para darle a la franja la altura del más largo).
+  visita(activa, textos = []) {
     this.el.classList.toggle('en-visita', activa);
     this.visitaEl.hidden = !activa;
+    if (activa) this.textos = textos;
+  }
+
+  // Fracción de la pantalla, desde abajo, que ocupa la franja de la visita (0 sin visita). La
+  // franja mide siempre lo que el subtítulo más largo: así el cuadro, que se encaja encima, no
+  // salta de una parada a otra.
+  reserva() {
+    if (!this.visitaEl || this.visitaEl.hidden) return 0;
+    const sub = this.el.querySelector('.cuadro-subtitulo');
+    const actual = sub.textContent;
+    sub.style.minHeight = '';
+    let alto = 0;
+    for (const t of this.textos ?? []) {
+      sub.textContent = t;
+      alto = Math.max(alto, sub.offsetHeight);
+    }
+    sub.textContent = actual;
+    sub.style.minHeight = `${alto}px`;
+    return Math.max(0, (innerHeight - this.visitaEl.getBoundingClientRect().top + 6) / innerHeight);
   }
 
   parada({ indice, total, texto }) {

@@ -30,6 +30,11 @@ export class Diorama {
     this.avance = 0; // cuánto se ha adentrado el ojo, en fracción de la distancia al lienzo
     this.avanceObjetivo = 0;
     this.ultimoMovimiento = 0;
+    this.tamano = { w: 1, h: 1 };
+    // Fracción de la pantalla que tapan abajo los subtítulos de la visita guiada: el cuadro se
+    // encaja encima. `reservaActual` llega a `reserva` poco a poco.
+    this.reserva = 0;
+    this.reservaActual = 0;
     this.#escuchar();
   }
 
@@ -66,10 +71,13 @@ export class Diorama {
     this.mar = null;
     this.camara.fov = fov;
     this.camara.aspect = aspecto;
+    this.aspectoEntrada = aspecto;
     this.camara.position.set(0, 0, 0);
     this.camara.quaternion.identity();
     this.camara.zoom = 1;
     this.camara.updateProjectionMatrix();
+    this.reserva = 0;
+    this.reservaActual = 0;
     this.mira = new THREE.Vector3(0, 0, -distancia);
     this.guia = null;
     this.contornos = {};
@@ -139,9 +147,29 @@ export class Diorama {
   }
 
   ajustarTamano(w, h) {
-    this.camara.aspect = w / h;
+    this.tamano = { w, h };
+    this.camara.aspect = this.#aspecto(this.reservaActual);
     this.camara.updateProjectionMatrix();
     if (this.activo) this.#limites();
+  }
+
+  // Deja libre abajo la fracción `r` de la pantalla (0 la devuelve entera).
+  reservar(r) {
+    this.reserva = THREE.MathUtils.clamp(r, 0, 0.6);
+  }
+
+  // Proporción del hueco donde se ve el cuadro: la pantalla menos la franja reservada.
+  #aspecto(r) {
+    return this.tamano.w / (this.tamano.h * (1 - r));
+  }
+
+  // Zoom con el que el cuadro entero cabe en ese hueco tal como cabía en la pantalla al entrar
+  // (1 si nada ha cambiado; distinto si hay subtítulos o se ha girado el móvil). Si el hueco es
+  // más alto que el cuadro, sobra sitio y no hace falta encogerlo: solo sube.
+  #zoomCuadro(r) {
+    const { ancho: W, alto: H } = this.lienzo;
+    const cabe = (a) => Math.min(1 / H, a / W);
+    return cabe(this.#aspecto(r)) / cabe(this.aspectoEntrada);
   }
 
   // Hasta dónde puede adentrarse el ojo: desde el punto de partida (el cuadro entero a la vista)
@@ -202,13 +230,21 @@ export class Diorama {
     const g = this.guia;
     const k = Math.min(1, dt * 1.4);
     this.mira.lerp(g?.mira ?? _frente.set(this.camara.position.x, this.camara.position.y, -this.L), k);
-    this.camara.zoom += ((g?.zoom ?? 1) - this.camara.zoom) * k;
+    this.camara.zoom += ((g?.zoom ?? this.#zoomCuadro(0)) - this.camara.zoom) * k;
+    this.reservaActual += (this.reserva - this.reservaActual) * Math.min(1, dt * 3);
+    if (Math.abs(this.reserva - this.reservaActual) < 1e-4) this.reservaActual = this.reserva;
+    const r = this.reservaActual;
+    this.camara.aspect = this.#aspecto(r);
     this.camara.updateProjectionMatrix();
     const tanV = Math.tan(THREE.MathUtils.degToRad(this.camara.fov / 2)) / this.camara.zoom;
     const prof = Math.max(1e-3, this.camara.position.z - this.mira.z);
     const e = this.camara.projectionMatrix.elements;
     e[8] = (this.mira.x - this.camara.position.x) / prof / (tanV * this.camara.aspect);
     e[9] = (this.mira.y - this.camara.position.y) / prof / tanV;
+    // Con subtítulos, todo lo anterior se calcula para el hueco de encima de la franja (de ahí la
+    // proporción) y aquí se lleva a ese hueco: se encoge en vertical y se sube.
+    e[5] *= 1 - r;
+    e[9] = e[9] * (1 - r) - r;
     this.camara.projectionMatrixInverse.copy(this.camara.projectionMatrix).invert();
     for (const plano of this.planos) plano.material.color.lerp(_color.setScalar(plano.userData.brillo), Math.min(1, dt * 2));
     for (const c of Object.values(this.contornos)) {
@@ -249,20 +285,21 @@ export class Diorama {
       const cajas = nombres.map((n) => visita.figuras[n].caja);
       caja = [0, 1, 2, 3].map((k) => (k < 2 ? Math.min : Math.max)(...cajas.map((c) => c[k])));
     }
+    const { ancho: W, alto: H } = this.lienzo;
+    const tanV = Math.tan(THREE.MathUtils.degToRad(this.camara.fov / 2));
+    const tanH = tanV * this.#aspecto(this.reserva);
+    const zoomCuadro = this.#zoomCuadro(this.reserva); // el cuadro entero, encima de los subtítulos
     if (!caja) {
-      this.guia = { mira: null, zoom: 1 };
+      this.guia = { mira: null, zoom: zoomCuadro };
       return;
     }
     const s = 1 - (nombres.length ? this.#capa(visita.figuras[nombres[0]].capa).profundidad : 0);
-    const { ancho: W, alto: H } = this.lienzo;
-    const tanV = Math.tan(THREE.MathUtils.degToRad(this.camara.fov / 2));
-    const tanH = tanV * this.camara.aspect;
     const D = this.L * s - this.L * AVANCE_ENTRADA; // del ojo al plano de la figura
     const [x0, y0, x1, y1] = caja;
     const zoom = THREE.MathUtils.clamp(Math.min(
       (0.68 * 2 * D * tanV) / ((y1 - y0) * H * s),
       (0.68 * 2 * D * tanH) / ((x1 - x0) * W * s),
-    ), 1, ZOOM_MAX);
+    ), zoomCuadro, ZOOM_MAX); // nunca más lejos que con el cuadro entero
     // Que lo encuadrado no se salga del cuadro.
     const limX = Math.max(0, (W * s) / 2 - (D * tanH) / zoom * 0.95);
     const limY = Math.max(0, (H * s) / 2 - (D * tanV) / zoom * 0.95);

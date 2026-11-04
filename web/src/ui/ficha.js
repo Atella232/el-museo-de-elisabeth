@@ -48,6 +48,14 @@ export class Ficha extends EventTarget {
     requestAnimationFrame(() => this.el.classList.add('visible'));
   }
 
+  // Lado ('derecha' o 'abajo') y tamaño (fracción de la pantalla) del hueco que le deja el
+  // encuadre del cuadro.
+  colocar({ lado, hueco }) {
+    this.el.classList.toggle('abajo', lado === 'abajo');
+    this.el.style.height = lado === 'abajo' ? `${Math.round(hueco * innerHeight)}px` : '';
+    this.el.style.width = lado === 'derecha' ? `${Math.round(hueco * innerWidth)}px` : '';
+  }
+
   cargando(activo) {
     const b = this.el.querySelector('[data-accion="entrar"]');
     if (!b) return;

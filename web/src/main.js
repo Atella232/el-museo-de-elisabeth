@@ -27,6 +27,9 @@ import { Ambiente } from './audio/ambiente.js';
 import { Diorama } from './cuadro/diorama.js';
 import { UiCuadro } from './ui/cuadro.js';
 import { VisitaGuiada } from './cuadro/visita.js';
+import {
+  pantallaCompletaPosible, comoAplicacion, enPantallaCompleta, alternarPantallaCompleta, alCambiarPantallaCompleta,
+} from './ui/pantallaCompleta.js';
 
 const ALTURA_OJOS = 1.65;
 const RADIO_VISITANTE = 0.32;
@@ -88,7 +91,11 @@ if (fija) {
 }
 
 // --- Interfaz y controles
-const hud = new Hud(ui, { movil, debug });
+const hud = new Hud(ui, {
+  movil,
+  debug,
+  pantalla: pantallaCompletaPosible ? 'api' : movil && !comoAplicacion ? 'instrucciones' : null,
+});
 const ficha = new Ficha(ui);
 const video = new Video(ui);
 const ambiente = new Ambiente();
@@ -142,15 +149,32 @@ async function abrirObra(obra) {
     escritorio.activo = false; // arrastrar ya no gira la cámara
     escritorio.desbloquear();
   }
+  const opciones = colocarFicha(obra);
   ficha.mostrar(obras[obra.id]);
   vivos.enfocar(obra.id, ESPERA_VIVO);
-  await contemplar.acercarse(obra, opcionesFicha());
+  await contemplar.acercarse(obra, opciones);
   estado = 'contemplar';
 }
 
-function opcionesFicha() {
-  const lado = innerWidth > 800 ? 'derecha' : 'abajo';
-  return { lado, hueco: lado === 'derecha' ? Math.min(440, innerWidth * 0.36) / innerWidth : 0.56 };
+// Dónde va la ficha y qué fracción de la pantalla ocupa; el cuadro se encuadra en el resto. En
+// una pantalla ancha, a la derecha. En el móvil y en ventanas estrechas, debajo del cuadro: en
+// vertical el cuadro ocupa lo justo para verse de lado a lado (con aire arriba para los botones)
+// y la ficha el resto; en horizontal la ficha se queda con el 40 % de abajo.
+function colocarFicha(obra) {
+  const w = innerWidth;
+  const h = innerHeight;
+  let opciones;
+  if (!movil && w > 800) {
+    opciones = { lado: 'derecha', hueco: Math.min(440, w * 0.36) / w, margen: 0.78 };
+  } else if (w > h) {
+    opciones = { lado: 'abajo', hueco: 0.4, margen: 0.86 };
+  } else {
+    const o = contemplar.porId[obra.id];
+    const libre = THREE.MathUtils.clamp((w * (o.alto / o.ancho) + 90) / h, 0.3, 0.55);
+    opciones = { lado: 'abajo', hueco: 1 - libre, margen: 0.9 };
+  }
+  ficha.colocar(opciones);
+  return opciones;
 }
 
 // Entrar en el cuadro: la cámara del museo se acerca hasta que el lienzo llena la pantalla y,
@@ -197,8 +221,9 @@ async function salirDelCuadro() {
   await congelar();
   diorama.cerrar();
   desvanecer();
+  const opciones = colocarFicha(obraActual);
   ficha.mostrar(obras[obraActual.id]);
-  await contemplar.ir(contemplar.poseFrente(obraActual, opcionesFicha()), 1.2);
+  await contemplar.ir(contemplar.poseFrente(obraActual, opciones), 1.2);
   estado = 'contemplar';
 }
 
@@ -211,6 +236,7 @@ async function volverAlPaseo({ gesto = false } = {}) {
   if (escritorio && gesto) escritorio.bloquear();
   await contemplar.volver();
   obraActual = null;
+  apuntada = null; // para que el cuadro al que se vuelve a mirar se anime otra vez
   // Si se volvió con Esc, el navegador no deja recuperar la captura del ratón (Esc no cuenta
   // como gesto del visitante): se muestra la pausa y un clic la recupera.
   if (escritorio?.capturaPosible && !escritorio.bloqueado) {
@@ -226,7 +252,8 @@ ficha.addEventListener('entrar', () => entrarEnCuadro());
 uiCuadro.addEventListener('salir', () => salirDelCuadro());
 uiCuadro.addEventListener('visita', () => {
   if (estado !== 'cuadro' || !datosCuadro?.visita) return;
-  uiCuadro.visita(true);
+  uiCuadro.visita(true, datosCuadro.visita.paradas.map((p) => p.texto));
+  diorama.reservar(uiCuadro.reserva()); // el cuadro, encima de los subtítulos
   visita.empezar(datosCuadro.visita); // dentro del clic: la voz necesita el gesto en iOS
 });
 uiCuadro.addEventListener('anterior', () => visita.anterior());
@@ -235,7 +262,10 @@ uiCuadro.addEventListener('pausa', () => visita.alternarPausa());
 uiCuadro.addEventListener('terminar', () => visita.terminar());
 visita.addEventListener('parada', (e) => uiCuadro.parada(e.detail));
 visita.addEventListener('pausa', (e) => uiCuadro.pausa(e.detail));
-visita.addEventListener('fin', () => uiCuadro.visita(false));
+visita.addEventListener('fin', () => {
+  uiCuadro.visita(false);
+  diorama.reservar(0);
+});
 ficha.addEventListener('video', () => {
   const o = obras[obraActual?.id];
   if (!o?.youtubeId) return;
@@ -244,6 +274,15 @@ ficha.addEventListener('video', () => {
 });
 video.addEventListener('cerrado', () => ambiente.atenuarMusica(1));
 hud.addEventListener('sonido', () => hud.sonido(ambiente.alternarSilencio()));
+hud.addEventListener('pantalla', () => {
+  if (pantallaCompletaPosible) {
+    alternarPantallaCompleta({ horizontal: movil });
+  } else {
+    hud.nota('Para verlo a pantalla completa en el iPhone, toca <b>Compartir</b> y luego '
+      + '<b>Añadir a pantalla de inicio</b>, y abre el museo desde allí. Gira el teléfono para verlo en horizontal.', 14);
+  }
+});
+alCambiarPantallaCompleta(() => hud.pantallaCompleta(enPantallaCompleta()));
 hud.addEventListener('continuar', () => {
   escritorio?.bloquear();
   entrarEnPaseo();
@@ -266,6 +305,11 @@ document.addEventListener('mousedown', (e) => {
   if (estado === 'paseo' && escritorio?.bloqueado && e.button === 0) abrirObra(contemplar.apuntada());
 });
 addEventListener('keydown', (e) => {
+  // Tab pone y quita la pantalla completa (en vez de saltar entre botones).
+  if (e.code === 'Tab') {
+    e.preventDefault();
+    if (!e.repeat && pantallaCompletaPosible) alternarPantallaCompleta();
+  }
   // E abre el cuadro al que se mira y, con la ficha abierta, vuelve al pasillo recuperando la
   // captura del ratón (una tecla normal sí cuenta como gesto del visitante, Esc no).
   if (e.code === 'KeyE' && !e.repeat) {
@@ -288,6 +332,10 @@ addEventListener('keydown', (e) => {
 tactil?.addEventListener('toque', (e) => {
   if (estado === 'paseo') abrirObra(contemplar.apuntada(e.detail));
 });
+// Cada toque sirve de gesto para que el móvil deje moverse al cuadro vivo (después del de los
+// mandos táctiles, que es el que abre el cuadro tocado).
+addEventListener('touchend', () => vivos.desbloquear(), { passive: true });
+addEventListener('click', () => vivos.desbloquear());
 
 // --- Tamaño
 function ajustar() {
@@ -300,6 +348,14 @@ function ajustar() {
   diorama.ajustarTamano(w, h);
   reflejo?.ajustarTamano(w, h);
   post?.ajustarTamano(w, h);
+  // Al girar el móvil o entrar y salir de la pantalla completa, se recoloca lo que hay abierto.
+  if (estado === 'contemplar' && obraActual) {
+    contemplar.ir(contemplar.poseFrente(obraActual, colocarFicha(obraActual)), 0.35);
+  }
+  if (estado === 'cuadro' && visita.activa) {
+    diorama.reservar(uiCuadro.reserva());
+    visita.reencuadrar();
+  }
 }
 addEventListener('resize', ajustar);
 ajustar();
@@ -336,15 +392,14 @@ renderer.setAnimationLoop((ahora) => {
     } else {
       camara.position.y += (ALTURA_OJOS - camara.position.y) * Math.min(1, dt * 6);
     }
-    if (!movil) {
-      const o = contemplar.apuntada();
-      if (o?.id !== apuntada?.id) {
-        hud.apuntando(o ? obras[o.id] : null);
-        // Si se queda mirando un cuadro vivo, al rato empieza a moverse; si deja de mirarlo, se para.
-        vivos.enfocar(o?.id ?? null, ESPERA_VIVO);
-      }
-      apuntada = o;
+    // El cuadro del centro de la pantalla. Si se queda mirando un cuadro vivo, al rato empieza a
+    // moverse; si deja de mirarlo, se para. En el móvil no hay mira ni aviso: basta con tocarlo.
+    const o = contemplar.apuntada();
+    if (o?.id !== apuntada?.id) {
+      if (!movil) hud.apuntando(o ? obras[o.id] : null);
+      vivos.enfocar(o?.id ?? null, ESPERA_VIVO);
     }
+    apuntada = o;
   }
 
   vivos.actualizar(dt);
@@ -374,7 +429,7 @@ renderer.setAnimationLoop((ahora) => {
       const i = renderer.info.render;
       const p = camara.position;
       hud.datos(`${Math.round(fpsMarcos / fpsTiempo)} fps · ${i.calls} llamadas · ${(i.triangles / 1000).toFixed(0)}k triángulos\n` +
-        `calidad ${calidad.nivel} · pos ${p.x.toFixed(2)} ${p.y.toFixed(2)} ${p.z.toFixed(2)} · ${estado}`);
+        `calidad ${calidad.nivel} · pos ${p.x.toFixed(2)} ${p.y.toFixed(2)} ${p.z.toFixed(2)} · ${estado} · ${vivos.diagnostico}`);
       fpsMarcos = 0;
       fpsTiempo = 0;
     }

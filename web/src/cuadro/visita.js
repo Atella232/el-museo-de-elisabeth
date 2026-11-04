@@ -48,6 +48,11 @@ export class VisitaGuiada extends EventTarget {
     this.dispatchEvent(new CustomEvent('pausa', { detail: this.pausada }));
   }
 
+  // Vuelve a encuadrar la parada actual (si cambia el tamaño de la pantalla o de los subtítulos).
+  reencuadrar() {
+    if (this.activa && this.indice >= 0) this.diorama.guiar(this.datos.paradas[this.indice], this.datos);
+  }
+
   terminar() {
     if (!this.activa) return;
     clearTimeout(this.temporizador);

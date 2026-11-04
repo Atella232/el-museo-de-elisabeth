@@ -67,12 +67,12 @@ export class Contemplar {
 
   // Pose de cámara de frente a la obra, a la distancia que la encuadra en el espacio que
   // deja libre la ficha (que ocupa la fracción `hueco` de la pantalla por `lado`).
-  poseFrente(obra, { lado = 'derecha', hueco = 0.36 } = {}) {
+  // `margen`: cuánto del espacio libre ocupa el cuadro por su lado más justo.
+  poseFrente(obra, { lado = 'derecha', hueco = 0.36, margen = 0.78 } = {}) {
     const vfov = THREE.MathUtils.degToRad(this.fovBase);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.#aspecto());
     const libreAncho = lado === 'derecha' ? 1 - hueco : 1;
     const libreAlto = lado === 'abajo' ? 1 - hueco : 1;
-    const margen = 0.78;
     const dAlto = (obra.alto / (margen * libreAlto)) / 2 / Math.tan(vfov / 2);
     const dAncho = (obra.ancho / (margen * libreAncho)) / 2 / Math.tan(hfov / 2);
     const dist = THREE.MathUtils.clamp(Math.max(dAlto, dAncho), 0.9, 6.0);
@@ -101,6 +101,7 @@ export class Contemplar {
   }
 
   ir(destino, duracion = 1.1) {
+    if (destino.lado) this.lado = destino.lado;
     return new Promise((resolver) => {
       this.animacion = {
         desdePos: this.camara.position.clone(),

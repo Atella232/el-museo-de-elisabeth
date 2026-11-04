@@ -51,7 +51,13 @@ export class CuadrosVivos {
       this.porId[id] = { archivo: `${id}-${calidad.texturas}.mp4`, uniforms, video: null, textura: null };
     });
     this.actual = null;
-    this.estado = 'quieto'; // quieto · entrando · vivo · saliendo · pausa
+    this.estado = 'quieto'; // quieto · pausa · cargando · vivo
+    this.error = null; // por qué se negó el navegador la última vez (se ve con ?debug)
+    // Los vídeos van en la página aunque no se vean: algunos móviles no descodifican los
+    // fotogramas de un vídeo que no está en ella.
+    this.contenedor = document.createElement('div');
+    this.contenedor.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
+    document.body.append(this.contenedor);
   }
 
   tiene(id) {
@@ -69,9 +75,16 @@ export class CuadrosVivos {
     if (!nuevo.video) {
       const video = document.createElement('video');
       video.src = `${BASE}vivos/${nuevo.archivo}`;
+      // Sin sonido y dentro de la página: así los móviles dejan que empiece sin tocarlo. Como
+      // atributos además de propiedades, que es lo que mira Safari en el iPhone.
       video.muted = true;
+      video.defaultMuted = true;
       video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
       video.preload = 'auto';
+      this.contenedor.append(video);
       nuevo.video = video;
       nuevo.textura = new THREE.VideoTexture(video);
       nuevo.textura.colorSpace = THREE.NoColorSpace; // se descodifica en el shader
@@ -89,15 +102,48 @@ export class CuadrosVivos {
   #reproducir(v) {
     v.video.currentTime = 0;
     v.video.play().then(() => {
+      this.error = null;
       if (this.actual === v) this.estado = 'vivo';
-    }, () => {
-      // El navegador puede negarse (pestaña oculta, ahorro de energía): se reintenta luego.
+    }, (e) => {
+      // El navegador puede negarse (pestaña oculta, ahorro de energía): se reintenta luego y,
+      // si lo que falta es un gesto del visitante, en cuanto toque la pantalla (desbloquear).
+      this.error = e?.name ?? 'error';
       if (this.actual !== v) return;
+      if (e?.name === 'NotAllowedError') {
+        v.bloqueado = true;
+        v.desbloqueado = false;
+      }
       this.estado = 'pausa';
       this.esperaPausa = 2;
     });
     this.estado = 'cargando';
     this.esperaPausa = 0;
+  }
+
+  // En el móvil, el navegador puede no dejar que un vídeo empiece solo (el iPhone en modo de
+  // ahorro de energía, el ahorro de datos de Android): hace falta un gesto. Se llama en cada
+  // toque. Si al vídeo del cuadro que se mira ya le tocaba moverse, empieza ahí; si aún le toca
+  // esperar, arranca y se para enseguida. Desde entonces el navegador ya lo deja moverse solo.
+  desbloquear() {
+    const v = this.actual;
+    if (!v?.video || v.desbloqueado) return;
+    v.desbloqueado = true;
+    if (v.bloqueado) {
+      v.bloqueado = false;
+      this.#reproducir(v);
+      return;
+    }
+    if (!v.video.paused) return;
+    v.video.play().then(() => {
+      if (this.actual !== v || this.estado === 'pausa') v.video.pause();
+    }, () => {
+      v.desbloqueado = false;
+    });
+  }
+
+  // Para la línea de ?debug.
+  get diagnostico() {
+    return `vivo ${this.estado}${this.error ? ` (${this.error})` : ''}`;
   }
 
   #detener(v) {

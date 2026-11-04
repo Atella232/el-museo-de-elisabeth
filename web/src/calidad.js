@@ -4,7 +4,8 @@ const params = new URLSearchParams(location.search);
 export const parametro = (nombre) => params.get(nombre);
 export const debug = params.has('debug');
 
-const movil = matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+// ?movil fuerza los mandos y la interfaz del móvil (para probarlos en el ordenador).
+const movil = params.has('movil') || matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const forzada = params.get('calidad');
 const nivel = ['alta', 'media', 'baja'].includes(forzada) ? forzada : movil ? 'media' : 'alta';
 
