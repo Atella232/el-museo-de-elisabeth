@@ -38,7 +38,7 @@
   ],
 
   "exentas": [
-    { "escultura": "loba", "x": 0.0, "y": 8.0, "mira": [0, -1], "giro": -90, "peana": 1.1 }
+    { "escultura": "loba", "x": 0.0, "y": 8.0, "mira": [0, -1], "giro": -90, "peana": 1.1, "intensidad": 1.6, "frente": 4.4 }
   ],
 
   "hornacinas": [],

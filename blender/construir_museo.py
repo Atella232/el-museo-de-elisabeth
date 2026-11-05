@@ -104,7 +104,9 @@ def materiales():
     M['terracota'] = comun.material('terracota', imagen=t['terracota'], rugosidad=0.55)
     M['vaciado'] = comun.material('vaciado', color='#e6dfd2', rugosidad=0.7, especular=0.35)
     M['marmol'] = comun.material('marmol_escultura', color='#ece6db', rugosidad=0.45, especular=0.45)
-    M['bronce_escultura'] = comun.material('bronce_escultura', color='#5a4128', rugosidad=0.5, especular=0.5)
+    # Un bronce claro: la luz horneada solo es difusa, sin los brillos del metal, y con un tono más
+    # oscuro la loba se veía como una silueta.
+    M['bronce_escultura'] = comun.material('bronce_escultura', color='#8d6c47', rugosidad=0.5, especular=0.5)
     M['panel'] = comun.material('panel', color='#efe9dc', rugosidad=0.85, especular=0.25)
     M['terciopelo'] = comun.material('terciopelo', color='#5b0f15', rugosidad=0.95, especular=0.2)
     M['cartela'] = comun.material('cartelas', color='#e9e3d6', rugosidad=0.8, especular=0.3)
@@ -499,21 +501,23 @@ def colocar_exenta(cfg, piezas):
         'marco': None,
         'exenta': True,
     })
-    focos_exenta(Vector((cx, cy, peana + alto * 0.55)), mira, alto)
+    focos_exenta(Vector((cx, cy, peana + alto * 0.55)), mira, alto, cfg.get('intensidad', 1.0), cfg.get('frente', 2.4))
 
 
-def focos_exenta(objetivo, mira, alto):
+def focos_exenta(objetivo, mira, alto, intensidad=1.0, frente=2.4):
     """Luz principal desde el carril que queda delante y a un lado; relleno desde el otro y,
     como se le puede dar la vuelta, un contraluz suave desde detrás. El haz abarca la
-    escultura entera, de la peana a lo más alto."""
+    escultura entera, de la peana a lo más alto. `frente`: cuánto por delante de la escultura
+    están los focos; a una escultura baja en una sala alta le llega la luz casi desde arriba y,
+    con ellos más adelantados, se le ve la cara."""
     c = L['carriles']
     z = c['z'] - 0.14
     lado = 1 if mira.x >= 0 else -1
-    for dist, s, holgura, intens in ((2.4, lado, 1.0, 1.6), (2.4, -lado, 1.15, 0.45), (-2.6, -lado, 1.15, 0.5)):
+    for dist, s, holgura, intens in ((frente, lado, 1.0, 1.6), (frente, -lado, 1.15, 0.45), (-2.6, -lado, 1.15, 0.5)):
         y = min(max((objetivo + mira * dist).y, c['y0'] + 0.3), c['y1'] - 0.3)
         pos = Vector((s * c['x'], y, z))
         ang = min(50, math.degrees(2 * math.atan(holgura * (alto / 2 + 0.25) / (objetivo - pos).length)))
-        anadir_foco(pos, objetivo, ang, intens)
+        anadir_foco(pos, objetivo, ang, intens * intensidad)
 
 
 def colgar_relieve(cfg, piezas):
