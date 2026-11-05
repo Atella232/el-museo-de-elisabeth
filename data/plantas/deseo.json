@@ -1,0 +1,55 @@
+{
+  "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
+  "_nota": "Sala II: nave de dos tramos con Apolo y Dafne en el eje, entre la Dánae y Las hilanderas. Se recorre en U, como la Sala I: la pared izquierda hacia el fondo, el Baco en el fondo y la pared derecha de vuelta hasta la puerta de la Sala III, junto a la entrada.",
+
+  "nave": {
+    "ancho": 8.0,
+    "largo": 21.1,
+    "zocalo": 1.0,
+    "entablamento": { "base": 5.6 },
+    "imposta": 6.5
+  },
+
+  "pilastras": { "y": [5.5, 12.5, 19.5], "ancho": 0.8, "saliente": 0.22 },
+
+  "suelo": { "baldosa": 0.7, "cenefa": 0.35 },
+
+  "boveda": { "filasCasetones": 4, "lucernario": { "ancho": 1.2, "largo": 3.2 } },
+
+  "carriles": { "x": 1.8, "z": 6.2, "y0": 1.0, "y1": 20.3 },
+
+  "vanos": [
+    { "pared": "puertas", "pos": 0.0, "ancho": 2.4, "alto": 4.2, "destino": "dioses", "rotulo": true },
+    { "pared": "derecha", "pos": 2.6, "ancho": 2.4, "alto": 4.2, "destino": "heroes", "rotulo": true }
+  ],
+
+  "inicio": { "x": 0.0, "y": 1.8 },
+
+  "panel": { "pared": "izquierda", "pos": 2.6 },
+
+  "obras": [
+    { "id": "danae",              "pared": "izquierda", "y": 9.0,  "marco": "dorado" },
+    { "id": "hilanderas",         "pared": "izquierda", "y": 16.0, "marco": "dorado" },
+    { "id": "baco",               "pared": "fondo",     "x": 0.0,  "marco": "dorado" },
+    { "id": "europa",             "pared": "derecha",   "y": 16.0, "marco": "dorado" },
+    { "id": "hipomenes-atalanta", "pared": "derecha",   "y": 9.0,  "marco": "dorado" }
+  ],
+
+  "exentas": [
+    { "escultura": "apolo-dafne", "x": 0.0, "y": 12.5, "mira": [0, -1], "giro": -90, "peana": 0.7 }
+  ],
+
+  "hornacinas": [],
+
+  "bancos": [{ "x": 0.0, "y": 17.2, "largo": 2.0, "fondo": 0.55, "alto": 0.45 }],
+
+  "inscripcion": "MVSEVM ELISABETHAE",
+
+  "camaras": {
+    "entrada": { "x": 0.0,  "y": 1.8,  "z": 1.65, "mira": [0.0, 21.1, 3.0] },
+    "apolo":   { "x": -0.4, "y": 8.6,  "z": 1.65, "mira": [0.0, 12.5, 2.3] },
+    "detras":  { "x": 1.2,  "y": 16.4, "z": 1.65, "mira": [0.0, 12.5, 2.0] },
+    "fondo":   { "x": 0.0,  "y": 14.6, "z": 1.65, "mira": [0.0, 21.1, 2.2] },
+    "salida":  { "x": -1.5, "y": 6.0,  "z": 1.65, "mira": [4.0, 2.6, 3.4] }
+  }
+}

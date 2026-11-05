@@ -18,7 +18,8 @@ export class Ficha extends EventTarget {
     });
   }
 
-  mostrar(obra) {
+  // `pista`: una línea de ayuda bajo el título (en las esculturas exentas, cómo rodearlas).
+  mostrar(obra, { pista = null } = {}) {
     const volumen = obra.tipo === 'escultura' || obra.tipo === 'relieve';
     const medidas = !obra.medidas ? null
       : obra.medidas.ancho ? `${fmt(obra.medidas.alto)} × ${fmt(obra.medidas.ancho)} cm`
@@ -36,6 +37,7 @@ export class Ficha extends EventTarget {
       <button class="ficha-cerrar" data-accion="volver" aria-label="Volver">×</button>
       <p class="ficha-autor">${escapar(obra.autor)}</p>
       <h2>${escapar(obra.titulo)}</h2>
+      ${pista ? `<p class="ficha-pista">${escapar(pista)}</p>` : ''}
       <dl class="ficha-datos">
         <div><dt>Fecha</dt><dd>${escapar(obra.fecha)}</dd></div>
         <div><dt>Técnica</dt><dd>${escapar(obra.tecnica)}</dd></div>

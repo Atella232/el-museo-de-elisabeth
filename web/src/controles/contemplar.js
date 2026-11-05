@@ -1,27 +1,50 @@
 // Mirar un cuadro: detectar a qué obra apunta el visitante y llevar la cámara hasta
 // quedar de frente a ella, dejando sitio a la ficha (a la derecha o abajo).
+// Las esculturas exentas se pueden apuntar desde cualquier lado y, al contemplarlas, se
+// rodean arrastrando: la cámara gira alrededor de su eje.
 import * as THREE from 'three';
 
 const _rayo = new THREE.Raycaster();
 const _centro = new THREE.Vector2();
 const _arriba = new THREE.Vector3(0, 1, 0);
+const _caja = new THREE.Box3();
+const ELEVACION = [-0.12, 0.55]; // radianes: un poco desde abajo hasta bastante desde arriba
+const MARGEN_PARED = 0.35;
 
 export class Contemplar {
-  constructor(camara, obras, { alcance = 5.5 } = {}) {
+  // `modelo`: la sala cargada, para medir las esculturas exentas; `limites`: la nave, para que
+  // al rodearlas la cámara no atraviese las paredes.
+  constructor(camara, obras, { alcance = 5.5, modelo = null, limites = null } = {}) {
     this.camara = camara;
     this.alcance = alcance;
+    this.limites = limites;
     this.zonas = new THREE.Group();
     this.porId = {};
     for (const o of obras) {
-      const plano = new THREE.Mesh(new THREE.PlaneGeometry(o.ancho, o.alto), new THREE.MeshBasicMaterial({ visible: false }));
       const centro = new THREE.Vector3().fromArray(o.centro);
       const normal = new THREE.Vector3().fromArray(o.normal);
+      const malla = o.exenta && modelo?.getObjectByName(`escultura_${o.id}`);
+      if (malla) {
+        // Un cilindro invisible alrededor de la escultura, de la peana hasta lo más alto.
+        _caja.setFromObject(malla);
+        const eje = _caja.getCenter(new THREE.Vector3());
+        const radio = Math.max(_caja.max.x - _caja.min.x, _caja.max.z - _caja.min.z) / 2;
+        const zona = new THREE.Mesh(new THREE.CylinderGeometry(radio, radio, _caja.max.y, 16), new THREE.MeshBasicMaterial({ visible: false }));
+        zona.position.set(eje.x, _caja.max.y / 2, eje.z);
+        zona.userData.obra = o;
+        this.zonas.add(zona);
+        this.porId[o.id] = { ...o, centroV: centro, normalV: normal, eje: new THREE.Vector3(eje.x, _caja.max.y / 2, eje.z), radio, altoTotal: _caja.max.y };
+        continue;
+      }
+      const plano = new THREE.Mesh(new THREE.PlaneGeometry(o.ancho, o.alto), new THREE.MeshBasicMaterial({ visible: false }));
       plano.position.copy(centro).addScaledVector(normal, 0.05);
       plano.lookAt(plano.position.clone().add(normal));
       plano.userData.obra = o;
       this.zonas.add(plano);
       this.porId[o.id] = { ...o, centroV: centro, normalV: normal };
     }
+    // Ángulos de la cámara alrededor de la escultura que se contempla.
+    this.orbita = { azimut: 0, elevacion: 0.1 };
     // Las zonas no están en la escena: hay que calcular sus matrices a mano para el raycast.
     this.zonas.updateMatrixWorld(true);
     this.animacion = null;
@@ -62,7 +85,7 @@ export class Contemplar {
     const [hit] = _rayo.intersectObjects(this.zonas.children, false);
     if (!hit) return null;
     const o = this.porId[hit.object.userData.obra.id];
-    return _rayo.ray.direction.dot(o.normalV) < -0.25 ? o : null;
+    return o.eje || _rayo.ray.direction.dot(o.normalV) < -0.25 ? o : null;
   }
 
   // Pose de cámara de frente a la obra, a la distancia que la encuadra en el espacio que
@@ -73,6 +96,7 @@ export class Contemplar {
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.#aspecto());
     const libreAncho = lado === 'derecha' ? 1 - hueco : 1;
     const libreAlto = lado === 'abajo' ? 1 - hueco : 1;
+    if (obra.eje) return this.#poseOrbita(obra, vfov, hfov, libreAncho, libreAlto, margen, hueco, lado);
     const dAlto = (obra.alto / (margen * libreAlto)) / 2 / Math.tan(vfov / 2);
     const dAncho = (obra.ancho / (margen * libreAncho)) / 2 / Math.tan(hfov / 2);
     const dist = THREE.MathUtils.clamp(Math.max(dAlto, dAncho), 0.9, 6.0);
@@ -80,6 +104,43 @@ export class Contemplar {
     pos.y = Math.max(1.2, Math.min(pos.y, 2.6));
     const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, obra.centroV, _arriba));
     return { pos, q, hueco, lado };
+  }
+
+  // Escultura exenta: la cámara, a la distancia que la encuadra entera (con la peana), en la
+  // dirección `azimut` desde su eje y mirando a su centro, un poco desde arriba o desde abajo
+  // según `elevacion`. Si la pared queda más cerca, se acerca lo que haga falta.
+  #poseOrbita(obra, vfov, hfov, libreAncho, libreAlto, margen, hueco, lado) {
+    const { azimut, elevacion } = this.orbita;
+    const dAlto = ((obra.altoTotal + 0.15) / (margen * libreAlto)) / 2 / Math.tan(vfov / 2);
+    const dAncho = ((2 * obra.radio + 0.3) / (margen * libreAncho)) / 2 / Math.tan(hfov / 2);
+    const dir = new THREE.Vector3(Math.sin(azimut) * Math.cos(elevacion), Math.sin(elevacion), Math.cos(azimut) * Math.cos(elevacion));
+    // Lo más cercano de la escultura está a `radio` del eje: se retrocede algo más para que quepa.
+    const dist = this.#hastaLaPared(obra.eje, dir, THREE.MathUtils.clamp(Math.max(dAlto, dAncho) + obra.radio * 0.5, obra.radio + 0.6, 7.0), MARGEN_PARED);
+    const pos = obra.eje.clone().addScaledVector(dir, dist);
+    pos.y = Math.max(0.9, pos.y);
+    const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, obra.eje, _arriba));
+    return { pos, q, hueco, lado };
+  }
+
+  // La distancia `dist` desde `desde` en la dirección `dir`, recortada para no pasar de las paredes.
+  #hastaLaPared(desde, dir, dist, margen) {
+    const l = this.limites;
+    if (!l) return dist;
+    for (const [eje, min, max] of [['x', l.xmin, l.xmax], ['z', l.zmin, l.zmax]]) {
+      if (Math.abs(dir[eje]) < 1e-4) continue;
+      dist = Math.min(dist, ((dir[eje] > 0 ? max - margen : min + margen) - desde[eje]) / dir[eje]);
+    }
+    return dist;
+  }
+
+  // Arrastrar mientras se contempla una escultura exenta: `dx`, `dy` en fracciones de la pantalla.
+  orbitar(obra, dx, dy, opciones) {
+    if (!obra?.eje) return;
+    this.orbita.azimut -= dx * Math.PI * 1.4;
+    this.orbita.elevacion = THREE.MathUtils.clamp(this.orbita.elevacion + dy * 1.6, ...ELEVACION);
+    const pose = this.poseFrente(obra, opciones);
+    this.camara.position.copy(pose.pos);
+    this.camara.quaternion.copy(pose.q);
   }
 
   // Pose con el lienzo entero a la vista (sin recortarlo, con un poco de aire alrededor) y sin
@@ -119,6 +180,13 @@ export class Contemplar {
 
   acercarse(obra, opciones) {
     this.guardada = { pos: this.camara.position.clone(), q: this.camara.quaternion.clone(), hueco: 0 };
+    // A una escultura se la mira desde donde se está: la cámara se acerca en línea recta y luego
+    // se puede rodear.
+    this.exenta = obra.eje ? obra : null;
+    if (obra.eje) {
+      const desde = this.camara.position.clone().sub(obra.eje);
+      this.orbita = { azimut: Math.atan2(desde.x, desde.z), elevacion: 0.1 };
+    }
     const pose = this.poseFrente(obra, opciones);
     this.lado = pose.lado;
     return this.ir(pose);
@@ -126,7 +194,21 @@ export class Contemplar {
 
   volver() {
     const g = this.guardada;
+    const o = this.exenta;
     this.guardada = null;
+    this.exenta = null;
+    if (g && o) {
+      // Después de rodear una escultura no se vuelve en línea recta al punto de partida, que
+      // podría quedar al otro lado (se la atravesaría): se retrocede desde donde se la mira,
+      // a la distancia a la que se estaba, a la altura de los ojos y mirándola.
+      const dir = new THREE.Vector3(Math.sin(this.orbita.azimut), 0, Math.cos(this.orbita.azimut));
+      const antes = Math.hypot(g.pos.x - o.eje.x, g.pos.z - o.eje.z);
+      const pos = o.eje.clone().addScaledVector(dir, this.#hastaLaPared(o.eje, dir, Math.max(antes, o.radio + 1.2), 0.5));
+      pos.y = g.pos.y;
+      const mira = new THREE.Vector3(o.eje.x, g.pos.y - 0.25, o.eje.z);
+      g.pos = pos;
+      g.q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, mira, _arriba));
+    }
     return g ? this.ir(g, 0.9) : Promise.resolve();
   }
 

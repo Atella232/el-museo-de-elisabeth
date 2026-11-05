@@ -394,7 +394,19 @@ def cargar_escaneo(oid, triangulos):
     ob = bpy.context.view_layer.objects.active
     ob.name = f'escultura_{oid}'
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    # Algunos GLB de Scan the World son triángulos sueltos, sin vértices compartidos: sin
+    # unirlos, la reducción deja una nube de triángulos por la que se ve a través. Las
+    # normales propias del archivo tampoco sobreviven a la reducción; se recalculan suaves.
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    tam = max(ob.dimensions)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=tam * 1e-6)
+    bm.to_mesh(ob.data)
+    bm.free()
+    if ob.data.has_custom_normals:
+        bpy.ops.mesh.customdata_custom_splitnormals_clear()
     caras = sum(len(p.vertices) - 2 for p in ob.data.polygons)
+    print(f'[escaneo] {oid}: {len(ob.data.vertices)} vértices, {caras} triángulos')
     if caras > triangulos:
         reducir = ob.modifiers.new('reducir', 'DECIMATE')
         reducir.ratio = triangulos / caras
@@ -484,18 +496,21 @@ def colocar_exenta(cfg, piezas):
         'marco': None,
         'exenta': True,
     })
-    focos_exenta(Vector((cx, cy, peana + alto * 0.65)), mira)
+    focos_exenta(Vector((cx, cy, peana + alto * 0.55)), mira, alto)
 
 
-def focos_exenta(objetivo, mira):
-    """Luz principal desde el carril que queda delante y a un lado; relleno desde el otro."""
+def focos_exenta(objetivo, mira, alto):
+    """Luz principal desde el carril que queda delante y a un lado; relleno desde el otro y,
+    como se le puede dar la vuelta, un contraluz suave desde detrás. El haz abarca la
+    escultura entera, de la peana a lo más alto."""
     c = L['carriles']
     z = c['z'] - 0.14
-    frente = objetivo + mira * 2.4
     lado = 1 if mira.x >= 0 else -1
-    for s, ang, intens in ((lado, 20, 1.6), (-lado, 26, 0.45)):
-        y = min(max(frente.y, c['y0'] + 0.3), c['y1'] - 0.3)
-        anadir_foco((s * c['x'], y, z), objetivo, ang, intens)
+    for dist, s, holgura, intens in ((2.4, lado, 1.0, 1.6), (2.4, -lado, 1.15, 0.45), (-2.6, -lado, 1.15, 0.5)):
+        y = min(max((objetivo + mira * dist).y, c['y0'] + 0.3), c['y1'] - 0.3)
+        pos = Vector((s * c['x'], y, z))
+        ang = min(50, math.degrees(2 * math.atan(holgura * (alto / 2 + 0.25) / (objetivo - pos).length)))
+        anadir_foco(pos, objetivo, ang, intens)
 
 
 def colgar_relieve(cfg, piezas):

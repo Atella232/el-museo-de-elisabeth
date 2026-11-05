@@ -17,8 +17,10 @@ npm run dev          # abre http://localhost:5173
 ```
 
 - **Ordenador:** `W A S D` o flechas para caminar, ratón para mirar, `Mayús` para ir más rápido,
-  clic o `E` sobre un cuadro para contemplarlo, `Esc` para volver o pausar.
-- **Móvil:** joystick abajo a la izquierda, arrastrar para mirar y tocar un cuadro.
+  clic o `E` sobre un cuadro para contemplarlo, `Esc` para volver o pausar. A las esculturas
+  del centro de las salas se les da la vuelta arrastrando mientras se contemplan.
+- **Móvil:** joystick abajo a la izquierda, arrastrar para mirar y tocar un cuadro (o deslizar
+  el dedo sobre una escultura para rodearla).
 - **Salas:** se pasa de una a otra cruzando sus puertas (la pantalla se funde a negro con el texto
   de paso de Elisabeth mientras se carga la siguiente) o con el botón ☰ de arriba a la derecha.
 - Parámetros de la URL: `?sala=vestibulo|dioses|deseo|…`, `?calidad=alta|media|baja`, `?debug`
@@ -47,7 +49,8 @@ data/plantas/<sala>.json + data/obras.json + data/salas.json   ← planta de cad
   público) y escaneos de Scan the World (GLB en Zenodo, licencia CC BY-NC-SA 4.0). Blender las
   reduce, las coloca en hornacinas o sobre peanas y hornea su luz en los vértices (no en una
   lightmap: el mapa UV de un escaneo sale en miles de trozos con costuras). Van en un archivo
-  aparte de cada sala (`esculturas.glb`).
+  aparte de cada sala (`esculturas.glb`). Las exentas, como *Apolo y Dafne* en la Sala II, se
+  pueden apuntar desde cualquier lado y rodear al contemplarlas (`web/src/controles/contemplar.js`).
 - **Entrar en el cuadro** (`web/src/cuadro/diorama.js`): la pintura se convierte en un diorama de
   planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
   animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que

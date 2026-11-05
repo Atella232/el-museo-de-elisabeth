@@ -443,6 +443,12 @@ kbd {
   margin: 0 0 1.2rem;
 }
 
+.ficha .ficha-pista {
+  margin: -0.6rem 0 1rem;
+  font-style: italic;
+  color: var(--oro);
+}
+
 .ficha h3 {
   font-family: var(--romana);
   font-weight: 600;

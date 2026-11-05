@@ -82,7 +82,7 @@ async function montarSala(id, { desde = null, alProgreso } = {}) {
   s.reflejo = calidad.reflejo > 0 && s.mallasPorGrupo.suelo
     ? new ReflejoSuelo(renderer, s.mallasPorGrupo.suelo, { resolucion: calidad.reflejo })
     : null;
-  s.contemplar = new Contemplar(camara, s.escena.obras);
+  s.contemplar = new Contemplar(camara, s.escena.obras, { modelo: s.modelo, limites: s.escena.limites });
   s.contemplar.aplicarVista(innerWidth, innerHeight);
   s.reflejo?.ajustarTamano(innerWidth, innerHeight);
   sala = s;
@@ -166,6 +166,7 @@ const tactil = movil ? new ControlesTactiles(camara, lienzo, ui) : null;
 tactil?.mostrar(false);
 if (camFija) hud.el.hidden = true;
 
+const PISTA_RODEAR = movil ? 'Desliza el dedo para dar la vuelta a la escultura.' : 'Arrastra con el ratón para dar la vuelta a la escultura.';
 let estado = 'portada'; // portada · paseo · pausa · indice · transicion · contemplar · cuadro
 let obraActual = null;
 let apuntada = null;
@@ -196,7 +197,7 @@ async function abrirObra(obra) {
   }
   const opciones = colocarFicha(obra);
   if (obra.tipo === 'panel') ficha.mostrarSala(salas[sala.id], datosSalas);
-  else ficha.mostrar(obras[obra.id]);
+  else ficha.mostrar(obras[obra.id], { pista: obra.eje ? PISTA_RODEAR : null });
   sala.vivos.enfocar(obra.id, ESPERA_VIVO);
   await sala.contemplar.acercarse(obra, opciones);
   estado = 'contemplar';
@@ -373,6 +374,26 @@ async function volverAlPaseo({ gesto = false } = {}) {
   } else {
     entrarEnPaseo();
   }
+}
+
+// Rodear una escultura exenta: arrastrar con el ratón o con el dedo mientras se contempla.
+let arrastre = null;
+lienzo.addEventListener('pointerdown', (e) => {
+  if (estado !== 'contemplar' || !obraActual?.eje) return;
+  arrastre = { id: e.pointerId, x: e.clientX, y: e.clientY };
+  lienzo.setPointerCapture(e.pointerId);
+});
+lienzo.addEventListener('pointermove', (e) => {
+  if (arrastre?.id !== e.pointerId || estado !== 'contemplar') return;
+  const opciones = colocarFicha(obraActual);
+  sala.contemplar.orbitar(obraActual, (e.clientX - arrastre.x) / innerWidth, (e.clientY - arrastre.y) / innerHeight, opciones);
+  arrastre.x = e.clientX;
+  arrastre.y = e.clientY;
+});
+for (const tipo of ['pointerup', 'pointercancel']) {
+  lienzo.addEventListener(tipo, (e) => {
+    if (arrastre?.id === e.pointerId) arrastre = null;
+  });
 }
 
 ficha.addEventListener('volver', () => volverAlPaseo({ gesto: true }));

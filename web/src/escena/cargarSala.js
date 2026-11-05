@@ -8,6 +8,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const BASE = import.meta.env.BASE_URL;
 const CON_IMAGEN = new Set([undefined, 'cuadro', 'foto']); // obras que llevan una imagen en la pared
+const BRILLO_LETRAS = 0.22;
 
 export const urlSala = (id) => `${BASE}salas/${id}/`;
 
@@ -129,6 +130,14 @@ export async function cargarSala(id, { renderer, calidad, alProgreso }) {
       (mallasPorGrupo[grupo] ??= []).push(obj);
     }
     obj.userData.obra = obra;
+    // Las letras doradas (rótulos de las puertas, inscripciones) no tienen luz horneada y, como
+    // son de metal, solo se ven por lo que reflejan: desde algunos sitios, la bóveda en sombra.
+    // Con un brillo propio muy suave se leen siempre.
+    if (obj.name === 'letras' || obj.parent?.name === 'letras') {
+      obj.material = obj.material.clone();
+      obj.material.emissive.set(0xb08a3e);
+      obj.material.emissiveIntensity = BRILLO_LETRAS;
+    }
   });
 
   function liberar() {
