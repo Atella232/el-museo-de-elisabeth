@@ -45,6 +45,9 @@ FONDO_PASILLO = 2.2
 RV_TERMAL = min(2.5, 0.714 * R)  # radio de la ventana termal del fondo
 PIL = L['pilastras']
 COLOR_FOCO = (1.0, 0.80, 0.60)
+# Para dar más o menos luz a una sala entera: menos en la del inframundo, más en las de paredes
+# altas, donde los carriles quedan más lejos de las obras.
+INTENSIDAD_FOCOS = L.get('intensidadFocos', 1.0)
 COLOR_LUNA = (0.55, 0.66, 1.0)
 
 # Paredes: sistema local con u hacia la derecha de quien mira y d hacia la sala.
@@ -542,7 +545,7 @@ def colgar_relieve(cfg, piezas):
         'alto': round(alto, 3),
         'marco': None,
     })
-    focos_obra(mk, cfg, ancho, zc)
+    focos_obra(mk, cfg, ancho, zc, alto)
 
 
 PANEL = (1.3, 1.8)  # ancho y alto del panel con el texto de la sala
@@ -1122,7 +1125,7 @@ def colgar_obra(cfg, lienzos, oros, piezas, marcos):
         'alto': round(exterior_h, 3),
         'marco': cfg['marco'],
     })
-    focos_obra(mk, cfg, exterior_w, zc_ext)
+    focos_obra(mk, cfg, exterior_w, zc_ext, exterior_h)
     return mk, exterior_w, exterior_h, zc_ext
 
 
@@ -1220,14 +1223,16 @@ def potencia_para(angulo):
     return 1100 * (angulo / 38) ** 2
 
 
-def focos_obra(mk, cfg, ancho_ext, zc):
+def focos_obra(mk, cfg, ancho_ext, zc, alto_ext=0.0):
     x_carril, z_carril = L['carriles']['x'], L['carriles']['z']
     if cfg['pared'] in ('fondo', 'puertas'):
         objetivo_c = mk.p(0, 0, zc)
         for s in (-1, 1):
             pos = Vector((s * x_carril, LARGO - 3.6 if cfg['pared'] == 'fondo' else 3.6, z_carril - 0.14))
             obj = objetivo_c + mk.u * (s * ancho_ext * 0.22)
-            anadir_foco(pos, obj, 44, 1.25)
+            # Con un cuadro muy grande (Las sabinas de David) el haz se abre hasta cubrirlo de arriba abajo.
+            cubrir = max(ancho_ext / 4 + 0.5, alto_ext / 2 + 0.4)
+            anadir_foco(pos, obj, max(44, min(60, math.degrees(2 * math.atan(cubrir / (obj - pos).length)))), 1.25)
         return
     n = 1 if ancho_ext < 1.2 else 2 if ancho_ext < 3.2 else 3
     desplaz = {1: [0], 2: [-ancho_ext / 4, ancho_ext / 4], 3: [-ancho_ext / 3, 0, ancho_ext / 3]}[n]
@@ -1260,7 +1265,7 @@ focos_lista = []
 
 
 def anadir_foco(pos, objetivo, angulo, intensidad=1.0):
-    focos_lista.append((Vector(pos), Vector(objetivo), angulo, intensidad))
+    focos_lista.append((Vector(pos), Vector(objetivo), angulo, intensidad * INTENSIDAD_FOCOS))
 
 
 def crear_focos(piezas, lentes):

@@ -1,0 +1,55 @@
+{
+  "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
+  "_nota": "Sala IV: paredes oscuras y algo menos de luz. En el orden de Elisabeth: el descenso (Proserpina y Caronte) a la izquierda, el paso de las almas (Orfeo de Rubens y la laguna Estigia, en el fondo) y el regreso (Psique en el centro, el Orfeo de Poussin y el sarcófago) a la derecha, de vuelta hacia la puerta de la Sala V.",
+
+  "nave": {
+    "ancho": 8.0,
+    "largo": 21.1,
+    "zocalo": 1.0,
+    "entablamento": { "base": 5.6 },
+    "imposta": 6.5
+  },
+
+  "pilastras": { "y": [5.5, 12.5, 19.5], "ancho": 0.8, "saliente": 0.22 },
+
+  "suelo": { "baldosa": 0.7, "cenefa": 0.35 },
+
+  "boveda": { "filasCasetones": 4, "lucernario": { "ancho": 1.2, "largo": 3.2 } },
+
+  "carriles": { "x": 1.8, "z": 6.2, "y0": 1.0, "y1": 20.3 },
+
+  "intensidadFocos": 0.8,
+
+  "vanos": [
+    { "pared": "puertas", "pos": 0.0, "ancho": 2.4, "alto": 4.2, "destino": "heroes", "rotulo": true },
+    { "pared": "derecha", "pos": 2.6, "ancho": 2.4, "alto": 4.2, "destino": "troya", "rotulo": true }
+  ],
+
+  "inicio": { "x": 0.0, "y": 1.8 },
+
+  "panel": { "pared": "izquierda", "pos": 2.6 },
+
+  "obras": [
+    { "id": "proserpina",           "pared": "izquierda", "y": 7.4,  "marco": "foto", "expuesto": { "alto": 1.9 } },
+    { "id": "caronte",              "pared": "izquierda", "y": 10.5, "marco": "dorado" },
+    { "id": "orfeo-rubens",         "pared": "izquierda", "y": 16.0, "marco": "dorado" },
+    { "id": "estigia",              "pared": "fondo",     "x": 0.0,  "marco": "dorado" },
+    { "id": "orfeo-poussin",        "pared": "derecha",   "y": 16.0, "marco": "dorado" },
+    { "id": "sarcofago-proserpina", "pared": "derecha",   "y": 9.0,  "marco": "foto", "expuesto": { "alto": 1.3 } }
+  ],
+
+  "exentas": [
+    { "escultura": "psique", "x": 0.0, "y": 14.0, "mira": [0, -1], "tumbar": 90, "peana": 0.85 }
+  ],
+
+  "hornacinas": [],
+
+  "inscripcion": "MVSEVM ELISABETHAE",
+
+  "camaras": {
+    "entrada": { "x": 0.0,  "y": 1.8,  "z": 1.65, "mira": [0.0, 21.1, 3.0] },
+    "psique":  { "x": -0.5, "y": 10.6, "z": 1.65, "mira": [0.0, 14.0, 1.3] },
+    "detras":  { "x": 1.4,  "y": 18.2, "z": 1.65, "mira": [0.0, 14.0, 1.2] },
+    "fondo":   { "x": 0.0,  "y": 16.5, "z": 1.65, "mira": [0.0, 21.1, 1.9] }
+  }
+}

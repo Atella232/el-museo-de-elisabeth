@@ -1,0 +1,53 @@
+{
+  "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
+  "_nota": "Sala VII: la más ancha y alta, como una basílica. La muerte de César (4 × 7 m) llena el primer tramo de la izquierda, de 9 m. El Augusto y, en el fondo, el relieve del Ara Pacis; de vuelta, el relieve de la columna de Trajano, el Marco Aurelio y el arco de Tito hasta la puerta que vuelve al vestíbulo, junto a la entrada.",
+
+  "nave": {
+    "ancho": 9.0,
+    "largo": 23.0,
+    "zocalo": 1.0,
+    "entablamento": { "base": 6.6 },
+    "imposta": 7.5
+  },
+
+  "pilastras": { "y": [4.6, 14.4, 21.4], "ancho": 0.8, "saliente": 0.22 },
+
+  "suelo": { "baldosa": 0.7, "cenefa": 0.35 },
+
+  "boveda": { "filasCasetones": 4, "lucernario": { "ancho": 1.2, "largo": 3.6 } },
+
+  "carriles": { "x": 2.0, "z": 7.2, "y0": 1.0, "y1": 22.2 },
+
+  "intensidadFocos": 1.3,
+
+  "vanos": [
+    { "pared": "puertas", "pos": 0.0, "ancho": 2.4, "alto": 4.2, "destino": "roma-nace", "rotulo": true },
+    { "pared": "derecha", "pos": 2.3, "ancho": 2.4, "alto": 4.2, "destino": "vestibulo", "rotulo": true }
+  ],
+
+  "inicio": { "x": 0.0, "y": 1.8 },
+
+  "panel": { "pared": "izquierda", "pos": 2.3 },
+
+  "obras": [
+    { "id": "cesar",         "pared": "izquierda", "y": 9.5,  "marco": "dorado" },
+    { "id": "augusto",       "pared": "izquierda", "y": 17.9, "marco": "foto", "expuesto": { "alto": 2.1 } },
+    { "id": "ara-pacis",     "pared": "fondo",     "x": 0.0,  "expuesto": { "alto": 1.6 } },
+    { "id": "trajano",       "pared": "derecha",   "y": 17.9, "expuesto": { "alto": 1.8 }, "giro": -90, "z": 0.8 },
+    { "id": "marco-aurelio", "pared": "derecha",   "y": 11.3, "marco": "foto", "expuesto": { "alto": 1.8 } },
+    { "id": "arco-tito",     "pared": "derecha",   "y": 6.9,  "marco": "foto", "expuesto": { "alto": 1.5 } }
+  ],
+
+  "hornacinas": [],
+
+  "bancos": [{ "x": 0.6, "y": 9.5, "largo": 2.4, "fondo": 0.55, "alto": 0.45 }],
+
+  "inscripcion": "MVSEVM ELISABETHAE",
+
+  "camaras": {
+    "entrada": { "x": 0.0,  "y": 1.8,  "z": 1.65, "mira": [0.0, 23.0, 3.4] },
+    "cesar":   { "x": 3.6,  "y": 9.5,  "z": 1.65, "mira": [-4.5, 9.5, 2.9] },
+    "fondo":   { "x": 0.0,  "y": 15.0, "z": 1.65, "mira": [0.0, 23.0, 2.2] },
+    "vuelta":  { "x": -1.6, "y": 20.0, "z": 1.65, "mira": [4.5, 8.0, 2.2] }
+  }
+}

@@ -607,6 +607,7 @@ if (debug) {
     sala: () => sala,
     estado: () => estado,
     irASala: (id) => cambiarDeSala(id),
+    cruzarPuerta: (destino) => cruzarPuerta(sala.escena.pasos.find((p) => p.destino === destino)),
     contemplarObra: (id) => {
       estado = 'paseo';
       return abrirObra(sala.contemplar.porId[id]);

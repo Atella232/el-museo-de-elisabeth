@@ -1,0 +1,56 @@
+{
+  "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
+  "_nota": "Sala VI: paredes un metro más altas y tramos de 9 m para los cuadros grandes; Las sabinas de David (3,85 × 5,22 m) ocupa el fondo. La loba recibe en el centro del primer tramo. Se recorre en U hasta la puerta de la Sala VII, en el primer tramo de la derecha.",
+
+  "nave": {
+    "ancho": 8.0,
+    "largo": 25.1,
+    "zocalo": 1.0,
+    "entablamento": { "base": 6.6 },
+    "imposta": 7.5
+  },
+
+  "pilastras": { "y": [5.5, 14.5, 23.5], "ancho": 0.8, "saliente": 0.22 },
+
+  "suelo": { "baldosa": 0.7, "cenefa": 0.35 },
+
+  "boveda": { "filasCasetones": 4, "lucernario": { "ancho": 1.2, "largo": 3.6 } },
+
+  "carriles": { "x": 1.8, "z": 7.2, "y0": 1.0, "y1": 24.3 },
+
+  "intensidadFocos": 1.3,
+
+  "vanos": [
+    { "pared": "puertas", "pos": 0.0,  "ancho": 2.4, "alto": 4.2, "destino": "troya", "rotulo": true },
+    { "pared": "derecha", "pos": 10.0, "ancho": 2.4, "alto": 4.2, "destino": "roma-poder", "rotulo": true }
+  ],
+
+  "inicio": { "x": 0.0, "y": 1.8 },
+
+  "panel": { "pared": "izquierda", "pos": 2.6 },
+
+  "obras": [
+    { "id": "romulo-remo",     "pared": "izquierda", "y": 8.4,  "marco": "dorado" },
+    { "id": "sabinas-poussin", "pared": "izquierda", "y": 12.0, "marco": "dorado" },
+    { "id": "hersilia",        "pared": "izquierda", "y": 19.0, "marco": "dorado" },
+    { "id": "sabinas-david",   "pared": "fondo",     "x": 0.0,  "marco": "dorado" },
+    { "id": "horacios",        "pared": "derecha",   "y": 19.0, "marco": "dorado" }
+  ],
+
+  "exentas": [
+    { "escultura": "loba", "x": 0.0, "y": 8.0, "mira": [0, -1], "giro": -90, "peana": 1.1 }
+  ],
+
+  "hornacinas": [],
+
+  "bancos": [{ "x": 0.0, "y": 19.0, "largo": 2.2, "fondo": 0.55, "alto": 0.45 }],
+
+  "inscripcion": "MVSEVM ELISABETHAE",
+
+  "camaras": {
+    "entrada": { "x": 0.0,  "y": 1.8,  "z": 1.65, "mira": [0.0, 25.1, 3.4] },
+    "loba":    { "x": -0.3, "y": 5.2,  "z": 1.65, "mira": [0.0, 8.0, 1.4] },
+    "fondo":   { "x": 0.0,  "y": 15.0, "z": 1.65, "mira": [0.0, 25.1, 3.0] },
+    "vuelta":  { "x": -1.4, "y": 22.0, "z": 1.65, "mira": [4.0, 12.0, 2.6] }
+  }
+}
