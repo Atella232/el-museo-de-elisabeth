@@ -22,7 +22,9 @@ npm run dev          # abre http://localhost:5173
 - **Móvil:** joystick abajo a la izquierda, arrastrar para mirar y tocar un cuadro (o deslizar
   el dedo sobre una escultura para rodearla).
 - **Salas:** se pasa de una a otra cruzando sus puertas (la pantalla se funde a negro con el texto
-  de paso de Elisabeth mientras se carga la siguiente) o con el botón ☰ de arriba a la derecha.
+  de paso de Elisabeth mientras se carga la siguiente), con el ascensor que hay junto a la entrada
+  de cada sala (en el vestíbulo, junto a la puerta de la Sala I: se le apunta, se pulsa y se elige
+  la sala en su botonera) o con el botón ☰ de arriba a la derecha.
 - Parámetros de la URL: `?sala=vestibulo|dioses|deseo|…`, `?calidad=alta|media|baja`, `?debug`
   (FPS y datos) y `?cam=<cámara>` (cámara fija de la planta de la sala, para comparar con los
   renders de Blender).
@@ -44,13 +46,17 @@ data/plantas/<sala>.json + data/obras.json + data/salas.json   ← planta de cad
   puertas a otras salas.
 - **La web carga una sala cada vez** (`web/src/escena/cargarSala.js`) y suelta la anterior al
   salir. Las puertas a otras salas tienen un pasillo corto en penumbra; al llegar a su fondo se
-  pasa a la otra sala (`web/src/ui/transicion.js`).
+  pasa a la otra sala (`web/src/ui/transicion.js`). El ascensor de cada sala (`"ascensor"` en la
+  planta: pared y posición) tiene las puertas cerradas y un dial con la aguja en esa sala; al
+  llamarlo se abre su botonera (`web/src/ui/salas.js`) y se llega delante del ascensor de la otra.
 - **Las esculturas** son escaneos 3D: vaciados en yeso del Statens Museum for Kunst (STL, dominio
   público) y escaneos de Scan the World (GLB en Zenodo, licencia CC BY-NC-SA 4.0). Blender las
   reduce, las coloca en hornacinas o sobre peanas y hornea su luz en los vértices (no en una
   lightmap: el mapa UV de un escaneo sale en miles de trozos con costuras). Van en un archivo
   aparte de cada sala (`esculturas.glb`). Las exentas, como *Apolo y Dafne* en la Sala II, se
   pueden apuntar desde cualquier lado y rodear al contemplarlas (`web/src/controles/contemplar.js`).
+  Del *Perseo* de Cellini (Sala III) no hay escaneo libre: es una reconstrucción hecha con IA (Tripo,
+  vía Magnific) a partir de una fotografía de Commons, y su modelo está en `fuentes/esculturas/`.
 - **Entrar en el cuadro** (`web/src/cuadro/diorama.js`): la pintura se convierte en un diorama de
   planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
   animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que

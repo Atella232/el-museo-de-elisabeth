@@ -252,6 +252,29 @@ export class Ambiente {
     golpe.stop(t + 0.1);
   }
 
+  // La campanilla del ascensor al llegar a una sala: dos notas de campana (mi y do) que se
+  // apagan despacio, con sus parciales agudos.
+  timbre() {
+    if (!this.ctx || this.silencio) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    for (const [frecuencia, retraso] of [[1318.5, 0], [1046.5, 0.34]]) {
+      for (const [multiplo, nivel, dura] of [[1, 0.06, 1.8], [2.76, 0.016, 0.7], [5.4, 0.006, 0.35]]) {
+        const osc = ctx.createOscillator();
+        osc.frequency.value = frecuencia * multiplo;
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0, t + retraso);
+        env.gain.linearRampToValueAtTime(nivel, t + retraso + 0.004);
+        env.gain.exponentialRampToValueAtTime(0.0001, t + retraso + dura);
+        osc.connect(env);
+        env.connect(this.maestro);
+        env.connect(this.reverb);
+        osc.start(t + retraso);
+        osc.stop(t + retraso + dura + 0.05);
+      }
+    }
+  }
+
   #ruidoBlanco(seg) {
     const b = this.ctx.createBuffer(1, Math.round(this.ctx.sampleRate * seg), this.ctx.sampleRate);
     const d = b.getChannelData(0);

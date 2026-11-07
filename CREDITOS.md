@@ -79,8 +79,6 @@ Todas las pinturas son de dominio público. Las reproducciones proceden de Wikim
 
 Esculturas y monumentos de los que no hay un escaneo 3D libre. Las obras son de dominio público; cada fotografía tiene la licencia de su autor.
 
-- **Perseo con la cabeza de Medusa**, Benvenuto Cellini (1545–1554). Loggia dei Lanzi, Florencia.  
-  Fotografía: [Perseus with the Head of Medusa (Perseo con la testa di Medusa), Loggia dei Lanzi, Florence (26072265963).jpg](https://commons.wikimedia.org/wiki/File:Perseus_with_the_Head_of_Medusa_(Perseo_con_la_testa_di_Medusa),_Loggia_dei_Lanzi,_Florence_(26072265963).jpg), de Dimitris Kamaras from Athens, Greece — CC BY 2.0.
 - **Teseo y el Minotauro**, Antonio Canova (1781–1783). Victoria and Albert Museum, Londres.  
   Fotografía: [Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg](https://commons.wikimedia.org/wiki/File:Theseus_and_the_Minotaur_by_Antonio_Canova,_Victoria_and_Albert_Museum.jpg), de APK — CC BY 4.0.
 - **El rapto de Proserpina**, Gian Lorenzo Bernini (1621–1622). Galería Borghese, Roma.  
@@ -121,6 +119,13 @@ Escaneos 3D del proyecto Scan the World (MyMiniFactory), archivados en Zenodo co
   Modelo 3D: [Scan the World (MyMiniFactory), Zenodo 21376655](https://zenodo.org/records/21376655) — CC BY-NC-SA 4.0.
 - **Columna de Trajano**, Escultores romanos. Foro de Trajano, Roma.  
   Modelo 3D: [Scan the World (MyMiniFactory), Zenodo 21162339](https://zenodo.org/records/21162339) — CC BY-NC-SA 4.0.
+
+## Esculturas reconstruidas con IA
+
+De estas no hay un escaneo 3D libre: el modelo se generó con inteligencia artificial a partir de una fotografía del original, así que es una aproximación y no una copia exacta.
+
+- **Perseo con la cabeza de Medusa**, Benvenuto Cellini (1545–1554). Loggia dei Lanzi, Florencia.  
+  Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Decapicated Medusa 身首異處的梅杜莎 - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Decapicated_Medusa_%E8%BA%AB%E9%A6%96%E7%95%B0%E8%99%95%E7%9A%84%E6%A2%85%E6%9D%9C%E8%8E%8E_-_panoramio.jpg), de lienyuan lee — CC BY 3.0.
 
 ## Música
 

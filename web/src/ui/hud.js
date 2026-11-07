@@ -54,7 +54,8 @@ export class Hud extends EventTarget {
       return;
     }
     this.mira.classList.add('sobre');
-    this.aviso.innerHTML = `<strong>${obra.titulo.replace(/</g, '&lt;')}</strong><span>${this.movil ? 'Toca para contemplar' : 'Clic o <kbd>E</kbd> para contemplar'}</span>`;
+    const accion = obra.accion ?? (this.movil ? 'Toca para contemplar' : 'Clic o <kbd>E</kbd> para contemplar');
+    this.aviso.innerHTML = `<strong>${obra.titulo.replace(/</g, '&lt;')}</strong><span>${accion}</span>`;
     this.aviso.hidden = false;
   }
 

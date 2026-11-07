@@ -42,6 +42,11 @@ DZ = Z_ENT - 5.6  # el entablamento se diseñó para una base a 5,6 m; en salas 
 VANOS = L.get('vanos') or [{'pared': 'puertas', 'pos': 0, 'ancho': L['puertas']['ancho'],
                             'alto': L['puertas']['alto'], 'tipo': 'calle'}]
 FONDO_PASILLO = 2.2
+# Ascensor: unas puertas de latón cerradas en un rebaje del muro, con su marco de piedra, un dial
+# con la sala en la que se está y el botón de llamada. En la web, al pulsarlo se elige la sala.
+ASCENSOR = L.get('ascensor')
+ASC_PA, ASC_ALTO, ASC_MARCO, ASC_FONDO = 0.55, 2.4, 0.16, 0.18  # medio ancho, alto, marco y rebaje
+ASC_BOTON = 0.17  # lo que ocupa la placa del botón junto al marco, hacia el centro de la pared
 RV_TERMAL = min(2.5, 0.714 * R)  # radio de la ventana termal del fondo
 PIL = L['pilastras']
 COLOR_FOCO = (1.0, 0.80, 0.60)
@@ -99,6 +104,7 @@ def materiales():
     M['paspartu'] = comun.material('paspartu', color='#efeade', rugosidad=0.92, especular=0.2)
     M['bronce'] = comun.material('bronce', imagen=t['bronce'], metalico=1.0, rugosidad=0.42)
     M['laton'] = comun.material('laton', color='#c9a35a', metalico=1.0, rugosidad=0.25)
+    M['laton_mate'] = comun.material('laton_mate', color='#b48c4c', metalico=1.0, rugosidad=0.4)  # hojas del ascensor
     M['madera'] = comun.material('madera', imagen=t['madera'], rugosidad=0.45)
     M['hierro'] = comun.material('hierro', color='#1b1b1c', rugosidad=0.5, especular=0.5)
     M['terracota'] = comun.material('terracota', imagen=t['terracota'], rugosidad=0.55)
@@ -107,6 +113,10 @@ def materiales():
     # Un bronce claro: la luz horneada solo es difusa, sin los brillos del metal, y con un tono más
     # oscuro la loba se veía como una silueta.
     M['bronce_escultura'] = comun.material('bronce_escultura', color='#8d6c47', rugosidad=0.5, especular=0.5)
+    # Bronce oscuro y en parte metálico, para las que en el original son oscuras (el Perseo): con
+    # el claro, en una sala con focos fuertes, parecían de piedra. Lo metálico recibe en la web el
+    # reflejo de la sala, que le da el brillo del bronce.
+    M['bronce_patina'] = comun.material('bronce_patina', color='#5c4e34', metalico=0.65, rugosidad=0.36)
     M['panel'] = comun.material('panel', color='#efe9dc', rugosidad=0.85, especular=0.25)
     M['terciopelo'] = comun.material('terciopelo', color='#5b0f15', rugosidad=0.95, especular=0.2)
     M['cartela'] = comun.material('cartelas', color='#e9e3d6', rugosidad=0.8, especular=0.3)
@@ -114,6 +124,7 @@ def materiales():
     M['lente'] = comun.material('lente', color='#ffffff', emision='#ffe2b8', fuerza_emision=40.0)
     M['salida'] = comun.material('salida', color='#0c5a2a', emision='#16c25a', fuerza_emision=3.0)
     M['salida_texto'] = comun.material('salida_texto', color='#ffffff', emision='#f2fff5', fuerza_emision=4.0)
+    M['boton'] = comun.material('boton_ascensor', color='#ffd9a0', emision='#ffb45a', fuerza_emision=3.0)
     return t
 
 
@@ -369,6 +380,8 @@ def hornacina(c, mk, uc, h, piezas):
 TRIANGULOS_ESCULTURA = 60000
 TRIANGULOS_EXENTA = 120000
 CARPETA_ESCANEOS = os.path.join(comun.RAIZ, 'tools', 'cache', 'esculturas')
+# Modelos que no se descargan (los reconstruidos con IA a partir de fotografías): van en el repositorio.
+CARPETA_PROPIOS = os.path.join(comun.RAIZ, 'fuentes', 'esculturas')
 
 
 def cargar_escaneo(oid, triangulos):
@@ -377,8 +390,8 @@ def cargar_escaneo(oid, triangulos):
     Puede ser un GLB de Scan the World (<id>.glb) o uno o varios STL del SMK (<id>.stl,
     <id>-2.stl…), que se unen tal como vienen."""
     antes = set(bpy.data.objects)
-    glb = os.path.join(CARPETA_ESCANEOS, f'{oid}.glb')
-    if os.path.exists(glb):
+    glb = next((g for g in (os.path.join(c, f'{oid}.glb') for c in (CARPETA_ESCANEOS, CARPETA_PROPIOS)) if os.path.exists(g)), None)
+    if glb:
         bpy.ops.import_scene.gltf(filepath=glb)
     else:
         for f in sorted(os.listdir(CARPETA_ESCANEOS)):
@@ -458,7 +471,10 @@ def fijar_malla(ob, pos, mat):
 
 def colocar_exenta(cfg, piezas):
     """Escultura exenta sobre una peana de piedra en el centro de la sala, de cara a `mira`
-    (vector en planta). El escaneo, una vez corregido con `giro`/`tumbar`, mira hacia -Y."""
+    (vector en planta). El escaneo, una vez corregido con `giro`/`tumbar`, mira hacia -Y.
+    Con `huella` [x0, y0, x1, y1] (metros desde el centro de la escultura, con ella mirando a -Y),
+    la peana es ese rectángulo y la escultura se apoya en ella por lo más bajo que cae dentro:
+    para las que tienen partes que cuelgan por los lados, como el cuerpo de Medusa en el Perseo."""
     oid = cfg['escultura']
     meta = OBRAS[oid]
     alto = cfg.get('alto') or meta['medidas']['alto'] / 100
@@ -466,24 +482,37 @@ def colocar_exenta(cfg, piezas):
     ob, v = cargar_escaneo(oid, cfg.get('triangulos', TRIANGULOS_EXENTA))
     v = girar(v, cfg.get('giro', 0), cfg.get('tumbar', 0))
     mira = Vector((*cfg.get('mira', (0, -1)), 0)).normalized()
-    v = girar(v, math.degrees(math.atan2(mira.y, mira.x)) + 90)
+    angulo_mira = math.degrees(math.atan2(mira.y, mira.x)) + 90
+    v = girar(v, angulo_mira)
     s = alto / (v[:, 2].max() - v[:, 2].min())
     v = (v - [0, 0, v[:, 2].min()]) * s
     v[:, :2] -= (v[:, :2].min(axis=0) + v[:, :2].max(axis=0)) / 2
     cx, cy = cfg['x'], cfg['y']
+    huella = cfg.get('huella')
+    if huella:
+        esquinas = girar(np.array([[huella[0], huella[1], 0], [huella[2], huella[3], 0],
+                                   [huella[0], huella[3], 0], [huella[2], huella[1], 0]], float), angulo_mira)
+        (hx0, hy0), (hx1, hy1) = esquinas[:, :2].min(axis=0), esquinas[:, :2].max(axis=0)
+        dentro = (v[:, 0] > hx0) & (v[:, 0] < hx1) & (v[:, 1] > hy0) & (v[:, 1] < hy1)
+        v[:, 2] -= v[dentro, 2].min()
+        assert v[:, 2].min() > -peana + 0.1, 'lo que cuelga de la escultura llega al suelo: hace falta una peana más alta'
     pos = v + [cx, cy, peana]
-    fijar_malla(ob, pos, material_escultura(meta))
+    fijar_malla(ob, pos, M[cfg['material']] if 'material' in cfg else material_escultura(meta))
 
-    # Peana: zócalo, dado y losa, un poco mayores que la planta de la escultura
-    (x0, y0), (x1, y1) = v[:, :2].min(axis=0) + [cx, cy] - 0.12, v[:, :2].max(axis=0) + [cx, cy] + 0.12
+    # Peana: zócalo, dado y losa, un poco mayores que la planta de la escultura (o la huella dada)
+    if huella:
+        (x0, y0), (x1, y1) = (hx0 + cx, hy0 + cy), (hx1 + cx, hy1 + cy)
+    else:
+        (x0, y0), (x1, y1) = v[:, :2].min(axis=0) + [cx, cy] - 0.12, v[:, :2].max(axis=0) + [cx, cy] + 0.12
     piezas.caja_mundo((x0 - 0.04, y0 - 0.04, 0), (x1 + 0.04, y1 + 0.04, 0.08), M['piedra'])
     piezas.caja_mundo((x0, y0, 0.08), (x1, y1, peana - 0.06), M['zocalo'])
     piezas.caja_mundo((x0 - 0.03, y0 - 0.03, peana - 0.06), (x1 + 0.03, y1 + 0.03, peana), M['piedra'])
-    escena['obstaculos'].append([round(x0 - 0.25, 3), round(-(y1 + 0.25), 3), round(x1 + 0.25, 3), round(-(y0 - 0.25), 3)])
+    (ox0, oy0), (ox1, oy1) = np.minimum([x0, y0], v[:, :2].min(axis=0) + [cx, cy]), np.maximum([x1, y1], v[:, :2].max(axis=0) + [cx, cy])
+    escena['obstaculos'].append([round(ox0 - 0.25, 3), round(-(oy1 + 0.25), 3), round(ox1 + 0.25, 3), round(-(oy0 - 0.25), 3)])
 
     # Cartela en la cara delantera de la peana
     medio = abs((y1 - y0) * mira.y) / 2 + abs((x1 - x0) * mira.x) / 2  # media profundidad según `mira`
-    frente_peana = Vector((cx, cy, 0)) + mira * (medio + 0.001)
+    frente_peana = Vector(((x0 + x1) / 2, (y0 + y1) / 2, 0)) + mira * (medio + 0.001)
     derecha = Vector((-mira.y, mira.x, 0))
     indice = len(escena['cartelas'])
     escena['cartelas'][oid] = indice
@@ -747,6 +776,7 @@ def vidrio_termal(c):
 
 
 def muros(piezas):
+    global ascensor_mk
     mats = ['yeso', 'zocalo', 'piedra', 'pompeyano'] + ([] if M['pared'] is M['yeso'] else [M['pared']])
     c = constructor(*mats)
     for pared in ('izquierda', 'derecha', 'puertas', 'fondo'):
@@ -768,12 +798,21 @@ def muros(piezas):
             uc, pa = s * posicion(v), v['ancho'] / 2
             huecos.append({'u0': uc - pa, 'u1': uc + pa, 'z0': 0, 'z1': v['alto']})
             vanos.append((uc, pa, v))
+        cortes_zocalo = [(uc - pa - 0.3, uc + pa + 0.3) for uc, pa, _ in vanos]
+        asc_uc = s * posicion(ASCENSOR) if ASCENSOR and ASCENSOR['pared'] == pared else None
+        if asc_uc is not None:
+            comprobar_ascensor(pared, s, asc_uc)
+            huecos.append({'u0': asc_uc - ASC_PA, 'u1': asc_uc + ASC_PA, 'z0': 0, 'z1': ASC_ALTO})
+            cortes_zocalo.append((asc_uc - ASC_PA - ASC_MARCO - 0.03, asc_uc + ASC_PA + ASC_MARCO + 0.03))
         pared_con_huecos(c, mk, u0, u1, Z_ZOC, Z_ENT, huecos, M['pared'])
-        if vanos:
+        if vanos or asc_uc is not None:
             pared_con_huecos(c, mk, u0, u1, 0, Z_ZOC, [h for h in huecos if h['z0'] == 0], M['pared'])
-        zocalo(c, mk, u0, u1, huecos=[(uc - pa - 0.3, uc + pa + 0.3) for uc, pa, _ in vanos])
+        zocalo(c, mk, u0, u1, huecos=cortes_zocalo)
         for uc, pa, v in vanos:
             puertas(c, Marco(mk.p(uc, 0, 0), mk.u, mk.d), pa, v['alto'], v)
+        if asc_uc is not None:
+            ascensor_mk = Marco(mk.p(asc_uc, 0, 0), mk.u, mk.d)
+            rebaje_ascensor(c, ascensor_mk)
         if lateral:
             for y in PIL['y']:
                 pilastra(c, PAREDES[pared](y))
@@ -858,6 +897,117 @@ def rect_plano(mk, u0, u1, d0, d1):
     xs = [p.x for p in pts]
     zs = [-p.y for p in pts]
     return [round(min(xs), 3), round(min(zs), 3), round(max(xs), 3), round(max(zs), 3)]
+
+
+# ------------------------------------------------------------------ ascensor
+
+ascensor_mk = None  # marco local del ascensor (en el centro de sus puertas), lo fija muros()
+
+
+def lado_boton(uc):
+    """La placa del botón va hacia el centro de la pared."""
+    return -1 if uc > 0 else 1
+
+
+def comprobar_ascensor(pared, s, uc):
+    """Que el ascensor (marco y placa del botón) no pise ninguna puerta, panel, hornacina u obra
+    de su pared ni quede pegado a una esquina: mejor fallar aquí que después de hornear."""
+    lado = lado_boton(uc)
+    a = uc - ASC_PA - ASC_MARCO - (ASC_BOTON if lado < 0 else 0)
+    b = uc + ASC_PA + ASC_MARCO + (ASC_BOTON if lado > 0 else 0)
+    u0, u1 = sorted((0, s * LARGO)) if pared in ('izquierda', 'derecha') else (-X, X)
+    assert a >= u0 + 0.15 and b <= u1 - 0.15, f'el ascensor ({a:.2f}..{b:.2f}) se sale de la pared {pared} ({u0}..{u1})'
+    ocupado = [(s * posicion(v), v['ancho'] / 2 + 0.41, 'una puerta') for v in VANOS if v['pared'] == pared]
+    if L.get('panel', {}).get('pared') == pared:
+        ocupado.append((s * posicion(L['panel']), PANEL[0] / 2 + 0.05, 'el panel'))
+    ocupado += [(s * posicion(h), 0.65, 'una hornacina') for h in L['hornacinas'] if h['pared'] == pared]
+    ocupado += [(s * posicion(o), OBRAS[o['id']]['medidas']['ancho'] / 200 + 0.3, o['id'])
+                for o in L['obras'] if o['pared'] == pared]
+    for centro, medio, que in ocupado:
+        assert b <= centro - medio or a >= centro + medio, f'el ascensor pisa {que} en la pared {pared}'
+
+
+def rebaje_ascensor(c, mk):
+    """El hueco del muro, con las puertas al fondo, y su marco de piedra (con luz horneada)."""
+    pa, pz, f, w = ASC_PA, ASC_ALTO, ASC_FONDO, ASC_MARCO
+    c.cara([mk.p(-pa, 0, 0), mk.p(-pa, -f, 0), mk.p(-pa, -f, pz), mk.p(-pa, 0, pz)], M['piedra'], hacia=mk.u)
+    c.cara([mk.p(pa, 0, 0), mk.p(pa, -f, 0), mk.p(pa, -f, pz), mk.p(pa, 0, pz)], M['piedra'], hacia=-mk.u)
+    c.cara([mk.p(-pa, 0, pz), mk.p(pa, 0, pz), mk.p(pa, -f, pz), mk.p(-pa, -f, pz)], M['piedra'], hacia=-mk.z)
+    c.caja_local(mk, -pa, pa, -f, 0, 0, 0.015, M['piedra'])  # umbral
+    c.caja_local(mk, -pa, pa, -f, -f + 0.002, 0, pz, M['yeso'])  # lo que queda tras las hojas
+    # jambas, dintel (con el rótulo), una cornisa fina y la placa del dial encima
+    c.caja_local(mk, -pa - w, -pa, 0, 0.06, 0, pz + w, M['piedra'])
+    c.caja_local(mk, pa, pa + w, 0, 0.06, 0, pz + w, M['piedra'])
+    c.caja_local(mk, -pa, pa, 0, 0.06, pz, pz + w, M['piedra'])
+    c.caja_local(mk, -pa - w - 0.04, pa + w + 0.04, 0, 0.09, pz + w, pz + w + 0.05, M['piedra'])
+    c.caja_local(mk, -0.34, 0.34, 0, 0.04, pz + w + 0.05, pz + w + 0.39, M['piedra'])
+
+
+def ascensor(piezas, laton, emisivos):
+    """Las hojas de latón, el dial con la aguja en esta sala, el botón de llamada, un foco y lo
+    que la web necesita: la zona a la que se apunta para llamarlo y dónde se llega."""
+    mk = ascensor_mk
+    pa, pz, f, w = ASC_PA, ASC_ALTO, ASC_FONDO, ASC_MARCO
+    # Hojas: sin luz horneada, como las de las puertas; brillan con el reflejo del entorno.
+    h = constructor('laton_mate', 'laton')
+    d0 = -f + 0.004
+    for s in (-1, 1):
+        a, b = (-pa, -0.004) if s < 0 else (0.004, pa)
+        h.caja_local(mk, a, b, d0, d0 + 0.03, 0, pz, M['laton_mate'])
+        m = 0.07  # moldura de latón en relieve: arriba, a media altura y a los lados
+        for ua, ub, za, zb in ((a + m, b - m, pz - m - 0.025, pz - m), (a + m, b - m, 0.9, 0.925),
+                               (a + m, a + m + 0.025, 0.9, pz - m), (b - m - 0.025, b - m, 0.9, pz - m)):
+            h.caja_local(mk, ua, ub, d0 + 0.03, d0 + 0.042, za, zb, M['laton'])
+        h.caja_local(mk, a + 0.03, b - 0.03, d0 + 0.03, d0 + 0.04, 0.05, 0.32, M['laton'])  # zócalo
+    h.objeto('ascensor_hojas')
+    texto('ASCENSOR', mk.p(0, 0.061, pz + w / 2), mk, 0.07, M['oro'], 'letras', extrusion=0.003, espaciado=1.3)
+
+    # Dial: media esfera negra con las salas (· el vestíbulo, I a VII) y la aguja en esta.
+    zc = pz + w + 0.12
+    r, n = 0.23, 28
+    angulo = lambda k: math.pi * (0.93 - 0.86 * k / 7)  # noqa: E731
+    piezas.cara([mk.p(r * math.cos(math.pi * k / n), 0.042, zc + r * math.sin(math.pi * k / n)) for k in range(n + 1)],
+                M['negro'], hacia=mk.d)
+    for k in range(n):
+        t0, t1 = math.pi * k / n, math.pi * (k + 1) / n
+        laton.cara([mk.p(r * math.cos(t0), 0.044, zc + r * math.sin(t0)), mk.p((r + 0.014) * math.cos(t0), 0.044, zc + (r + 0.014) * math.sin(t0)),
+                    mk.p((r + 0.014) * math.cos(t1), 0.044, zc + (r + 0.014) * math.sin(t1)), mk.p(r * math.cos(t1), 0.044, zc + r * math.sin(t1))],
+                   M['laton'], hacia=mk.d)
+    laton.caja_local(mk, -r - 0.014, r + 0.014, 0.04, 0.047, zc - 0.014, zc, M['laton'])
+    for k in range(8):
+        t = angulo(k)
+        texto(ROMANOS[k] or '·', mk.p(0.17 * math.cos(t), 0.044, zc + 0.17 * math.sin(t)), mk, 0.04, M['oro'], 'letras',
+              extrusion=0.002, espaciado=1.0)
+    t = angulo(SALA.get('numero', 0))
+    eje, perp = mk.vec(math.cos(t), 0, math.sin(t)), mk.vec(-math.sin(t), 0, math.cos(t))
+    centro = mk.p(0, 0.049, zc)
+    aguja = Constructor([M['oro']])
+    aguja.cara([centro + perp * 0.006, centro - perp * 0.006, centro + eje * 0.135], M['oro'], hacia=mk.d)
+    aguja.cara([centro + mk.vec(0.016 * math.cos(2 * math.pi * k / 12), 0.0005, 0.016 * math.sin(2 * math.pi * k / 12)) for k in range(12)],
+               M['oro'], hacia=mk.d)
+    aguja.objeto('aguja')['unir_a'] = 'letras'
+
+    # Placa del botón de llamada, hacia el centro de la pared, con el botón encendido.
+    ub = lado_boton(posicion(ASCENSOR) * SIGNO_U[ASCENSOR['pared']]) * (pa + w + 0.10)
+    laton.caja_local(mk, ub - 0.05, ub + 0.05, 0, 0.012, 1.02, 1.30, M['laton'])
+    emisivos.cara([mk.p(ub + 0.024 * math.cos(2 * math.pi * k / 16), 0.0135, 1.2 + 0.024 * math.sin(2 * math.pi * k / 16)) for k in range(16)],
+                  M['boton'], hacia=mk.d)
+
+    # Un foco tenue desde el carril más cercano, como el de las puertas.
+    cr = L['carriles']
+    obj = mk.p(0, 0, 1.7)
+    if abs(mk.d.y) > 0.5:
+        pos = (math.copysign(cr['x'], obj.x), min(max(obj.y, cr['y0'] + 0.3), cr['y1'] - 0.3), cr['z'] - 0.14)
+    else:
+        pos = (-math.copysign(cr['x'], obj.x), obj.y, cr['z'] - 0.14)
+    anadir_foco(pos, obj, 44, 0.5)
+
+    escena['ascensor'] = {'llegada': {'posicion': comun.a_three(mk.p(0, 1.3, 1.65)), 'yaw': yaw_hacia(mk.d)}}
+    escena['obras'].append({'id': 'ascensor', 'tipo': 'ascensor', 'centro': comun.a_three(mk.p(0, 0, 1.5)),
+                            'normal': comun.a_three(mk.d), 'ancho': 2 * (pa + w), 'alto': 3.0, 'marco': None})
+    # Una cámara para las capturas de control (y ?cam=ascensor en la web).
+    L['camaras']['ascensor'] = {**{k: round(v, 3) for k, v in zip('xyz', mk.p(0.5, 3.0, 1.65))},
+                                'mira': [round(v, 3) for v in mk.p(0, 0, 1.75)]}
 
 
 # ------------------------------------------------------------------ bóveda
@@ -1460,6 +1610,8 @@ def main():
         colocar_exenta(cfg, piezas)
     if L.get('panel'):
         panel_sala(L['panel'])
+    if ascensor_mk:
+        ascensor(piezas, laton, emisivos)
     letras = constructor('oro')
     edicula_c = constructor('piedra', 'yeso')
     if any(cfg.get('edicula') for cfg in L['obras']):

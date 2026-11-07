@@ -26,13 +26,17 @@ export class Ficha extends EventTarget {
         : `${fmt(obra.medidas.alto)} cm de alto`;
     const enlace = `https://commons.wikimedia.org/wiki/${encodeURIComponent(obra.commons.replace(/ /g, '_'))}`;
     const z = obra.fuente3d?.zenodo;
+    const ia = obra.fuente3d?.generado;
     const credito = z
       ? `Modelo 3D: <a href="https://zenodo.org/records/${z}" target="_blank" rel="noopener">${escapar(obra.fuente3d.credito)}</a> · ${escapar(obra.fuente3d.licencia)}`
+      : ia
+        ? `Modelo 3D: ${escapar(obra.fuente3d.credito)} (<a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a>, ${escapar(obra.fuente3d.licencia)}), generado con ${escapar(ia)}`
       : obra.tipo === 'foto'
         ? `Fotografía: <a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a> · licencia libre (ver créditos)`
         : `${volumen ? 'Modelo 3D' : 'Imagen'}: <a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a> · ${escapar(obra.licencia ?? 'dominio público')}`;
     const reproduccion = obra.tipo === 'foto' ? 'Reproducción fotográfica'
-      : obra.reproduccion === 'vaciado' ? 'Vaciado en yeso' : null;
+      : obra.reproduccion === 'vaciado' ? 'Vaciado en yeso'
+        : ia ? 'Reconstrucción 3D con IA' : null;
     this.el.innerHTML = `
       <button class="ficha-cerrar" data-accion="volver" aria-label="Volver">×</button>
       <p class="ficha-autor">${escapar(obra.autor)}</p>

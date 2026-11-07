@@ -27,6 +27,8 @@
 
   "inicio": { "x": 0.0, "y": 2.6 },
 
+  "ascensor": { "pared": "fondo", "pos": 2.8 },
+
   "panel": { "pared": "fondo", "pos": -2.7 },
 
   "obras": [

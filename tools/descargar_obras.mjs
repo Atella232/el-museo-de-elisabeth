@@ -3,7 +3,9 @@
 // Las esculturas y los relieves son escaneos 3D: los del SMK (STL, en Commons) y los de
 // Scan the World (GLB, en Zenodo, campo `fuente3d`). Se guardan en tools/cache/esculturas/
 // para que Blender los coloque en el museo. Las obras con `tipo: "foto"` son fotografías
-// de esculturas o monumentos sin escaneo libre, y se tratan como un cuadro.
+// de esculturas o monumentos sin escaneo libre, y se tratan como un cuadro. Las que tienen
+// `fuente3d.generado` son reconstrucciones 3D hechas con IA a partir de una fotografía (la de
+// `commons`): el modelo ya está en fuentes/esculturas/ y aquí solo se acredita.
 //
 // Uso: npm run obras                   (salta las que ya están descargadas)
 //      npm run obras -- --forzar        (las vuelve a descargar todas)
@@ -90,6 +92,7 @@ const creditos = [];
 const creditosFotos = [];
 const creditosEsculturas = [];
 const creditosEscaneos = [];
+const creditosIA = [];
 const existe = (ruta) => fs.stat(ruta).then(() => true, () => false);
 const enlace = (titulo, ii) => `[${titulo.replace(/^File:/, '')}](${ii.descriptionurl})`;
 
@@ -97,6 +100,14 @@ for (const obra of obras) {
   const ii = info[obra.commons];
   const m = ii.extmetadata ?? {};
   const licencia = sinEtiquetas(m.LicenseShortName?.value) || 'dominio público';
+  if (obra.fuente3d?.generado) {
+    creditosIA.push(
+      `- **${obra.titulo}**, ${obra.autor} (${obra.fecha}). ${obra.museo}.  \n` +
+      `  Modelo 3D: reconstrucción generada con ${obra.fuente3d.generado} a partir de la fotografía ${enlace(obra.commons, ii)}, ` +
+      `de ${sinEtiquetas(m.Artist?.value) || 'autor desconocido'} — ${licencia}.`,
+    );
+    continue;
+  }
   const z = obra.fuente3d?.zenodo;
   if (z) {
     const registro = `https://zenodo.org/records/${z}`;
@@ -180,6 +191,7 @@ await fs.writeFile(
   `## Fotografías\n\nEsculturas y monumentos de los que no hay un escaneo 3D libre. Las obras son de dominio público; cada fotografía tiene la licencia de su autor.\n\n${creditosFotos.join('\n')}\n\n` +
   `## Esculturas: vaciados del SMK\n\nEscaneos 3D de vaciados en yeso de la Colección Real de Vaciados del Statens Museum for Kunst (SMK), publicados en Wikimedia Commons.\n\n${creditosEsculturas.join('\n')}\n\n` +
   `## Esculturas y relieves: Scan the World\n\nEscaneos 3D del proyecto Scan the World (MyMiniFactory), archivados en Zenodo con licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0. Los modelos que se publican aquí, reducidos y con la luz horneada, se comparten con esa misma licencia.\n\n${creditosEscaneos.join('\n')}\n\n` +
+  `## Esculturas reconstruidas con IA\n\nDe estas no hay un escaneo 3D libre: el modelo se generó con inteligencia artificial a partir de una fotografía del original, así que es una aproximación y no una copia exacta.\n\n${creditosIA.join('\n')}\n\n` +
   `## Música\n\nGrabaciones de Wikimedia Commons, convertidas a AAC. Las obras son de dominio público; cada grabación tiene la licencia indicada.\n\n${creditosMusica.join('\n')}\n\n` +
   `## Dioramas («entrar en el cuadro»)\n\nLas capas salen de las máscaras de figuras (SAM) de los proyectos de animación de cada cuadro. El fondo del *Juicio de Paris*, lo que tapan las figuras, se reconstruyó con el retoque de Magnific (Nano Banana Pro) y está en fuentes/dioramas/.\n\n` +
   `## Cuadros vivos\n\nLos vídeos de web/public/vivos/ se generaron con Kling 2.5 (Ulises y Héctor) y MiniMax Hailuo 3 (el resto), vía Magnific, a partir de las pinturas, con la propia pintura como primer y último fotograma.\n\n` +

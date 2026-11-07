@@ -67,7 +67,7 @@ camara.layers.enable(CAPA_AIRE);
 let sala = null;
 const post = calidad.postproceso ? crearPostproceso(renderer, escena3d, camara) : null;
 
-async function montarSala(id, { desde = null, alProgreso } = {}) {
+async function montarSala(id, { desde = null, porAscensor = false, alProgreso } = {}) {
   const s = await cargarSala(id, { renderer, calidad, alProgreso });
   escena3d.add(s.modelo);
   await pintarCartelas(s.modelo, s.escena, obras, renderer);
@@ -87,15 +87,16 @@ async function montarSala(id, { desde = null, alProgreso } = {}) {
   s.reflejo?.ajustarTamano(innerWidth, innerHeight);
   sala = s;
 
-  // Se llega por la puerta que viene de la sala anterior (o, si se salta desde el índice, por la
-  // entrada de la sala).
+  // Se llega por la puerta que viene de la sala anterior, delante del ascensor si se ha subido en
+  // él o, si se salta desde el índice, por la entrada de la sala.
   const fija = s.escena.camaras?.[camFija];
   if (fija) {
     camara.position.fromArray(fija.posicion);
     camara.lookAt(new THREE.Vector3().fromArray(fija.mira));
     camara.fov = fija.fov ?? camara.fov;
   } else {
-    const llegada = (desde && s.escena.pasos?.find((p) => p.destino === desde)?.llegada) || s.escena.inicio;
+    const llegada = (porAscensor && s.escena.ascensor?.llegada)
+      || (desde && s.escena.pasos?.find((p) => p.destino === desde)?.llegada) || s.escena.inicio;
     camara.position.fromArray(llegada.posicion);
     camara.position.y = ALTURA_OJOS;
     camara.rotation.set(-0.04, llegada.yaw ?? 0, 0, 'YXZ');
@@ -144,6 +145,7 @@ const ficha = new Ficha(ui);
 const video = new Video(ui);
 const transicion = new Transicion(ui, { movil });
 const indice = new IndiceSalas(ui, datosSalas.salas);
+const botonera = new IndiceSalas(ui, datosSalas.salas, { ascensor: true });
 const ambiente = new Ambiente();
 const diorama = new Diorama(renderer, { calidad });
 const uiCuadro = new UiCuadro(ui, { movil });
@@ -167,7 +169,7 @@ tactil?.mostrar(false);
 if (camFija) hud.el.hidden = true;
 
 const PISTA_RODEAR = movil ? 'Desliza el dedo para dar la vuelta a la escultura.' : 'Arrastra con el ratón para dar la vuelta a la escultura.';
-let estado = 'portada'; // portada · paseo · pausa · indice · transicion · contemplar · cuadro
+let estado = 'portada'; // portada · paseo · pausa · indice · ascensor · transicion · contemplar · cuadro
 let obraActual = null;
 let apuntada = null;
 
@@ -184,6 +186,8 @@ function entrarEnPaseo() {
 }
 
 async function abrirObra(obra) {
+  // El ascensor no se contempla: se llama y se elige la sala en su botonera.
+  if (obra?.tipo === 'ascensor') return abrirIndice(botonera);
   if (!obra || estado !== 'paseo') return;
   estado = 'transicion';
   obraActual = obra;
@@ -206,6 +210,7 @@ async function abrirObra(obra) {
 // El título que se ve al apuntar a una obra (o al panel de la sala).
 function rotulo(o) {
   if (!o) return null;
+  if (o.tipo === 'ascensor') return { titulo: 'Ascensor', accion: 'Clic o <kbd>E</kbd> para llamarlo' };
   if (o.tipo !== 'panel') return obras[o.id];
   const s = salas[sala.id];
   return { titulo: s.numero ? `Sala ${ROMANOS[s.numero]}. ${s.titulo}` : 'El recorrido de las siete salas' };
@@ -228,7 +233,7 @@ async function cruzarPuerta(paso) {
   await cambiarDeSala(paso.destino, { porPuerta: true });
 }
 
-async function cambiarDeSala(destino, { porPuerta = false } = {}) {
+async function cambiarDeSala(destino, { porPuerta = false, porAscensor = false } = {}) {
   const origen = salas[sala.id];
   const nueva = salas[destino];
   estado = 'transicion';
@@ -240,15 +245,17 @@ async function cambiarDeSala(destino, { porPuerta = false } = {}) {
   const final = porPuerta && nueva.id === 'vestibulo' && origen.final ? origen.final : null;
   await transicion.cubrir({ destino: nueva, paso: adelante ? origen.paso : null, final });
   desmontarSala();
-  await montarSala(destino, { desde: porPuerta ? origen.id : null, alProgreso: (f) => transicion.progreso(f) });
+  await montarSala(destino, { desde: porPuerta ? origen.id : null, porAscensor, alProgreso: (f) => transicion.progreso(f) });
   apuntada = null;
   await transicion.descubrir();
+  if (porAscensor) ambiente.timbre();
   entrarEnPaseo();
 }
 
-function abrirIndice() {
+// El índice de salas (botón ☰) y la botonera del ascensor son la misma lista: `panel` dice cuál.
+function abrirIndice(panel = indice) {
   if (estado !== 'paseo' && estado !== 'pausa') return;
-  estado = 'indice';
+  estado = panel === botonera ? 'ascensor' : 'indice';
   hud.paseo(false);
   hud.mostrarPausa(false);
   tactil?.mostrar(false);
@@ -258,12 +265,12 @@ function abrirIndice() {
     escritorio.desbloquear();
   }
   Promise.all(datosSalas.salas.map(async (s) => [s.id, await salaDisponible(s.id)]))
-    .then((r) => indice.mostrar(sala.id, new Set(r.filter(([, si]) => si).map(([id]) => id))));
+    .then((r) => panel.mostrar(sala.id, new Set(r.filter(([, si]) => si).map(([id]) => id))));
 }
 
-function cerrarIndice() {
-  if (estado !== 'indice') return;
-  indice.ocultar();
+function cerrarIndice(panel = indice) {
+  if (estado !== (panel === botonera ? 'ascensor' : 'indice')) return;
+  panel.ocultar();
   if (escritorio?.capturaPosible) {
     estado = 'pausa';
     hud.mostrarPausa(true);
@@ -272,17 +279,18 @@ function cerrarIndice() {
   }
 }
 
-indice.addEventListener('cerrar', () => cerrarIndice());
-indice.addEventListener('ir', (e) => {
-  indice.ocultar();
-  if (e.detail === sala.id) {
-    estado = 'pausa';
-    cerrarIndice();
-    return;
-  }
-  estado = 'paseo';
-  cambiarDeSala(e.detail);
-});
+for (const panel of [indice, botonera]) {
+  panel.addEventListener('cerrar', () => cerrarIndice(panel));
+  panel.addEventListener('ir', (e) => {
+    if (e.detail === sala.id) {
+      cerrarIndice(panel);
+      return;
+    }
+    panel.ocultar();
+    estado = 'paseo';
+    cambiarDeSala(e.detail, { porAscensor: panel === botonera });
+  });
+}
 hud.addEventListener('salas', () => abrirIndice());
 
 // Dónde va la ficha y qué fracción de la pantalla ocupa; el cuadro se encuadra en el resto. En
@@ -474,6 +482,7 @@ addEventListener('keydown', (e) => {
   }
   if (e.code === 'Escape') {
     if (indice.abierto) cerrarIndice();
+    else if (botonera.abierto) cerrarIndice(botonera);
     else if (video.abierto) video.cerrar();
     else if (estado === 'cuadro') salirDelCuadro();
     else if (estado === 'contemplar') volverAlPaseo();
@@ -608,6 +617,8 @@ if (debug) {
     estado: () => estado,
     irASala: (id) => cambiarDeSala(id),
     cruzarPuerta: (destino) => cruzarPuerta(sala.escena.pasos.find((p) => p.destino === destino)),
+    llamarAscensor: () => abrirObra(sala.contemplar.porId.ascensor),
+    ascensor: (destino) => cambiarDeSala(destino, { porAscensor: true }),
     contemplarObra: (id) => {
       estado = 'paseo';
       return abrirObra(sala.contemplar.porId[id]);

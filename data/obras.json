@@ -366,7 +366,7 @@
   },
   {
     "id": "perseo",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "Perseo con la cabeza de Medusa",
     "autor": "Benvenuto Cellini",
     "fecha": "1545–1554",
@@ -376,9 +376,15 @@
       "ancho": null
     },
     "museo": "Loggia dei Lanzi, Florencia",
-    "commons": "File:Perseus with the Head of Medusa (Perseo con la testa di Medusa), Loggia dei Lanzi, Florence (26072265963).jpg",
+    "commons": "File:Decapicated Medusa 身首異處的梅杜莎 - panoramio.jpg",
+    "fuente3d": {
+      "generado": "Tripo 3.1 (vía Magnific)",
+      "archivo": "fuentes/esculturas/perseo.glb",
+      "licencia": "CC BY 3.0",
+      "credito": "Reconstrucción con IA a partir de una fotografía de lienyuan lee"
+    },
     "mito": "Perseo, el hijo de Dánae y Júpiter, recibió el encargo de traer la cabeza de Medusa, una gorgona con serpientes por cabello cuya mirada convertía en piedra a quien la miraba. Minerva y Mercurio le ayudaron con un escudo pulido como un espejo, unas sandalias aladas y una hoz. Perseo la decapitó sin mirarla de frente, guiándose por su reflejo.",
-    "texto": "Cosme I de Médici lo encargó a Cellini para la plaza de la Señoría de Florencia, cerca del David de Miguel Ángel: un mensaje de poder dirigido a sus enemigos. Fundirlo fue una hazaña; Cellini cuenta en su autobiografía que, cuando el bronce empezaba a enfriarse antes de tiempo, echó al horno todos sus platos y cacharros de estaño. Perseo pisa el cuerpo de Medusa y alza su cabeza. Aquí se muestra una fotografía del original.",
+    "texto": "Cosme I de Médici lo encargó a Cellini para la plaza de la Señoría de Florencia, cerca del David de Miguel Ángel: un mensaje de poder dirigido a sus enemigos. Fundirlo fue una hazaña; Cellini cuenta en su autobiografía que, cuando el bronce empezaba a enfriarse antes de tiempo, echó al horno todos sus platos y cacharros de estaño. Perseo pisa el cuerpo de Medusa y alza su cabeza. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   },
   {

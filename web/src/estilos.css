@@ -971,6 +971,34 @@ kbd {
   font-style: italic;
 }
 
+/* ---------- botonera del ascensor: el índice con botones redondos de latón */
+
+.ascensor button[data-sala] {
+  align-items: center;
+}
+
+.ascensor .indice-numero {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  color: #2b1e0c;
+  background: radial-gradient(circle at 35% 30%, #f6e2a6, #c9a35a 55%, #85642b);
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.ascensor button[data-sala]:hover:not(:disabled) .indice-numero {
+  filter: brightness(1.15);
+}
+
+.ascensor button[aria-current] .indice-numero {
+  background: radial-gradient(circle at 35% 30%, #fff4cf, #ffc56a 50%, #d98a22);
+  box-shadow: 0 0 14px rgba(255, 186, 90, 0.75), inset 0 -2px 3px rgba(0, 0, 0, 0.25);
+}
+
 /* ---------- panel de sala en la ficha */
 
 .ficha-pregunta {
