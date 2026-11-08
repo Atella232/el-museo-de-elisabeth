@@ -589,16 +589,23 @@
   },
   {
     "id": "sarcofago-proserpina",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "Sarcófago de Proserpina",
     "autor": "Taller romano",
     "fecha": "c. 200–225 d. C.",
     "tecnica": "Mármol de Carrara",
     "medidas": null,
     "museo": "Tesoro de la catedral de Aquisgrán",
-    "commons": "File:Proserpina-Sarkophag mit dem Relief Raub der Proserpina. Domschatzkammer Aachen.jpg",
+    "commons": "File:Roma, sarcofago detto di proserpina, 200-215 ca. corrected.jpg",
+    "fuente3d": {
+      "generado": "Hi3D Relief (vía Magnific)",
+      "archivo": "fuentes/esculturas/sarcofago-proserpina.glb",
+      "licencia": "CC BY 3.0",
+      "fotografo": "Sailko",
+      "credito": "Relieve reconstruido con IA a partir de una fotografía de Sailko"
+    },
     "mito": "Para los romanos, el rapto de Proserpina era también una imagen de la muerte: igual que Plutón se llevó a la joven al inframundo, la muerte se lleva a los vivos. Pero Proserpina regresaba cada primavera junto a su madre, y por eso el mito ofrecía también una esperanza de renacer.",
-    "texto": "En el relieve se ve a Ceres con antorchas buscando a su hija, a Plutón raptando a Proserpina en su carro y a los caballos lanzados hacia el inframundo. Se talló en Roma en el siglo III y, según la tradición, en él fue enterrado Carlomagno en Aquisgrán en el año 814: un mito pagano al servicio de un emperador cristiano. Aquí se muestra una fotografía.",
+    "texto": "En el relieve se ve a Ceres con antorchas buscando a su hija, a Plutón raptando a Proserpina en su carro y a los caballos lanzados hacia el inframundo. Se talló en Roma en el siglo III y, según la tradición, en él fue enterrado Carlomagno en Aquisgrán en el año 814: un mito pagano al servicio de un emperador cristiano. El sarcófago de esta sala es una reconstrucción: el relieve del frente se ha generado en 3D con inteligencia artificial a partir de una fotografía, así que algunos detalles pueden variar, y los costados, que en el original también están tallados, aquí son lisos.",
     "youtubeId": null
   },
   {
@@ -946,17 +953,24 @@
   },
   {
     "id": "arco-tito",
-    "tipo": "foto",
+    "tipo": "relieve",
     "titulo": "Relieves del arco de Tito",
     "autor": "Escultores romanos",
     "fecha": "c. 81–82 d. C.",
     "tecnica": "Mármol",
     "medidas": null,
     "museo": "Foro Romano, Roma",
-    "commons": "File:Spoils from Jerusalem - Arch of Titus - Rome 2008.jpg",
+    "commons": "File:Arch Titus, relief Jerusalem treasure, Forum Romanum, Rome, Italy.jpg",
+    "fuente3d": {
+      "generado": "Hi3D Relief (vía Magnific)",
+      "archivo": "fuentes/esculturas/arco-tito.glb",
+      "licencia": "CC0",
+      "fotografo": "Jebulon",
+      "credito": "Relieve reconstruido con IA a partir de una fotografía de Jebulon"
+    },
     "encabezado": "La historia",
     "mito": "En el año 70, el ejército romano, al mando de Tito, hijo del emperador Vespasiano, tomó Jerusalén tras un largo asedio y destruyó su templo. En Roma se celebró después un desfile triunfal en el que se exhibieron los tesoros saqueados y los prisioneros. Tras la muerte de Tito, en el año 81, su hermano Domiciano le dedicó un arco junto a la vía Sacra.",
-    "texto": "Dentro del paso del arco hay dos grandes relieves. Uno muestra a Tito en su carro de triunfo, coronado por la Victoria; el otro, a los soldados cargando el botín del templo de Jerusalén, con el gran candelabro de siete brazos, la menorá. Para Roma era una celebración; para el pueblo judío, el recuerdo de una derrota y un exilio. La misma imagen cuenta dos historias muy distintas. Aquí se muestra una fotografía.",
+    "texto": "Dentro del paso del arco hay dos grandes relieves. Uno muestra a Tito en su carro de triunfo, coronado por la Victoria; el otro, a los soldados cargando el botín del templo de Jerusalén, con el gran candelabro de siete brazos, la menorá. Para Roma era una celebración; para el pueblo judío, el recuerdo de una derrota y un exilio. La misma imagen cuenta dos historias muy distintas. En esta sala está el del botín, reconstruido en 3D con inteligencia artificial a partir de una fotografía: no es un vaciado del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   }
 ]

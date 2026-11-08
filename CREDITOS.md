@@ -79,10 +79,7 @@ Todas las pinturas son de dominio público. Las reproducciones proceden de Wikim
 
 Esculturas y monumentos de los que no hay un escaneo 3D libre. Las obras son de dominio público; cada fotografía tiene la licencia de su autor.
 
-- **Sarcófago de Proserpina**, Taller romano (c. 200–225 d. C.). Tesoro de la catedral de Aquisgrán.  
-  Fotografía: [Proserpina-Sarkophag mit dem Relief Raub der Proserpina. Domschatzkammer Aachen.jpg](https://commons.wikimedia.org/wiki/File:Proserpina-Sarkophag_mit_dem_Relief_Raub_der_Proserpina._Domschatzkammer_Aachen.jpg), de HOWI - Horsch, Willy — CC BY-SA 3.0.
-- **Relieves del arco de Tito**, Escultores romanos (c. 81–82 d. C.). Foro Romano, Roma.  
-  Fotografía: [Spoils from Jerusalem - Arch of Titus - Rome 2008.jpg](https://commons.wikimedia.org/wiki/File:Spoils_from_Jerusalem_-_Arch_of_Titus_-_Rome_2008.jpg), de José Luiz — CC BY-SA 3.0.
+
 
 ## Esculturas: vaciados del SMK
 
@@ -120,12 +117,16 @@ De estas no hay un escaneo 3D libre: el modelo se generó con inteligencia artif
   Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg](https://commons.wikimedia.org/wiki/File:Theseus_and_the_Minotaur_by_Antonio_Canova,_Victoria_and_Albert_Museum.jpg), de APK — CC BY 4.0.
 - **El rapto de Proserpina**, Gian Lorenzo Bernini (1621–1622). Galería Borghese, Roma.  
   Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [The Rape of Proserpina (Rome).jpg](https://commons.wikimedia.org/wiki/File:The_Rape_of_Proserpina_(Rome).jpg), de Architas — CC BY-SA 4.0.
+- **Sarcófago de Proserpina**, Taller romano (c. 200–225 d. C.). Tesoro de la catedral de Aquisgrán.  
+  Modelo 3D: reconstrucción generada con Hi3D Relief (vía Magnific) a partir de la fotografía [Roma, sarcofago detto di proserpina, 200-215 ca. corrected.jpg](https://commons.wikimedia.org/wiki/File:Roma,_sarcofago_detto_di_proserpina,_200-215_ca._corrected.jpg), de Sailko — CC BY 3.0.
 - **Eneas, Anquises y Ascanio**, Gian Lorenzo Bernini (1618–1619). Galería Borghese, Roma.  
   Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Aeneas, Anchises, and Ascanius by Bernini, 1618-1620, marble, view 1 - Galleria Borghese - Rome, Italy - DSC04797.jpg](https://commons.wikimedia.org/wiki/File:Aeneas,_Anchises,_and_Ascanius_by_Bernini,_1618-1620,_marble,_view_1_-_Galleria_Borghese_-_Rome,_Italy_-_DSC04797.jpg), de Daderot — CC0.
 - **Augusto de Prima Porta**, Escultor romano desconocido (Principios del siglo I d. C.). Museos Vaticanos, Ciudad del Vaticano.  
   Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Augustus of Prima Porta.jpg](https://commons.wikimedia.org/wiki/File:Augustus_of_Prima_Porta.jpg), de Justin Benttinen — CC BY-SA 4.0.
 - **Estatua ecuestre de Marco Aurelio**, Autor desconocido (c. 175 d. C.). Museos Capitolinos, Roma.  
   Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Equestrian statue of Marcus Aurelius.jpg](https://commons.wikimedia.org/wiki/File:Equestrian_statue_of_Marcus_Aurelius.jpg), de Matthias Kabel — CC BY-SA 3.0.
+- **Relieves del arco de Tito**, Escultores romanos (c. 81–82 d. C.). Foro Romano, Roma.  
+  Modelo 3D: reconstrucción generada con Hi3D Relief (vía Magnific) a partir de la fotografía [Arch Titus, relief Jerusalem treasure, Forum Romanum, Rome, Italy.jpg](https://commons.wikimedia.org/wiki/File:Arch_Titus,_relief_Jerusalem_treasure,_Forum_Romanum,_Rome,_Italy.jpg), de Jebulon — CC0.
 
 ## Música
 

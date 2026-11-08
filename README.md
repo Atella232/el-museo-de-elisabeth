@@ -58,7 +58,9 @@ data/plantas/<sala>.json + data/obras.json + data/salas.json   ← planta de cad
   De seis esculturas no hay escaneo libre (el *Perseo* de Cellini, el *Teseo* de Canova, los dos
   Bernini de la Borghese, el *Augusto de Prima Porta* y el *Marco Aurelio* ecuestre): son
   reconstrucciones hechas con IA (Tripo, vía Magnific) a partir de una fotografía de Commons, y sus
-  modelos están en `fuentes/esculturas/`.
+  modelos están en `fuentes/esculturas/`. El relieve del sarcófago de Proserpina y el del arco de Tito
+  salen de un mapa de profundidad de una fotografía (Hi3D Relief, vía Magnific), que
+  `blender/relieve_profundidad.py` convierte en una losa en relieve (y, para el sarcófago, en la caja).
 - **Entrar en el cuadro** (`web/src/cuadro/diorama.js`): la pintura se convierte en un diorama de
   planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
   animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que

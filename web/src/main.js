@@ -82,7 +82,7 @@ async function montarSala(id, { desde = null, porAscensor = false, alProgreso } 
   s.reflejo = calidad.reflejo > 0 && s.mallasPorGrupo.suelo
     ? new ReflejoSuelo(renderer, s.mallasPorGrupo.suelo, { resolucion: calidad.reflejo })
     : null;
-  s.contemplar = new Contemplar(camara, s.escena.obras, { modelo: s.modelo, limites: s.escena.limites });
+  s.contemplar = new Contemplar(camara, s.escena.obras, { modelo: s.modelo, limites: s.escena.limites, obstaculos: s.escena.obstaculos });
   s.contemplar.aplicarVista(innerWidth, innerHeight);
   s.reflejo?.ajustarTamano(innerWidth, innerHeight);
   sala = s;

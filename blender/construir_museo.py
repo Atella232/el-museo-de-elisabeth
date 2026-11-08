@@ -530,7 +530,8 @@ def colocar_exenta(cfg, piezas):
         'ancho': round(ancho + 0.3, 3),
         'alto': round(alto + peana + 0.1, 3),
         'marco': None,
-        'exenta': True,
+        # Con `rodear: false` (el sarcófago, junto a una pared) se contempla de frente, como un cuadro.
+        **({'exenta': True} if cfg.get('rodear', True) else {}),
     })
     focos_exenta(Vector((cx, cy, peana + alto * 0.55)), mira, alto, cfg.get('intensidad', 1.0), cfg.get('frente', 2.4))
 

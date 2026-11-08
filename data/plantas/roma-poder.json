@@ -1,6 +1,6 @@
 {
   "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
-  "_nota": "Sala VII: la más ancha y alta, como una basílica, con un tramo más que las otras y un recorrido de principio a fin, en el orden de Elisabeth. La muerte de César (4 × 7 m) abre la sala en el primer tramo, sin nada delante para poder verla de lejos. En el segundo, Augusto en el centro, con el relieve del Ara Pacis a su lado y el del arco de Tito enfrente. En el último, el relieve de la columna de Trajano y, en el centro, la estatua ecuestre de Marco Aurelio, que cierra el recorrido junto a la puerta que vuelve al vestíbulo. Augusto y Marco Aurelio son reconstrucciones 3D hechas con IA a partir de fotografías.",
+  "_nota": "Sala VII: la más ancha y alta, como una basílica, con un tramo más que las otras y un recorrido de principio a fin, en el orden de Elisabeth. La muerte de César (4 × 7 m) abre la sala en el primer tramo, sin nada delante para poder verla de lejos. En el segundo, Augusto en el centro, con el relieve del Ara Pacis a su lado y el del arco de Tito enfrente. En el último, el relieve de la columna de Trajano y, en el centro, la estatua ecuestre de Marco Aurelio, que cierra el recorrido junto a la puerta que vuelve al vestíbulo. Augusto, Marco Aurelio y el relieve del arco de Tito son reconstrucciones 3D hechas con IA a partir de fotografías.",
 
   "nave": {
     "ancho": 9.0,
@@ -34,7 +34,7 @@
   "obras": [
     { "id": "cesar",     "pared": "izquierda", "y": 9.5,  "marco": "dorado" },
     { "id": "ara-pacis", "pared": "izquierda", "y": 17.9, "expuesto": { "alto": 1.6 } },
-    { "id": "arco-tito", "pared": "derecha",   "y": 17.9, "marco": "foto", "expuesto": { "alto": 1.5 } },
+    { "id": "arco-tito", "pared": "derecha",   "y": 17.9, "expuesto": { "alto": 2.0 }, "z": 0.9 },
     { "id": "trajano",   "pared": "izquierda", "y": 24.9, "expuesto": { "alto": 1.8 }, "giro": -90, "z": 0.8 }
   ],
 

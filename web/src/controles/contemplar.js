@@ -13,11 +13,13 @@ const MARGEN_PARED = 0.35;
 
 export class Contemplar {
   // `modelo`: la sala cargada, para medir las esculturas exentas; `limites`: la nave, para que
-  // al rodearlas la cámara no atraviese las paredes.
-  constructor(camara, obras, { alcance = 5.5, modelo = null, limites = null } = {}) {
+  // al rodearlas la cámara no atraviese las paredes; `obstaculos`: las peanas, para que al
+  // retroceder ante una obra de pared la cámara no se meta en la escultura que tenga delante.
+  constructor(camara, obras, { alcance = 5.5, modelo = null, limites = null, obstaculos = [] } = {}) {
     this.camara = camara;
     this.alcance = alcance;
     this.limites = limites;
+    this.obstaculos = obstaculos;
     this.zonas = new THREE.Group();
     this.porId = {};
     for (const o of obras) {
@@ -99,7 +101,7 @@ export class Contemplar {
     if (obra.eje) return this.#poseOrbita(obra, vfov, hfov, libreAncho, libreAlto, margen, hueco, lado);
     const dAlto = (obra.alto / (margen * libreAlto)) / 2 / Math.tan(vfov / 2);
     const dAncho = (obra.ancho / (margen * libreAncho)) / 2 / Math.tan(hfov / 2);
-    const dist = THREE.MathUtils.clamp(Math.max(dAlto, dAncho), 0.9, 6.0);
+    const dist = THREE.MathUtils.clamp(Math.min(Math.max(dAlto, dAncho), this.#hastaUnObstaculo(obra.centroV, obra.normalV)), 0.9, 6.0);
     const pos = obra.centroV.clone().addScaledVector(obra.normalV, dist);
     pos.y = Math.max(1.2, Math.min(pos.y, 2.6));
     const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, obra.centroV, _arriba));
@@ -120,6 +122,30 @@ export class Contemplar {
     pos.y = Math.max(0.9, pos.y);
     const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(pos, obra.eje, _arriba));
     return { pos, q, hueco, lado };
+  }
+
+  // Cuánto se puede retroceder en planta desde `desde` en la dirección `dir` antes de entrar en un
+  // obstáculo (una peana y su margen). Los que ya contienen el punto de partida (la peana de la
+  // propia obra) no cuentan.
+  #hastaUnObstaculo(desde, dir) {
+    let t = Infinity;
+    for (const [x0, z0, x1, z1] of this.obstaculos) {
+      if (desde.x > x0 && desde.x < x1 && desde.z > z0 && desde.z < z1) continue;
+      let entra = -Infinity;
+      let sale = Infinity;
+      for (const [o, d, a, b] of [[desde.x, dir.x, x0, x1], [desde.z, dir.z, z0, z1]]) {
+        if (Math.abs(d) < 1e-6) {
+          if (o <= a || o >= b) entra = Infinity;
+          continue;
+        }
+        const t0 = (a - o) / d;
+        const t1 = (b - o) / d;
+        entra = Math.max(entra, Math.min(t0, t1));
+        sale = Math.min(sale, Math.max(t0, t1));
+      }
+      if (entra < sale && entra > 0) t = Math.min(t, entra - 0.15);
+    }
+    return t;
   }
 
   // La distancia `dist` desde `desde` en la dirección `dir`, recortada para no pasar de las paredes.
