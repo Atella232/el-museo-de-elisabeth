@@ -1,6 +1,6 @@
 {
   "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
-  "_nota": "Sala III: dos tramos, como la Sala II. En el centro del primero, el Perseo de Cellini exento (una reconstrucción 3D hecha con IA a partir de una fotografía; su peana es más pequeña que el cojín para que el cuerpo de Medusa cuelgue por los lados, como en el original). El Teseo es una fotografía. Se recorre en U hasta la puerta de la Sala IV, junto a la entrada.",
+  "_nota": "Sala III: dos tramos, como la Sala II. En el centro del primero, el Perseo de Cellini, entre los dos Hércules de Zurbarán; en el segundo, Ícaro y Aquiles, uno frente a otro, y al final de la nave, delante del fondo, el Teseo de Canova. Las dos esculturas son reconstrucciones 3D hechas con IA a partir de fotografías. Se recorre en U hasta la puerta de la Sala IV, junto a la entrada.",
 
   "nave": {
     "ancho": 8.0,
@@ -30,17 +30,17 @@
   "panel": { "pared": "izquierda", "pos": 2.6 },
 
   "obras": [
-    { "id": "icaro",            "pared": "izquierda", "y": 9.0,  "marco": "dorado" },
-    { "id": "hercules-cerbero", "pared": "izquierda", "y": 16.0, "marco": "dorado" },
-    { "id": "teseo-minotauro",  "pared": "fondo",     "x": 0.0,  "marco": "foto", "expuesto": { "alto": 2.1 } },
-    { "id": "hercules-hidra",   "pared": "derecha",   "y": 16.0, "marco": "dorado" },
-    { "id": "aquiles",          "pared": "derecha",   "y": 9.0,  "marco": "dorado" }
+    { "id": "hercules-cerbero", "pared": "izquierda", "y": 9.0,  "marco": "dorado" },
+    { "id": "icaro",            "pared": "izquierda", "y": 16.0, "marco": "dorado" },
+    { "id": "aquiles",          "pared": "derecha",   "y": 16.0, "marco": "dorado" },
+    { "id": "hercules-hidra",   "pared": "derecha",   "y": 9.0,  "marco": "dorado" }
   ],
 
   "exentas": [
     { "escultura": "perseo", "x": 0.0, "y": 9.0, "mira": [0, -1], "giro": -90, "peana": 1.1,
       "huella": [-0.40, -0.40, 0.15, 0.33], "triangulos": 150000, "material": "bronce_patina",
-      "intensidad": 0.9, "frente": 3.0 }
+      "intensidad": 0.9, "frente": 3.0 },
+    { "escultura": "teseo-minotauro", "x": 0.0, "y": 18.6, "mira": [0, -1], "giro": -90, "peana": 0.9 }
   ],
 
   "hornacinas": [],
@@ -53,8 +53,7 @@
     "entrada": { "x": 0.0,  "y": 1.8,  "z": 1.65, "mira": [0.0, 21.1, 3.0] },
     "perseo":  { "x": -0.6, "y": 4.6,  "z": 1.65, "mira": [0.0, 9.0, 2.6] },
     "perseo_detras": { "x": 1.4, "y": 13.0, "z": 1.65, "mira": [0.0, 9.0, 2.6] },
-    "izquierda": { "x": 1.6, "y": 12.0, "z": 1.65, "mira": [-4.0, 14.5, 2.0] },
-    "fondo":   { "x": 0.0,  "y": 14.6, "z": 1.65, "mira": [0.0, 21.1, 2.2] },
+    "teseo":   { "x": -0.8, "y": 14.6, "z": 1.65, "mira": [0.0, 18.6, 1.6] },
     "vuelta":  { "x": -1.2, "y": 19.0, "z": 1.65, "mira": [4.0, 8.0, 2.2] }
   }
 }

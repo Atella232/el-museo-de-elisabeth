@@ -55,8 +55,10 @@ data/plantas/<sala>.json + data/obras.json + data/salas.json   ← planta de cad
   lightmap: el mapa UV de un escaneo sale en miles de trozos con costuras). Van en un archivo
   aparte de cada sala (`esculturas.glb`). Las exentas, como *Apolo y Dafne* en la Sala II, se
   pueden apuntar desde cualquier lado y rodear al contemplarlas (`web/src/controles/contemplar.js`).
-  Del *Perseo* de Cellini (Sala III) no hay escaneo libre: es una reconstrucción hecha con IA (Tripo,
-  vía Magnific) a partir de una fotografía de Commons, y su modelo está en `fuentes/esculturas/`.
+  De seis esculturas no hay escaneo libre (el *Perseo* de Cellini, el *Teseo* de Canova, los dos
+  Bernini de la Borghese, el *Augusto de Prima Porta* y el *Marco Aurelio* ecuestre): son
+  reconstrucciones hechas con IA (Tripo, vía Magnific) a partir de una fotografía de Commons, y sus
+  modelos están en `fuentes/esculturas/`.
 - **Entrar en el cuadro** (`web/src/cuadro/diorama.js`): la pintura se convierte en un diorama de
   planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
   animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que

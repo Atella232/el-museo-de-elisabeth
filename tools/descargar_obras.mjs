@@ -5,7 +5,8 @@
 // para que Blender los coloque en el museo. Las obras con `tipo: "foto"` son fotografías
 // de esculturas o monumentos sin escaneo libre, y se tratan como un cuadro. Las que tienen
 // `fuente3d.generado` son reconstrucciones 3D hechas con IA a partir de una fotografía (la de
-// `commons`): el modelo ya está en fuentes/esculturas/ y aquí solo se acredita.
+// `commons`): el modelo ya está en fuentes/esculturas/ y aquí solo se acredita, con `fotografo`
+// cuando el campo de autor de Commons nombra al escultor en vez de a quien hizo la foto.
 //
 // Uso: npm run obras                   (salta las que ya están descargadas)
 //      npm run obras -- --forzar        (las vuelve a descargar todas)
@@ -104,7 +105,7 @@ for (const obra of obras) {
     creditosIA.push(
       `- **${obra.titulo}**, ${obra.autor} (${obra.fecha}). ${obra.museo}.  \n` +
       `  Modelo 3D: reconstrucción generada con ${obra.fuente3d.generado} a partir de la fotografía ${enlace(obra.commons, ii)}, ` +
-      `de ${sinEtiquetas(m.Artist?.value) || 'autor desconocido'} — ${licencia}.`,
+      `de ${obra.fuente3d.fotografo ?? (sinEtiquetas(m.Artist?.value) || 'autor desconocido')} — ${licencia}.`,
     );
     continue;
   }

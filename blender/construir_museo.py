@@ -117,6 +117,8 @@ def materiales():
     # el claro, en una sala con focos fuertes, parecían de piedra. Lo metálico recibe en la web el
     # reflejo de la sala, que le da el brillo del bronce.
     M['bronce_patina'] = comun.material('bronce_patina', color='#5c4e34', metalico=0.65, rugosidad=0.36)
+    # El Marco Aurelio tiene la pátina verde del bronce antiguo, con restos del dorado.
+    M['bronce_verde'] = comun.material('bronce_verde', color='#4d5a48', metalico=0.6, rugosidad=0.4)
     M['panel'] = comun.material('panel', color='#efe9dc', rugosidad=0.85, especular=0.25)
     M['terciopelo'] = comun.material('terciopelo', color='#5b0f15', rugosidad=0.95, especular=0.2)
     M['cartela'] = comun.material('cartelas', color='#e9e3d6', rugosidad=0.8, especular=0.3)

@@ -79,18 +79,8 @@ Todas las pinturas son de dominio público. Las reproducciones proceden de Wikim
 
 Esculturas y monumentos de los que no hay un escaneo 3D libre. Las obras son de dominio público; cada fotografía tiene la licencia de su autor.
 
-- **Teseo y el Minotauro**, Antonio Canova (1781–1783). Victoria and Albert Museum, Londres.  
-  Fotografía: [Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg](https://commons.wikimedia.org/wiki/File:Theseus_and_the_Minotaur_by_Antonio_Canova,_Victoria_and_Albert_Museum.jpg), de APK — CC BY 4.0.
-- **El rapto de Proserpina**, Gian Lorenzo Bernini (1621–1622). Galería Borghese, Roma.  
-  Fotografía: [The Rape of Proserpina (Rome).jpg](https://commons.wikimedia.org/wiki/File:The_Rape_of_Proserpina_(Rome).jpg), de Gian Lorenzo Bernini — CC BY-SA 4.0.
 - **Sarcófago de Proserpina**, Taller romano (c. 200–225 d. C.). Tesoro de la catedral de Aquisgrán.  
   Fotografía: [Proserpina-Sarkophag mit dem Relief Raub der Proserpina. Domschatzkammer Aachen.jpg](https://commons.wikimedia.org/wiki/File:Proserpina-Sarkophag_mit_dem_Relief_Raub_der_Proserpina._Domschatzkammer_Aachen.jpg), de HOWI - Horsch, Willy — CC BY-SA 3.0.
-- **Eneas, Anquises y Ascanio**, Gian Lorenzo Bernini (1618–1619). Galería Borghese, Roma.  
-  Fotografía: [Aeneas, Anchises, and Ascanius by Bernini, 1618-1620, marble, view 1 - Galleria Borghese - Rome, Italy - DSC04797.jpg](https://commons.wikimedia.org/wiki/File:Aeneas,_Anchises,_and_Ascanius_by_Bernini,_1618-1620,_marble,_view_1_-_Galleria_Borghese_-_Rome,_Italy_-_DSC04797.jpg), de Daderot — CC0.
-- **Augusto de Prima Porta**, Escultor romano desconocido (Principios del siglo I d. C.). Museos Vaticanos, Ciudad del Vaticano.  
-  Fotografía: [Augustus of Prima Porta.jpg](https://commons.wikimedia.org/wiki/File:Augustus_of_Prima_Porta.jpg), de Justin Benttinen — CC BY-SA 4.0.
-- **Estatua ecuestre de Marco Aurelio**, Autor desconocido (c. 175 d. C.). Museos Capitolinos, Roma.  
-  Fotografía: [Rome Capitoline Marcus Aurelius statue original.jpg](https://commons.wikimedia.org/wiki/File:Rome_Capitoline_Marcus_Aurelius_statue_original.jpg), de Nicholas Hartmann — CC BY-SA 4.0.
 - **Relieves del arco de Tito**, Escultores romanos (c. 81–82 d. C.). Foro Romano, Roma.  
   Fotografía: [Spoils from Jerusalem - Arch of Titus - Rome 2008.jpg](https://commons.wikimedia.org/wiki/File:Spoils_from_Jerusalem_-_Arch_of_Titus_-_Rome_2008.jpg), de José Luiz — CC BY-SA 3.0.
 
@@ -126,6 +116,16 @@ De estas no hay un escaneo 3D libre: el modelo se generó con inteligencia artif
 
 - **Perseo con la cabeza de Medusa**, Benvenuto Cellini (1545–1554). Loggia dei Lanzi, Florencia.  
   Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Decapicated Medusa 身首異處的梅杜莎 - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Decapicated_Medusa_%E8%BA%AB%E9%A6%96%E7%95%B0%E8%99%95%E7%9A%84%E6%A2%85%E6%9D%9C%E8%8E%8E_-_panoramio.jpg), de lienyuan lee — CC BY 3.0.
+- **Teseo y el Minotauro**, Antonio Canova (1781–1783). Victoria and Albert Museum, Londres.  
+  Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg](https://commons.wikimedia.org/wiki/File:Theseus_and_the_Minotaur_by_Antonio_Canova,_Victoria_and_Albert_Museum.jpg), de APK — CC BY 4.0.
+- **El rapto de Proserpina**, Gian Lorenzo Bernini (1621–1622). Galería Borghese, Roma.  
+  Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [The Rape of Proserpina (Rome).jpg](https://commons.wikimedia.org/wiki/File:The_Rape_of_Proserpina_(Rome).jpg), de Architas — CC BY-SA 4.0.
+- **Eneas, Anquises y Ascanio**, Gian Lorenzo Bernini (1618–1619). Galería Borghese, Roma.  
+  Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Aeneas, Anchises, and Ascanius by Bernini, 1618-1620, marble, view 1 - Galleria Borghese - Rome, Italy - DSC04797.jpg](https://commons.wikimedia.org/wiki/File:Aeneas,_Anchises,_and_Ascanius_by_Bernini,_1618-1620,_marble,_view_1_-_Galleria_Borghese_-_Rome,_Italy_-_DSC04797.jpg), de Daderot — CC0.
+- **Augusto de Prima Porta**, Escultor romano desconocido (Principios del siglo I d. C.). Museos Vaticanos, Ciudad del Vaticano.  
+  Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Augustus of Prima Porta.jpg](https://commons.wikimedia.org/wiki/File:Augustus_of_Prima_Porta.jpg), de Justin Benttinen — CC BY-SA 4.0.
+- **Estatua ecuestre de Marco Aurelio**, Autor desconocido (c. 175 d. C.). Museos Capitolinos, Roma.  
+  Modelo 3D: reconstrucción generada con Tripo 3.1 (vía Magnific) a partir de la fotografía [Equestrian statue of Marcus Aurelius.jpg](https://commons.wikimedia.org/wiki/File:Equestrian_statue_of_Marcus_Aurelius.jpg), de Matthias Kabel — CC BY-SA 3.0.
 
 ## Música
 

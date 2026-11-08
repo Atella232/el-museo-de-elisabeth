@@ -1,6 +1,6 @@
 {
   "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
-  "_nota": "Sala V: tres tramos para contar la historia a lo largo de la nave. El Laocoonte, la caída de Troya, recibe en el centro del primer tramo; la huida de Eneas sigue por la izquierda, Cartago está en el fondo y Dido, de vuelta, por la derecha hasta la puerta de la Sala VI.",
+  "_nota": "Sala V: tres tramos para contar la historia a lo largo de la nave. El Laocoonte, la caída de Troya, recibe en el centro del primero; en el segundo, la huida de Eneas en escultura (Bernini, en el centro) y en pintura (Barocci, a su izquierda); el viaje sigue por la izquierda (Delos), Cartago está en el fondo y Dido, de vuelta, por la derecha hasta la puerta de la Sala VI. El grupo de Bernini es una reconstrucción 3D hecha con IA a partir de una fotografía.",
 
   "nave": {
     "ancho": 8.0,
@@ -30,7 +30,6 @@
   "panel": { "pared": "izquierda", "pos": 2.6 },
 
   "obras": [
-    { "id": "eneas-bernini", "pared": "izquierda", "y": 9.0,  "marco": "foto", "expuesto": { "alto": 2.0 } },
     { "id": "eneas-barocci", "pared": "izquierda", "y": 16.0, "marco": "dorado" },
     { "id": "eneas-delos",   "pared": "izquierda", "y": 23.0, "marco": "dorado" },
     { "id": "dido-cartago",  "pared": "fondo",     "x": 0.0,  "marco": "dorado" },
@@ -39,7 +38,8 @@
   ],
 
   "exentas": [
-    { "escultura": "laocoonte", "x": 0.0, "y": 9.0, "mira": [0, -1], "peana": 0.6 }
+    { "escultura": "laocoonte", "x": 0.0, "y": 9.0, "mira": [0, -1], "peana": 0.6 },
+    { "escultura": "eneas-bernini", "x": 0.0, "y": 16.0, "mira": [0, -1], "giro": -90, "peana": 0.7 }
   ],
 
   "hornacinas": [],
@@ -51,6 +51,7 @@
   "camaras": {
     "entrada":   { "x": 0.0,  "y": 1.8,  "z": 1.65, "mira": [0.0, 28.1, 3.0] },
     "laocoonte": { "x": 0.4,  "y": 5.4,  "z": 1.65, "mira": [0.0, 9.0, 1.7] },
+    "eneas":     { "x": 0.8,  "y": 12.4, "z": 1.65, "mira": [0.0, 16.0, 1.9] },
     "mitad":     { "x": 1.4,  "y": 13.0, "z": 1.65, "mira": [-4.0, 19.0, 2.2] },
     "fondo":     { "x": 0.0,  "y": 21.6, "z": 1.65, "mira": [0.0, 28.1, 2.2] },
     "vuelta":    { "x": -1.4, "y": 25.0, "z": 1.65, "mira": [4.0, 12.0, 2.2] }

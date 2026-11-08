@@ -381,6 +381,7 @@
       "generado": "Tripo 3.1 (vía Magnific)",
       "archivo": "fuentes/esculturas/perseo.glb",
       "licencia": "CC BY 3.0",
+      "fotografo": "lienyuan lee",
       "credito": "Reconstrucción con IA a partir de una fotografía de lienyuan lee"
     },
     "mito": "Perseo, el hijo de Dánae y Júpiter, recibió el encargo de traer la cabeza de Medusa, una gorgona con serpientes por cabello cuya mirada convertía en piedra a quien la miraba. Minerva y Mercurio le ayudaron con un escudo pulido como un espejo, unas sandalias aladas y una hoz. Perseo la decapitó sin mirarla de frente, guiándose por su reflejo.",
@@ -421,7 +422,7 @@
   },
   {
     "id": "teseo-minotauro",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "Teseo y el Minotauro",
     "autor": "Antonio Canova",
     "fecha": "1781–1783",
@@ -432,8 +433,15 @@
     },
     "museo": "Victoria and Albert Museum, Londres",
     "commons": "File:Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg",
+    "fuente3d": {
+      "generado": "Tripo 3.1 (vía Magnific)",
+      "archivo": "fuentes/esculturas/teseo-minotauro.glb",
+      "licencia": "CC BY 4.0",
+      "fotografo": "APK",
+      "credito": "Reconstrucción con IA a partir de una fotografía de APK"
+    },
     "mito": "Cada nueve años, Atenas debía enviar a Creta catorce jóvenes para que el Minotauro, un monstruo mitad hombre y mitad toro, los devorara en el laberinto. El príncipe Teseo se ofreció voluntario. Ariadna, hija del rey Minos, se enamoró de él y le dio un ovillo de hilo; Teseo mató al Minotauro y, siguiendo el hilo, encontró la salida.",
-    "texto": "Fue la primera gran obra de Canova en Roma. En lugar de la lucha, muestra lo que viene después: Teseo, sereno, descansa sentado sobre el cuerpo del Minotauro. La calma después de la violencia era una idea nueva, que anunciaba el neoclasicismo. El héroe no vence solo: sin el hilo de Ariadna, a la que vimos abandonada en Naxos en la sala anterior, no habría salido del laberinto. Aquí se muestra una fotografía del original.",
+    "texto": "Fue la primera gran obra de Canova en Roma. En lugar de la lucha, muestra lo que viene después: Teseo, sereno, descansa sentado sobre el cuerpo del Minotauro. La calma después de la violencia era una idea nueva, que anunciaba el neoclasicismo. El héroe no vence solo: sin el hilo de Ariadna, a la que vimos abandonada en Naxos en la sala anterior, no habría salido del laberinto. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   },
   {
@@ -470,7 +478,7 @@
   },
   {
     "id": "proserpina",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "El rapto de Proserpina",
     "autor": "Gian Lorenzo Bernini",
     "fecha": "1621–1622",
@@ -481,8 +489,15 @@
     },
     "museo": "Galería Borghese, Roma",
     "commons": "File:The Rape of Proserpina (Rome).jpg",
+    "fuente3d": {
+      "generado": "Tripo 3.1 (vía Magnific)",
+      "archivo": "fuentes/esculturas/proserpina.glb",
+      "licencia": "CC BY-SA 4.0",
+      "fotografo": "Architas",
+      "credito": "Reconstrucción con IA a partir de una fotografía de Architas"
+    },
     "mito": "Plutón, dios del inframundo, vio a Proserpina, hija de Ceres, recogiendo flores en un prado de Sicilia y se la llevó por la fuerza en su carro al reino de los muertos. Ceres, desesperada, dejó de hacer crecer las cosechas. Júpiter impuso un acuerdo: Proserpina pasaría una parte del año con su madre y la otra bajo tierra. Así explicaban los antiguos las estaciones.",
-    "texto": "Bernini lo esculpió con veintitrés años. Lo más famoso es la mano de Plutón hundiéndose en el muslo de Proserpina: el mármol parece carne blanda. Ella le empuja la cara y llora, y a sus pies Cerbero, el perro de tres cabezas, guarda la entrada del inframundo. Es una escena de violencia, y Bernini no la suaviza. Aquí se muestra una fotografía del original.",
+    "texto": "Bernini lo esculpió con veintitrés años. Lo más famoso es la mano de Plutón hundiéndose en el muslo de Proserpina: el mármol parece carne blanda. Ella le empuja la cara y llora, y a sus pies Cerbero, el perro de tres cabezas, guarda la entrada del inframundo. Es una escena de violencia, y Bernini no la suaviza. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   },
   {
@@ -606,7 +621,7 @@
   },
   {
     "id": "eneas-bernini",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "Eneas, Anquises y Ascanio",
     "autor": "Gian Lorenzo Bernini",
     "fecha": "1618–1619",
@@ -617,8 +632,15 @@
     },
     "museo": "Galería Borghese, Roma",
     "commons": "File:Aeneas, Anchises, and Ascanius by Bernini, 1618-1620, marble, view 1 - Galleria Borghese - Rome, Italy - DSC04797.jpg",
+    "fuente3d": {
+      "generado": "Tripo 3.1 (vía Magnific)",
+      "archivo": "fuentes/esculturas/eneas-bernini.glb",
+      "licencia": "CC0",
+      "fotografo": "Daderot",
+      "credito": "Reconstrucción con IA a partir de una fotografía de Daderot"
+    },
     "mito": "La noche en que cayó Troya, el príncipe Eneas, hijo de Venus, huyó de la ciudad en llamas. Cargó a hombros a su anciano padre, Anquises, que llevaba en las manos las estatuillas de los dioses de la familia, y llevó de la mano a su hijo Ascanio. Su esposa, Creúsa, se perdió en la confusión de la huida.",
-    "texto": "Es una de las primeras grandes obras de Bernini, que la esculpió con unos veinte años para el cardenal Scipione Borghese, probablemente con la ayuda de su padre, Pietro. Las tres generaciones se apilan como una columna: el cuerpo viejo y flaco de Anquises, el musculoso de Eneas y el blando del niño, que lleva el fuego sagrado del hogar. Es la imagen de lo que se salva cuando todo se pierde. Aquí se muestra una fotografía del original.",
+    "texto": "Es una de las primeras grandes obras de Bernini, que la esculpió con unos veinte años para el cardenal Scipione Borghese, probablemente con la ayuda de su padre, Pietro. Las tres generaciones se apilan como una columna: el cuerpo viejo y flaco de Anquises, el musculoso de Eneas y el blando del niño, que lleva el fuego sagrado del hogar. Es la imagen de lo que se salva cuando todo se pierde. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   },
   {
@@ -830,7 +852,7 @@
   },
   {
     "id": "augusto",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "Augusto de Prima Porta",
     "autor": "Escultor romano desconocido",
     "fecha": "Principios del siglo I d. C.",
@@ -841,9 +863,16 @@
     },
     "museo": "Museos Vaticanos, Ciudad del Vaticano",
     "commons": "File:Augustus of Prima Porta.jpg",
+    "fuente3d": {
+      "generado": "Tripo 3.1 (vía Magnific)",
+      "archivo": "fuentes/esculturas/augusto.glb",
+      "licencia": "CC BY-SA 4.0",
+      "fotografo": "Justin Benttinen",
+      "credito": "Reconstrucción con IA a partir de una fotografía de Justin Benttinen"
+    },
     "encabezado": "La historia",
     "mito": "Octavio, sobrino nieto y heredero de César, venció a Marco Antonio y a Cleopatra y puso fin a las guerras civiles. En el año 27 a. C. el Senado le dio el título de Augusto, «el venerable». Gobernó más de cuarenta años como primer emperador, aunque siempre presentó su poder como una restauración de la República.",
-    "texto": "La estatua apareció en 1863 en la villa de su esposa, Livia, en Prima Porta, a las afueras de Roma. Augusto alza el brazo como un general que habla a sus tropas, pero va descalzo, como los dioses y los héroes. A sus pies, un pequeño Cupido sobre un delfín recuerda que su familia decía descender de Venus, a través de Eneas. En la coraza, un parto devuelve las insignias militares que Roma había perdido: un acuerdo diplomático convertido en propaganda. Aquí se muestra una fotografía del original.",
+    "texto": "La estatua apareció en 1863 en la villa de su esposa, Livia, en Prima Porta, a las afueras de Roma. Augusto alza el brazo como un general que habla a sus tropas, pero va descalzo, como los dioses y los héroes. A sus pies, un pequeño Cupido sobre un delfín recuerda que su familia decía descender de Venus, a través de Eneas. En la coraza, un parto devuelve las insignias militares que Roma había perdido: un acuerdo diplomático convertido en propaganda. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   },
   {
@@ -892,7 +921,7 @@
   },
   {
     "id": "marco-aurelio",
-    "tipo": "foto",
+    "tipo": "escultura",
     "titulo": "Estatua ecuestre de Marco Aurelio",
     "autor": "Autor desconocido",
     "fecha": "c. 175 d. C.",
@@ -902,10 +931,17 @@
       "ancho": null
     },
     "museo": "Museos Capitolinos, Roma",
-    "commons": "File:Rome Capitoline Marcus Aurelius statue original.jpg",
+    "commons": "File:Equestrian statue of Marcus Aurelius.jpg",
+    "fuente3d": {
+      "generado": "Tripo 3.1 (vía Magnific)",
+      "archivo": "fuentes/esculturas/marco-aurelio.glb",
+      "licencia": "CC BY-SA 3.0",
+      "fotografo": "Matthias Kabel",
+      "credito": "Reconstrucción con IA a partir de una fotografía de Matthias Kabel"
+    },
     "encabezado": "La historia",
     "mito": "Marco Aurelio gobernó entre los años 161 y 180 y pasó gran parte de su reinado en campaña contra los pueblos germanos del Danubio. Era también filósofo: en el campamento escribió en griego unas reflexiones personales, las Meditaciones, en las que se exige a sí mismo calma, justicia y sentido del deber.",
-    "texto": "Es la única gran estatua ecuestre de bronce que se conserva de la Antigua Roma. Se salvó de ser fundida porque en la Edad Media se creyó que representaba a Constantino, el primer emperador cristiano. En 1538 se trasladó a la plaza del Capitolio, que Miguel Ángel diseñó a su alrededor; hoy el original se protege dentro del museo y en la plaza hay una copia. El emperador extiende el brazo en un gesto de clemencia. Aquí se muestra una fotografía del original.",
+    "texto": "Es la única gran estatua ecuestre de bronce que se conserva de la Antigua Roma. Se salvó de ser fundida porque en la Edad Media se creyó que representaba a Constantino, el primer emperador cristiano. En 1538 se trasladó a la plaza del Capitolio, que Miguel Ángel diseñó a su alrededor; hoy el original se protege dentro del museo y en la plaza hay una copia. El emperador extiende el brazo en un gesto de clemencia. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
     "youtubeId": null
   },
   {
