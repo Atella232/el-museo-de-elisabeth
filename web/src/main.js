@@ -242,7 +242,10 @@ async function cambiarDeSala(destino, { porPuerta = false, porAscensor = false }
   hud.paseo(false);
   tactil?.mostrar(false);
   if (tactil) tactil.activo = false;
-  if (escritorio) escritorio.activo = false;
+  if (escritorio) {
+    escritorio.activo = false;
+    escritorio.puntero.enabled = false; // con el ratón capturado, que no gire la vista durante el fundido
+  }
   const adelante = porPuerta && nueva.numero > origen.numero;
   const final = porPuerta && nueva.id === 'vestibulo' && origen.final ? origen.final : null;
   await transicion.cubrir({ destino: nueva, paso: adelante ? origen.paso : null, final });
@@ -251,7 +254,14 @@ async function cambiarDeSala(destino, { porPuerta = false, porAscensor = false }
   apuntada = null;
   await transicion.descubrir();
   if (porAscensor) ambiente.timbre();
-  entrarEnPaseo();
+  // Si el ratón quedó suelto (al elegir sala en el índice o en el ascensor el navegador puede no
+  // haber dejado capturarlo), se muestra la pausa: un clic lo captura y se sigue paseando.
+  if (escritorio?.capturaPosible && !escritorio.bloqueado) {
+    estado = 'pausa';
+    hud.mostrarPausa(true);
+  } else {
+    entrarEnPaseo();
+  }
 }
 
 // El índice de salas (botón ☰) y la botonera del ascensor son la misma lista: `panel` dice cuál.
@@ -281,9 +291,16 @@ function cerrarIndice(panel = indice) {
   }
 }
 
+// Al abrir el índice o la botonera se suelta el ratón para poder pulsar. El clic que elige la sala
+// o cierra la lista es un gesto del visitante, así que en él se vuelve a capturar (con Esc no se
+// puede: entonces queda la pausa y un clic lo recupera).
 for (const panel of [indice, botonera]) {
-  panel.addEventListener('cerrar', () => cerrarIndice(panel));
+  panel.addEventListener('cerrar', () => {
+    cerrarIndice(panel);
+    escritorio?.bloquear();
+  });
   panel.addEventListener('ir', (e) => {
+    escritorio?.bloquear();
     if (e.detail === sala.id) {
       cerrarIndice(panel);
       return;
@@ -614,7 +631,7 @@ if (portada) {
 
 if (debug) {
   window.__museo = {
-    THREE, renderer, escena3d, camara, video, obras, salas, ambiente, diorama,
+    THREE, renderer, escena3d, camara, video, obras, salas, ambiente, diorama, escritorio,
     sala: () => sala,
     estado: () => estado,
     irASala: (id) => cambiarDeSala(id),
