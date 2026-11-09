@@ -1,6 +1,6 @@
 {
   "_ejes": "Metros. Ejes de Blender: X a lo ancho (izquierda -, derecha +), Y a lo largo (puertas en 0, fondo en +), Z hacia arriba. Las obras de las paredes laterales se colocan por su y; las de las paredes de los extremos, por su x.",
-  "_nota": "Sala VII: la más ancha y alta, como una basílica, con un tramo más que las otras y un recorrido de principio a fin, en el orden de Elisabeth. La muerte de César (4 × 7 m) abre la sala en el primer tramo, sin nada delante para poder verla de lejos. En el segundo, Augusto en el centro, con el relieve del Ara Pacis a su lado y el del arco de Tito enfrente. En el último, el relieve de la columna de Trajano y, en el centro, la estatua ecuestre de Marco Aurelio, que cierra el recorrido junto a la puerta que vuelve al vestíbulo. Augusto, Marco Aurelio y el relieve del arco de Tito son reconstrucciones 3D hechas con IA a partir de fotografías.",
+  "_nota": "Sala VII: la más ancha y alta, como una basílica, con un tramo más que las otras y un recorrido de principio a fin, en el orden de Elisabeth. La muerte de César (4 × 7 m) abre la sala en el primer tramo, sin nada delante para poder verla de lejos. En el segundo, Augusto en el centro, con el relieve del Ara Pacis a su lado y el del arco de Tito enfrente. En el último, el relieve de la columna de Trajano y, en el centro, la estatua ecuestre de Marco Aurelio, que cierra el recorrido junto a la puerta que vuelve al vestíbulo. Augusto y el relieve del arco de Tito son reconstrucciones 3D hechas con IA a partir de fotografías; el Marco Aurelio es un escaneo del original.",
 
   "nave": {
     "ancho": 9.0,
@@ -39,9 +39,11 @@
   ],
 
   "exentas": [
-    { "escultura": "augusto", "x": 0.0, "y": 17.9, "mira": [0, -1], "giro": -90, "peana": 0.9 },
-    { "escultura": "marco-aurelio", "x": 0.0, "y": 24.9, "mira": [0, -1], "giro": -90, "peana": 0.9,
-      "material": "bronce_verde", "intensidad": 0.9, "frente": 3.4 }
+    { "escultura": "augusto", "x": 0.0, "y": 17.9, "mira": [0, -1], "peana": 0.9,
+      "triangulos": 400000, "intensidad": 0.8 },
+    { "escultura": "marco-aurelio", "x": 0.0, "y": 24.9, "mira": [0, -1], "peana": 0.9,
+      "huella": [-0.05, -1.40, 1.32, 1.80], "material": "bronce_verde", "intensidad": 0.9, "frente": 3.4,
+      "triangulos": 400000 }
   ],
 
   "hornacinas": [],

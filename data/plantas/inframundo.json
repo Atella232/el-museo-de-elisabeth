@@ -39,7 +39,8 @@
   ],
 
   "exentas": [
-    { "escultura": "proserpina", "x": 0.0, "y": 9.0, "mira": [0, -1], "giro": -90, "peana": 0.8 },
+    { "escultura": "proserpina", "x": 0.0, "y": 9.0, "mira": [0, -1], "peana": 0.8,
+      "triangulos": 400000, "intensidad": 0.8 },
     { "escultura": "psique", "x": 0.0, "y": 16.0, "mira": [0, -1], "tumbar": 90, "peana": 0.85 },
     { "escultura": "sarcofago-proserpina", "x": 3.35, "y": 10.8, "mira": [-1, 0], "alto": 0.65, "peana": 0.5,
       "rodear": false, "intensidad": 0.8 }

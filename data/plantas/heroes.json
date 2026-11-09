@@ -37,10 +37,11 @@
   ],
 
   "exentas": [
-    { "escultura": "perseo", "x": 0.0, "y": 9.0, "mira": [0, -1], "giro": -90, "peana": 1.1,
-      "huella": [-0.40, -0.40, 0.15, 0.33], "triangulos": 150000, "material": "bronce_patina",
+    { "escultura": "perseo", "x": 0.0, "y": 9.0, "mira": [0, -1], "peana": 1.1,
+      "huella": [-0.36, -0.14, 0.10, 0.45], "triangulos": 400000, "material": "bronce_patina",
       "intensidad": 0.9, "frente": 3.0 },
-    { "escultura": "teseo-minotauro", "x": 0.0, "y": 18.6, "mira": [0, -1], "giro": -90, "peana": 0.9 }
+    { "escultura": "teseo-minotauro", "x": 0.0, "y": 18.6, "mira": [0, -1], "peana": 0.9,
+      "triangulos": 400000, "intensidad": 0.8 }
   ],
 
   "hornacinas": [],

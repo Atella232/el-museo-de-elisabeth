@@ -1,5 +1,6 @@
 // Lleva lo que exporta Blender para una sala (build/salas/<sala>/) a la web (web/public/salas/<sala>/):
-//   sala.glb, esculturas.glb    → comprimidos con meshopt
+//   sala.glb, esculturas.glb    → comprimidos con meshopt; de esculturas.glb, además, una versión
+//                                 con menos triángulos para el móvil (esculturas-media.glb)
 //   escena.json                 → escena.json (con los nombres de las lightmaps)
 //   lightmaps/<g>.png           → lightmaps/<g>-alta.webp y <g>-media.webp
 // y comprueba que cada malla con lightmap conserva su segundo mapa UV (TEXCOORD_1), o su
@@ -12,8 +13,8 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { dedup, meshopt, prune } from '@gltf-transform/functions';
-import { MeshoptEncoder } from 'meshoptimizer';
+import { dedup, meshopt, prune, simplify, weld } from '@gltf-transform/functions';
+import { MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sala = process.env.SALA || 'dioses';
@@ -26,9 +27,13 @@ await fs.mkdir(path.join(publico, 'lightmaps'), { recursive: true });
 
 const escena = JSON.parse(await fs.readFile(path.join(build, 'escena.json'), 'utf8'));
 const lightmaps = escena.lightmaps ?? {};
+// Fracción de los triángulos de las esculturas que se queda la versión para el móvil. La luz va
+// en los vértices y el simplificador solo quita vértices, así que la que queda sigue siendo la horneada.
+const ESCULTURAS_MOVIL = 0.3;
 
 // --- Modelos
 await MeshoptEncoder.ready;
+await MeshoptSimplifier.ready;
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.encoder': MeshoptEncoder });
 escena.modelos = [];
 for (const nombre of ['sala.glb', 'esculturas.glb']) {
@@ -64,6 +69,21 @@ for (const nombre of ['sala.glb', 'esculturas.glb']) {
   const antes = (await fs.stat(origen)).size;
   const despues = (await fs.stat(destino)).size;
   console.log(`✓ ${sala}/${nombre} ${kb(antes)} → ${kb(despues)} · ${conLightmap} nodos con luz horneada, ninguno la ha perdido`);
+
+  if (nombre === 'esculturas.glb') {
+    const movil = await io.read(origen);
+    await movil.transform(
+      dedup(),
+      prune({ keepAttributes: true, keepExtras: true }),
+      weld(),
+      simplify({ simplifier: MeshoptSimplifier, ratio: ESCULTURAS_MOVIL, error: 0.002 }),
+      meshopt({ encoder: MeshoptEncoder, level: 'medium', quantizeTexcoord: 16, quantizePosition: 16 }),
+    );
+    const ligero = 'esculturas-media.glb';
+    await io.write(path.join(publico, ligero), movil);
+    escena.variantes = { ...escena.variantes, [nombre]: { media: ligero } };
+    console.log(`✓ ${sala}/${ligero} ${kb((await fs.stat(path.join(publico, ligero))).size)} (para el móvil)`);
+  }
 }
 
 // --- Lightmaps

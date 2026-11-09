@@ -157,6 +157,9 @@ def hornear_vertices(objs):
     for o in objs:
         attr = o.data.color_attributes.get('Luz') or o.data.color_attributes.new('Luz', 'FLOAT_COLOR', 'POINT')
         o.data.color_attributes.active_color = attr
+        # El de render es el que se exporta como COLOR_0. Si el escaneo traía colores propios (los de
+        # Sketchfab), al quitarlos se queda sin ninguno marcado y se exportaría un blanco uniforme.
+        o.data.color_attributes.render_color_index = o.data.color_attributes.find('Luz')
     bpy.ops.object.bake(type='DIFFUSE', pass_filter={'DIRECT', 'INDIRECT'}, target='VERTEX_COLORS')
     luces = []
     for o in objs:

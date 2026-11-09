@@ -27,8 +27,11 @@ export class Ficha extends EventTarget {
     const enlace = `https://commons.wikimedia.org/wiki/${encodeURIComponent(obra.commons.replace(/ /g, '_'))}`;
     const z = obra.fuente3d?.zenodo;
     const ia = obra.fuente3d?.generado;
+    const sketchfab = obra.fuente3d?.sketchfab;
     const credito = z
       ? `Modelo 3D: <a href="https://zenodo.org/records/${z}" target="_blank" rel="noopener">${escapar(obra.fuente3d.credito)}</a> · ${escapar(obra.fuente3d.licencia)}`
+      : sketchfab
+        ? `Modelo 3D: <a href="${sketchfab}" target="_blank" rel="noopener">${escapar(obra.fuente3d.credito)}</a> · ${escapar(obra.fuente3d.licencia)}`
       : ia
         ? `Modelo 3D: ${escapar(obra.fuente3d.credito)} (<a href="${enlace}" target="_blank" rel="noopener">Wikimedia Commons</a>, ${escapar(obra.fuente3d.licencia)}), generado con ${escapar(ia)}`
       : obra.tipo === 'foto'

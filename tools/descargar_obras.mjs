@@ -94,6 +94,7 @@ const creditosFotos = [];
 const creditosEsculturas = [];
 const creditosEscaneos = [];
 const creditosIA = [];
+const creditosSketchfab = [];
 const existe = (ruta) => fs.stat(ruta).then(() => true, () => false);
 const enlace = (titulo, ii) => `[${titulo.replace(/^File:/, '')}](${ii.descriptionurl})`;
 
@@ -101,6 +102,13 @@ for (const obra of obras) {
   const ii = info[obra.commons];
   const m = ii.extmetadata ?? {};
   const licencia = sinEtiquetas(m.LicenseShortName?.value) || 'dominio público';
+  if (obra.fuente3d?.sketchfab) {
+    creditosSketchfab.push(
+      `- **${obra.titulo}**, ${obra.autor}. ${obra.museo}.  \n` +
+      `  Modelo 3D: [${obra.fuente3d.credito}](${obra.fuente3d.sketchfab}) — ${obra.fuente3d.licencia}.`,
+    );
+    continue;
+  }
   if (obra.fuente3d?.generado) {
     creditosIA.push(
       `- **${obra.titulo}**, ${obra.autor} (${obra.fecha}). ${obra.museo}.  \n` +
@@ -192,6 +200,7 @@ await fs.writeFile(
   `## Fotografías\n\nEsculturas y monumentos de los que no hay un escaneo 3D libre. Las obras son de dominio público; cada fotografía tiene la licencia de su autor.\n\n${creditosFotos.join('\n')}\n\n` +
   `## Esculturas: vaciados del SMK\n\nEscaneos 3D de vaciados en yeso de la Colección Real de Vaciados del Statens Museum for Kunst (SMK), publicados en Wikimedia Commons.\n\n${creditosEsculturas.join('\n')}\n\n` +
   `## Esculturas y relieves: Scan the World\n\nEscaneos 3D del proyecto Scan the World (MyMiniFactory), archivados en Zenodo con licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0. Los modelos que se publican aquí, reducidos y con la luz horneada, se comparten con esa misma licencia.\n\n${creditosEscaneos.join('\n')}\n\n` +
+  `## Esculturas: escaneos de Sketchfab\n\nEscaneos 3D publicados en Sketchfab por sus autores; se descargaron a mano (Sketchfab pide una cuenta) y están, reducidos, en fuentes/esculturas/.\n\n${creditosSketchfab.join('\n')}\n\n` +
   `## Esculturas reconstruidas con IA\n\nDe estas no hay un escaneo 3D libre: el modelo se generó con inteligencia artificial a partir de una fotografía del original, así que es una aproximación y no una copia exacta.\n\n${creditosIA.join('\n')}\n\n` +
   `## Música\n\nGrabaciones de Wikimedia Commons, convertidas a AAC. Las obras son de dominio público; cada grabación tiene la licencia indicada.\n\n${creditosMusica.join('\n')}\n\n` +
   `## Dioramas («entrar en el cuadro»)\n\nLas capas salen de las máscaras de figuras (SAM) de los proyectos de animación de cada cuadro. El fondo del *Juicio de Paris*, lo que tapan las figuras, se reconstruyó con el retoque de Magnific (Nano Banana Pro) y está en fuentes/dioramas/.\n\n` +

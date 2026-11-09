@@ -12,6 +12,10 @@ const BRILLO_LETRAS = 0.22;
 
 export const urlSala = (id) => `${BASE}salas/${id}/`;
 
+// Los modelos de la sala, en la versión de la calidad elegida (las esculturas tienen una más
+// ligera para el móvil).
+const modelosSala = (escena, calidad) => (escena.modelos ?? ['sala.glb']).map((m) => escena.variantes?.[m]?.[calidad.texturas] ?? m);
+
 // Si la sala ya está exportada (las que aún no se han montado no tienen escena.json).
 export async function salaDisponible(id) {
   try {
@@ -28,7 +32,7 @@ export async function precargarSala(id, calidad) {
   try {
     const escena = await (await fetch(`${urlSala(id)}escena.json`)).json();
     const urls = [
-      ...(escena.modelos ?? []).map((m) => `${urlSala(id)}${m}`),
+      ...modelosSala(escena, calidad).map((m) => `${urlSala(id)}${m}`),
       ...Object.values(escena.lightmaps).filter((lm) => !lm.vertices).map((lm) => `${urlSala(id)}${lm.archivos[calidad.texturas]}`),
       ...escena.obras.filter((o) => CON_IMAGEN.has(o.tipo)).map((o) => `${BASE}obras/${o.id}-${calidad.texturas}.webp`),
     ];
@@ -100,7 +104,7 @@ export async function cargarSala(id, { renderer, calidad, alProgreso }) {
 
   const modelo = new THREE.Group();
   modelo.name = `sala_${id}`;
-  for (const archivo of escena.modelos ?? ['sala.glb']) {
+  for (const archivo of modelosSala(escena, calidad)) {
     modelo.add((await cargadorGltf.loadAsync(`${raiz}${archivo}`)).scene);
   }
   const clones = new Map();

@@ -378,7 +378,7 @@
     "museo": "Loggia dei Lanzi, Florencia",
     "commons": "File:Decapicated Medusa 身首異處的梅杜莎 - panoramio.jpg",
     "fuente3d": {
-      "generado": "Tripo 3.1 (vía Magnific)",
+      "generado": "Hi3D 3.0 (vía Magnific)",
       "archivo": "fuentes/esculturas/perseo.glb",
       "licencia": "CC BY 3.0",
       "fotografo": "lienyuan lee",
@@ -434,7 +434,7 @@
     "museo": "Victoria and Albert Museum, Londres",
     "commons": "File:Theseus and the Minotaur by Antonio Canova, Victoria and Albert Museum.jpg",
     "fuente3d": {
-      "generado": "Tripo 3.1 (vía Magnific)",
+      "generado": "Hi3D 3.0 (vía Magnific)",
       "archivo": "fuentes/esculturas/teseo-minotauro.glb",
       "licencia": "CC BY 4.0",
       "fotografo": "APK",
@@ -490,7 +490,7 @@
     "museo": "Galería Borghese, Roma",
     "commons": "File:The Rape of Proserpina (Rome).jpg",
     "fuente3d": {
-      "generado": "Tripo 3.1 (vía Magnific)",
+      "generado": "Hi3D 3.0 (vía Magnific)",
       "archivo": "fuentes/esculturas/proserpina.glb",
       "licencia": "CC BY-SA 4.0",
       "fotografo": "Architas",
@@ -640,7 +640,7 @@
     "museo": "Galería Borghese, Roma",
     "commons": "File:Aeneas, Anchises, and Ascanius by Bernini, 1618-1620, marble, view 1 - Galleria Borghese - Rome, Italy - DSC04797.jpg",
     "fuente3d": {
-      "generado": "Tripo 3.1 (vía Magnific)",
+      "generado": "Hi3D 3.0 (vía Magnific)",
       "archivo": "fuentes/esculturas/eneas-bernini.glb",
       "licencia": "CC0",
       "fotografo": "Daderot",
@@ -871,7 +871,7 @@
     "museo": "Museos Vaticanos, Ciudad del Vaticano",
     "commons": "File:Augustus of Prima Porta.jpg",
     "fuente3d": {
-      "generado": "Tripo 3.1 (vía Magnific)",
+      "generado": "Hi3D 3.0 (vía Magnific)",
       "archivo": "fuentes/esculturas/augusto.glb",
       "licencia": "CC BY-SA 4.0",
       "fotografo": "Justin Benttinen",
@@ -940,15 +940,14 @@
     "museo": "Museos Capitolinos, Roma",
     "commons": "File:Equestrian statue of Marcus Aurelius.jpg",
     "fuente3d": {
-      "generado": "Tripo 3.1 (vía Magnific)",
+      "sketchfab": "https://sketchfab.com/3d-models/equestrian-statue-of-marcus-aurelius-ce97ca797b0a4be9894fe2d9af10a717",
       "archivo": "fuentes/esculturas/marco-aurelio.glb",
-      "licencia": "CC BY-SA 3.0",
-      "fotografo": "Matthias Kabel",
-      "credito": "Reconstrucción con IA a partir de una fotografía de Matthias Kabel"
+      "licencia": "CC BY 4.0",
+      "credito": "leifchri92 (Sketchfab)"
     },
     "encabezado": "La historia",
     "mito": "Marco Aurelio gobernó entre los años 161 y 180 y pasó gran parte de su reinado en campaña contra los pueblos germanos del Danubio. Era también filósofo: en el campamento escribió en griego unas reflexiones personales, las Meditaciones, en las que se exige a sí mismo calma, justicia y sentido del deber.",
-    "texto": "Es la única gran estatua ecuestre de bronce que se conserva de la Antigua Roma. Se salvó de ser fundida porque en la Edad Media se creyó que representaba a Constantino, el primer emperador cristiano. En 1538 se trasladó a la plaza del Capitolio, que Miguel Ángel diseñó a su alrededor; hoy el original se protege dentro del museo y en la plaza hay una copia. El emperador extiende el brazo en un gesto de clemencia. La escultura de esta sala no es un escaneo: es una reconstrucción en 3D hecha con inteligencia artificial a partir de una fotografía del original, así que algunos detalles pueden variar.",
+    "texto": "Es la única gran estatua ecuestre de bronce que se conserva de la Antigua Roma. Se salvó de ser fundida porque en la Edad Media se creyó que representaba a Constantino, el primer emperador cristiano. En 1538 se trasladó a la plaza del Capitolio, que Miguel Ángel diseñó a su alrededor; hoy el original se protege dentro del museo y en la plaza hay una copia. El emperador extiende el brazo en un gesto de clemencia. El modelo 3D es un escaneo del original, hecho con fotogrametría y publicado por leifchri92.",
     "youtubeId": null
   },
   {

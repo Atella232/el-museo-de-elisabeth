@@ -39,7 +39,8 @@
 
   "exentas": [
     { "escultura": "laocoonte", "x": 0.0, "y": 9.0, "mira": [0, -1], "peana": 0.6 },
-    { "escultura": "eneas-bernini", "x": 0.0, "y": 16.0, "mira": [0, -1], "giro": -90, "peana": 0.7 }
+    { "escultura": "eneas-bernini", "x": 0.0, "y": 16.0, "mira": [0, -1], "peana": 0.7,
+      "triangulos": 400000, "intensidad": 0.8 }
   ],
 
   "hornacinas": [],
