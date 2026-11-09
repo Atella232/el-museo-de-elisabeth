@@ -1,6 +1,10 @@
-// Ficha de una obra: datos, el mito y el cuadro, y los botones de vídeo, entrar y volver. También
-// muestra entero el texto del panel de cada sala.
+// Ficha de una obra: datos, el mito y el cuadro, y los botones de vídeo, entrar y volver. En las
+// obras en 3D, también sus fotografías reales, que se abren en grande en el visor. Y muestra
+// entero el texto del panel de cada sala.
 import { ROMANOS } from './transicion.js';
+import { VisorFotos } from './visor.js';
+
+const BASE = import.meta.env.BASE_URL;
 
 const escapar = (s = '') => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -12,14 +16,23 @@ export class Ficha extends EventTarget {
     this.el.setAttribute('aria-live', 'polite');
     this.el.hidden = true;
     contenedor.append(this.el);
+    this.visor = new VisorFotos(contenedor);
+    this.fotos = [];
     this.el.addEventListener('click', (e) => {
+      const foto = e.target.closest('[data-foto]');
+      if (foto) {
+        this.visor.abrir(this.fotos, Number(foto.dataset.foto));
+        return;
+      }
       const accion = e.target.closest('[data-accion]')?.dataset.accion;
       if (accion) this.dispatchEvent(new CustomEvent(accion));
     });
   }
 
   // `pista`: una línea de ayuda bajo el título (en las esculturas exentas, cómo rodearlas).
-  mostrar(obra, { pista = null } = {}) {
+  // `fotos`: las fotografías reales de la obra (web/public/fotos/fotos.json), si las tiene.
+  mostrar(obra, { pista = null, fotos = [] } = {}) {
+    this.fotos = fotos;
     const volumen = obra.tipo === 'escultura' || obra.tipo === 'relieve';
     const medidas = !obra.medidas ? null
       : obra.medidas.ancho ? `${fmt(obra.medidas.alto)} × ${fmt(obra.medidas.ancho)} cm`
@@ -56,6 +69,11 @@ export class Ficha extends EventTarget {
       <p>${escapar(obra.mito)}</p>
       <h3>${obra.tipo === 'escultura' ? 'La escultura' : 'La obra'}</h3>
       <p>${escapar(obra.texto)}</p>
+      ${fotos.length ? `
+      <h3>Fotografías</h3>
+      <div class="ficha-fotos">
+        ${fotos.map((f, i) => `<button class="ficha-foto" data-foto="${i}" aria-label="Ver en grande: ${escapar(f.pie)}"><img src="${BASE}fotos/${f.mini}" alt="" loading="lazy"></button>`).join('')}
+      </div>` : ''}
       <div class="ficha-botones">
         ${obra.youtubeId ? '<button class="boton boton-oro" data-accion="video">▶ Ver vídeo</button>' : ''}
         ${obra.tipo && obra.tipo !== 'cuadro' ? '' : obra.diorama
@@ -105,6 +123,7 @@ export class Ficha extends EventTarget {
   }
 
   ocultar() {
+    if (this.visor.abierto) this.visor.cerrar();
     this.el.classList.remove('visible');
     setTimeout(() => { if (!this.el.classList.contains('visible')) this.el.hidden = true; }, 400);
   }

@@ -7,6 +7,7 @@
     "build": "vite build web",
     "preview": "vite preview web",
     "obras": "node tools/descargar_obras.mjs",
+    "fotos": "node tools/descargar_fotos.mjs",
     "musica": "node tools/descargar_musica.mjs",
     "dioramas": "node tools/preparar_dioramas.mjs",
     "vivo": "node tools/preparar_vivo.mjs",

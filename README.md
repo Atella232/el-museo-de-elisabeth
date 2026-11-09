@@ -63,6 +63,10 @@ data/plantas/<sala>.json + data/obras.json + data/salas.json   ← planta de cad
   triángulos (`esculturas-media.glb`, lo hace `tools/optimizar_glb.mjs`). El relieve del sarcófago de Proserpina y el del arco de Tito
   salen de un mapa de profundidad de una fotografía (Hi3D Relief, vía Magnific), que
   `blender/relieve_profundidad.py` convierte en una losa en relieve (y, para el sarcófago, en la caja).
+- **Fotografías de los originales:** la ficha de cada obra en 3D tiene una sección «Fotografías» con
+  fotos reales de la escultura o el monumento, que se abren en grande en un visor
+  (`web/src/ui/visor.js`). Se eligen en `data/fotos.json` y las descarga `npm run fotos`
+  (`tools/descargar_fotos.mjs`) a `web/public/fotos/`, con su autor y su licencia.
 - **Entrar en el cuadro** (`web/src/cuadro/diorama.js`): la pintura se convierte en un diorama de
   planos a distintas profundidades, como un teatro de papel. Las capas salen de los proyectos de
   animación de cada cuadro (`~/Documents/Proyectos/Animaciones`) con `npm run dioramas`, que

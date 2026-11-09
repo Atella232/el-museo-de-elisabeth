@@ -133,6 +133,8 @@ function desmontarSala() {
 
 const salaInicial = salas[parametro('sala')] ? parametro('sala') : 'vestibulo';
 const listaMusica = fetch(`${BASE}musica/lista.json`).then((r) => (r.ok ? r.json() : []), () => []);
+// Las fotografías reales de las obras en 3D, para su ficha (las prepara tools/descargar_fotos.mjs).
+const listaFotos = fetch(`${BASE}fotos/fotos.json`).then((r) => (r.ok ? r.json() : {}), () => ({}));
 await montarSala(salaInicial, { alProgreso: (f) => portada?.progreso(f * 0.92) });
 
 // --- Interfaz y controles
@@ -201,7 +203,7 @@ async function abrirObra(obra) {
   }
   const opciones = colocarFicha(obra);
   if (obra.tipo === 'panel') ficha.mostrarSala(salas[sala.id], datosSalas);
-  else ficha.mostrar(obras[obra.id], { pista: obra.eje ? PISTA_RODEAR : null });
+  else ficha.mostrar(obras[obra.id], { pista: obra.eje ? PISTA_RODEAR : null, fotos: (await listaFotos)[obra.id] ?? [] });
   sala.vivos.enfocar(obra.id, ESPERA_VIVO);
   await sala.contemplar.acercarse(obra, opciones);
   estado = 'contemplar';

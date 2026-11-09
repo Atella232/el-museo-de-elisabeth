@@ -189,6 +189,12 @@ for (const obra of obras) {
   );
 }
 
+// Las fotografías de las fichas las descarga tools/descargar_fotos.mjs; aquí solo se acreditan.
+const fotos = JSON.parse(await fs.readFile(path.join(raiz, 'web/public/fotos/fotos.json'), 'utf8').catch(() => '{}'));
+const porId = Object.fromEntries(obras.map((o) => [o.id, o]));
+const creditosFotosFichas = Object.entries(fotos).map(([id, lista]) => `- **${porId[id]?.titulo ?? id}**: ` +
+  lista.map((f) => `[${f.pie}](${f.enlace}), de ${f.autor} (${f.licencia})`).join('; ') + '.');
+
 // La música la descarga tools/descargar_musica.mjs; aquí solo se acredita.
 const creditosMusica = musica.map((p) =>
   `- **${p.compositor}: ${p.titulo}**. ${p.interprete}.  \n` +
@@ -202,6 +208,7 @@ await fs.writeFile(
   `## Esculturas y relieves: Scan the World\n\nEscaneos 3D del proyecto Scan the World (MyMiniFactory), archivados en Zenodo con licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0. Los modelos que se publican aquí, reducidos y con la luz horneada, se comparten con esa misma licencia.\n\n${creditosEscaneos.join('\n')}\n\n` +
   `## Esculturas: escaneos de Sketchfab\n\nEscaneos 3D publicados en Sketchfab por sus autores; se descargaron a mano (Sketchfab pide una cuenta) y están, reducidos, en fuentes/esculturas/.\n\n${creditosSketchfab.join('\n')}\n\n` +
   `## Esculturas reconstruidas con IA\n\nDe estas no hay un escaneo 3D libre: el modelo se generó con inteligencia artificial a partir de una fotografía del original, así que es una aproximación y no una copia exacta.\n\n${creditosIA.join('\n')}\n\n` +
+  `## Fotografías de las fichas\n\nFotografías de los originales de las obras en 3D, en la sección «Fotografías» de su ficha. Son de Wikimedia Commons, salvo las de los vaciados de Copenhague, del Statens Museum for Kunst; cada una tiene la licencia indicada.\n\n${creditosFotosFichas.join('\n')}\n\n` +
   `## Música\n\nGrabaciones de Wikimedia Commons, convertidas a AAC. Las obras son de dominio público; cada grabación tiene la licencia indicada.\n\n${creditosMusica.join('\n')}\n\n` +
   `## Dioramas («entrar en el cuadro»)\n\nLas capas salen de las máscaras de figuras (SAM) de los proyectos de animación de cada cuadro. El fondo del *Juicio de Paris*, lo que tapan las figuras, se reconstruyó con el retoque de Magnific (Nano Banana Pro) y está en fuentes/dioramas/.\n\n` +
   `## Cuadros vivos\n\nLos vídeos de web/public/vivos/ se generaron con Kling 2.5 (Ulises y Héctor) y MiniMax Hailuo 3 (el resto), vía Magnific, a partir de las pinturas, con la propia pintura como primer y último fotograma.\n\n` +

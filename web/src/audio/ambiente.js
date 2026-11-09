@@ -4,7 +4,7 @@
 
 const VOLUMEN_MUSICA = 0.3;
 const PAUSA_ENTRE_PIEZAS = 7; // segundos de silencio entre una pieza y la siguiente
-const VOLUMEN_PASOS = 0.35;
+const VOLUMEN_PASOS = 0.0875;
 const FUNDIDO_MUSICA = 2.5; // segundos que tarda la música en difuminarse o en volver
 
 export class Ambiente {
